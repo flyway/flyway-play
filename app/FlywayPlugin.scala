@@ -48,10 +48,6 @@ class FlywayPlugin(app: Application) extends Plugin with HandleWebCommandSupport
   override def onStop(): Unit = {
   }
 
-  private def migrate(): Unit = {
-    flyway.migrate()
-  }
-
   override def handleWebCommand(request: RequestHeader, sbtLink: SBTLink, path: java.io.File): Option[Result] = {
     if (request.path != applyPath) {
       checkState()

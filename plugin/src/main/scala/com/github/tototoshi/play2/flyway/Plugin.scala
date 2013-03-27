@@ -28,33 +28,49 @@ class Plugin(app: Application) extends play.api.Plugin
     with HandleWebCommandSupport
     with PluginConfiguration {
 
-  val url = app.configuration.getString("db.default.url").getOrElse(throw new MigrationConfigurationException("db.default.url is not set."))
-  val user = app.configuration.getString("db.default.user").orNull
-  val password = app.configuration.getString("db.default.password").orNull
+  val configReader = new ConfigReader(app)
 
-  private val flyway = new Flyway
+  val databaseConfigurations = configReader.getDatabaseConfigurations
 
-  flyway.setDataSource(url, user, password)
+  var migrationTarget: String = null
+
+  private val allDatabaseNames = configReader.getDatabaseConfigurations.keys
 
   private val flywayPrefixToMigrationScript = "db/migration"
 
   private val playConfigDir = "conf"
 
+  private val flyways: Map[String, Flyway] = {
+    for {
+      (dbName, configuration) <- configReader.getDatabaseConfigurations
+    } yield {
+      val flyway = new Flyway
+      flyway.setDataSource(configuration.url, configuration.user, configuration.password)
+      flyway.setLocations(s"db/migration/${dbName}")
+      dbName -> flyway
+    }
+  }
+
   override lazy val enabled: Boolean = true
 
-  private def migrationDescriptionToShow(migration: MigrationInfo): String = {
-    val scriptPath = getFile(app.getFile("."), playConfigDir, flywayPrefixToMigrationScript, migration.getScript)
+  private def migrationDescriptionToShow(dbName: String, migration: MigrationInfo): String = {
+    val scriptPath = getFile(app.getFile("."), playConfigDir, flywayPrefixToMigrationScript, dbName, migration.getScript)
     s"""|--- ${migration.getScript} ---
     |${readFileToString(scriptPath)}""".stripMargin
   }
 
   private def checkState(): Unit = {
-    val pendingMigrations = flyway.info().pending
-    if (!pendingMigrations.isEmpty) {
-      throw InvalidDatabaseRevision(
-        "default",
-        pendingMigrations.map(migrationDescriptionToShow).mkString("\n"))
+    for (dbName <- allDatabaseNames) {
+      val flyway = flyways(dbName)
+      val pendingMigrations = flyway.info().pending
+      if (!pendingMigrations.isEmpty) {
+        migrationTarget = dbName
+        throw InvalidDatabaseRevision(
+          dbName,
+          pendingMigrations.map(migration => migrationDescriptionToShow(dbName, migration)).mkString("\n"))
+      }
     }
+
   }
 
   override def onStart(): Unit = {
@@ -76,7 +92,9 @@ class Plugin(app: Application) extends play.api.Plugin
       checkState()
       None
     } else {
+      val flyway = flyways(migrationTarget)
       flyway.migrate()
+      migrationTarget = null
       sbtLink.forceReload()
       Some(Redirect(getRedirectUrlFromRequest(request)))
     }

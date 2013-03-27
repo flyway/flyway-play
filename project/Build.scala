@@ -26,6 +26,7 @@ object ApplicationBuild extends Build {
   val appDependencies = Seq(
     "org.slf4j" % "slf4j-simple" % "1.7.2",
     "com.github.seratch" %% "scalikejdbc" % "[1.4,)",
+    "com.h2database" % "h2" % "[1.3,)",
     "postgresql" % "postgresql" % "9.1-901.jdbc4"
   )
 

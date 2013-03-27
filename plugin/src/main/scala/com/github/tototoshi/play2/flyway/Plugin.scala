@@ -24,7 +24,7 @@ import com.googlecode.flyway.core.api.MigrationInfo
 import play.core._
 import org.apache.commons.io.FileUtils._
 
-class Plugin(app: Application) extends play.api.Plugin
+class Plugin(implicit app: Application) extends play.api.Plugin
     with HandleWebCommandSupport
     with PluginConfiguration {
 
@@ -59,25 +59,31 @@ class Plugin(app: Application) extends play.api.Plugin
     |${readFileToString(scriptPath)}""".stripMargin
   }
 
-  private def checkState(): Unit = {
-    for (dbName <- allDatabaseNames) {
-      val flyway = flyways(dbName)
-      val pendingMigrations = flyway.info().pending
-      if (!pendingMigrations.isEmpty) {
-        migrationTarget = dbName
-        throw InvalidDatabaseRevision(
-          dbName,
-          pendingMigrations.map(migration => migrationDescriptionToShow(dbName, migration)).mkString("\n"))
-      }
+  private def checkState(dbName: String): Unit = {
+    val pendingMigrations = flyways(dbName).info().pending
+    if (!pendingMigrations.isEmpty) {
+      migrationTarget = dbName
+      throw InvalidDatabaseRevision(
+        dbName,
+        pendingMigrations.map(migration => migrationDescriptionToShow(dbName, migration)).mkString("\n"))
     }
-
   }
 
   override def onStart(): Unit = {
-    checkState()
+    for (dbName <- allDatabaseNames) {
+      if (Play.isTest || app.configuration.getBoolean(s"db.${dbName}.migration.auto").getOrElse(false)) {
+        migrateAutomatically(dbName)
+      } else {
+        checkState(dbName)
+      }
+    }
   }
 
   override def onStop(): Unit = {
+  }
+
+  private def migrateAutomatically(dbName: String): Unit = {
+    flyways(dbName).migrate()
   }
 
   private def getRedirectUrlFromRequest(request: RequestHeader): String = {
@@ -89,7 +95,6 @@ class Plugin(app: Application) extends play.api.Plugin
 
   override def handleWebCommand(request: RequestHeader, sbtLink: SBTLink, path: java.io.File): Option[Result] = {
     if (request.path != applyPath) {
-      checkState()
       None
     } else {
       val flyway = flyways(migrationTarget)

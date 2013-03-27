@@ -1,4 +1,19 @@
-package flyway
+/*
+* Copyright 2013 Toshiyuki Takahashi
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+package com.github.tototoshi.play2.flyway
 
 import java.io.File
 import play.api._
@@ -9,34 +24,33 @@ import com.googlecode.flyway.core.api.MigrationInfo
 import play.core._
 import org.apache.commons.io.FileUtils._
 
-class MigrationConfigurationException(val message: String) extends Exception(message)
-
-class FlywayPlugin(app: Application) extends Plugin with HandleWebCommandSupport {
+class Plugin(app: Application) extends play.api.Plugin
+    with HandleWebCommandSupport
+    with PluginConfiguration {
 
   val url = app.configuration.getString("db.default.url").getOrElse(throw new MigrationConfigurationException("db.default.url is not set."))
   val user = app.configuration.getString("db.default.user").orNull
   val password = app.configuration.getString("db.default.password").orNull
 
-  val flyway = new Flyway
+  private val flyway = new Flyway
 
   flyway.setDataSource(url, user, password)
 
-  private val applyPath = "/@flyway/apply"
+  private val flywayPrefixToMigrationScript = "db/migration"
+
+  private val playConfigDir = "conf"
 
   override lazy val enabled: Boolean = true
 
-  private def getScriptPathFromScriptName(scriptName: String): String =
-    "conf/db/migration/" + scriptName
-
   private def migrationDescriptionToShow(migration: MigrationInfo): String = {
-    val scriptPath = getScriptPathFromScriptName(migration.getScript)
-    s"""|--- ${scriptPath} ---
-    |${readFileToString(new File(scriptPath))}""".stripMargin
+    val scriptPath = getFile(app.getFile("."), playConfigDir, flywayPrefixToMigrationScript, migration.getScript)
+    s"""|--- ${migration.getScript} ---
+    |${readFileToString(scriptPath)}""".stripMargin
   }
 
   private def checkState(): Unit = {
     val pendingMigrations = flyway.info().pending
-    if (! pendingMigrations.isEmpty) {
+    if (!pendingMigrations.isEmpty) {
       throw InvalidDatabaseRevision(
         "default",
         pendingMigrations.map(migrationDescriptionToShow).mkString("\n"))
@@ -67,23 +81,5 @@ class FlywayPlugin(app: Application) extends Plugin with HandleWebCommandSupport
       Some(Redirect(getRedirectUrlFromRequest(request)))
     }
   }
-
-  case class InvalidDatabaseRevision(db: String, script: String) extends PlayException.RichDescription(
-    "Database '" + db + "' needs migration!",
-    "An SQL script need to be run on your database.") {
-
-      def subTitle = "This SQL script must be run:"
-      def content = script
-
-      private val javascript = s"""
-      document.location = '${applyPath}?redirect=' + encodeURIComponent(location);
-      """
-
-      def htmlDescription = {
-        <span>An SQL script will be run on your database -</span>
-        <input name="evolution-button" type="button" value="Apply this script now!" onclick={ javascript }/>
-      }.toString
-    }
-
 
 }

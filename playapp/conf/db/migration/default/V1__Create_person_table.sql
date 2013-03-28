@@ -1,4 +1,4 @@
-create table PERSON (
-    ID int not null,
-    NAME varchar(100) not null
+create table person (
+    id int not null,
+    name varchar(100) not null
 );

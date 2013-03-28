@@ -18,4 +18,3 @@ package com.github.tototoshi.play2.flyway
 trait PluginConfiguration {
   val applyPath = "/@flyway/apply"
 }
-

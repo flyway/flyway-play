@@ -28,9 +28,9 @@ class Plugin(implicit app: Application) extends play.api.Plugin
     with HandleWebCommandSupport
     with PluginConfiguration {
 
-  val configReader = new ConfigReader(app)
+  private val configReader = new ConfigReader(app)
 
-  val databaseConfigurations = configReader.getDatabaseConfigurations
+  private val databaseConfigurations = configReader.getDatabaseConfigurations
 
   var migrationTarget: String = null
 
@@ -54,7 +54,7 @@ class Plugin(implicit app: Application) extends play.api.Plugin
   override lazy val enabled: Boolean = true
 
   private def migrationDescriptionToShow(dbName: String, migration: MigrationInfo): String = {
-    val scriptPath = getFile(app.getFile("."), playConfigDir, flywayPrefixToMigrationScript, dbName, migration.getScript)
+    val scriptPath = getFile(app.path, playConfigDir, flywayPrefixToMigrationScript, dbName, migration.getScript)
     s"""|--- ${migration.getScript} ---
     |${readFileToString(scriptPath)}""".stripMargin
   }

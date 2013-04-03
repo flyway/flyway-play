@@ -43,10 +43,13 @@ class Plugin(implicit app: Application) extends play.api.Plugin
   private val flyways: Map[String, Flyway] = {
     for {
       (dbName, configuration) <- configReader.getDatabaseConfigurations
+      migrationFilesLocation = s"db/migration/${dbName}"
+      if app.getFile(playConfigDir + "/" + migrationFilesLocation).exists
     } yield {
       val flyway = new Flyway
       flyway.setDataSource(configuration.url, configuration.user, configuration.password)
-      flyway.setLocations(s"db/migration/${dbName}")
+      flyway.setLocations(migrationFilesLocation)
+      println(dbName)
       dbName -> flyway
     }
   }
@@ -60,12 +63,14 @@ class Plugin(implicit app: Application) extends play.api.Plugin
   }
 
   private def checkState(dbName: String): Unit = {
-    val pendingMigrations = flyways(dbName).info().pending
-    if (!pendingMigrations.isEmpty) {
-      migrationTarget = dbName
-      throw InvalidDatabaseRevision(
-        dbName,
-        pendingMigrations.map(migration => migrationDescriptionToShow(dbName, migration)).mkString("\n"))
+    flyways.get(dbName).foreach { flyway =>
+      val pendingMigrations = flyway.info().pending
+      if (!pendingMigrations.isEmpty) {
+        migrationTarget = dbName
+        throw InvalidDatabaseRevision(
+          dbName,
+          pendingMigrations.map(migration => migrationDescriptionToShow(dbName, migration)).mkString("\n"))
+      }
     }
   }
 
@@ -83,7 +88,9 @@ class Plugin(implicit app: Application) extends play.api.Plugin
   }
 
   private def migrateAutomatically(dbName: String): Unit = {
-    flyways(dbName).migrate()
+    flyways.get(dbName).foreach { flyway =>
+      flyway.migrate()
+    }
   }
 
   private def getRedirectUrlFromRequest(request: RequestHeader): String = {
@@ -97,11 +104,14 @@ class Plugin(implicit app: Application) extends play.api.Plugin
     if (request.path != applyPath) {
       None
     } else {
-      val flyway = flyways(migrationTarget)
-      flyway.migrate()
-      migrationTarget = null
-      sbtLink.forceReload()
-      Some(Redirect(getRedirectUrlFromRequest(request)))
+      for {
+        flyway <- flyways.get(migrationTarget)
+      } yield {
+        flyway.migrate()
+        migrationTarget = null
+        sbtLink.forceReload()
+        Redirect(getRedirectUrlFromRequest(request))
+      }
     }
   }
 

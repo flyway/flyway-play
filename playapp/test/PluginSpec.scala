@@ -21,7 +21,7 @@ import play.api.test._
 import play.api.test.Helpers._
 import java.io.File
 import scalikejdbc._
-import scalikejdbc.SQLInterpolation.interpolation
+import scalikejdbc.SQLInterpolation._
 
 class PluginSpec extends FunSpec
     with ShouldMatchers {

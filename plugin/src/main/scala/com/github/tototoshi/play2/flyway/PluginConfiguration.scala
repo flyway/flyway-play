@@ -17,4 +17,5 @@ package com.github.tototoshi.play2.flyway
 
 trait PluginConfiguration {
   val applyPath = "/@flyway/apply"
+  val applyPathRegex = s"""${applyPath}/([a-zA-Z0-9_]+)/""".r
 }

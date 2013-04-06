@@ -32,8 +32,6 @@ class Plugin(implicit app: Application) extends play.api.Plugin
 
   private val databaseConfigurations = configReader.getDatabaseConfigurations
 
-  var migrationTarget: String = null
-
   private val allDatabaseNames = configReader.getDatabaseConfigurations.keys
 
   private val flywayPrefixToMigrationScript = "db/migration"
@@ -49,7 +47,6 @@ class Plugin(implicit app: Application) extends play.api.Plugin
       val flyway = new Flyway
       flyway.setDataSource(configuration.url, configuration.user, configuration.password)
       flyway.setLocations(migrationFilesLocation)
-      println(dbName)
       dbName -> flyway
     }
   }
@@ -59,14 +56,13 @@ class Plugin(implicit app: Application) extends play.api.Plugin
   private def migrationDescriptionToShow(dbName: String, migration: MigrationInfo): String = {
     val scriptPath = getFile(app.path, playConfigDir, flywayPrefixToMigrationScript, dbName, migration.getScript)
     s"""|--- ${migration.getScript} ---
-    |${readFileToString(scriptPath)}""".stripMargin
+        |${readFileToString(scriptPath)}""".stripMargin
   }
 
   private def checkState(dbName: String): Unit = {
     flyways.get(dbName).foreach { flyway =>
       val pendingMigrations = flyway.info().pending
       if (!pendingMigrations.isEmpty) {
-        migrationTarget = dbName
         throw InvalidDatabaseRevision(
           dbName,
           pendingMigrations.map(migration => migrationDescriptionToShow(dbName, migration)).mkString("\n"))
@@ -101,16 +97,18 @@ class Plugin(implicit app: Application) extends play.api.Plugin
   }
 
   override def handleWebCommand(request: RequestHeader, sbtLink: SBTLink, path: java.io.File): Option[Result] = {
-    if (request.path != applyPath) {
-      None
-    } else {
-      for {
-        flyway <- flyways.get(migrationTarget)
-      } yield {
-        flyway.migrate()
-        migrationTarget = null
-        sbtLink.forceReload()
-        Redirect(getRedirectUrlFromRequest(request))
+    request.path match {
+      case applyPathRegex(dbName) => {
+        for {
+          flyway <- flyways.get(dbName)
+        } yield {
+          flyway.migrate()
+          sbtLink.forceReload()
+          Redirect(getRedirectUrlFromRequest(request))
+        }
+      }
+      case _ => {
+        None
       }
     }
   }

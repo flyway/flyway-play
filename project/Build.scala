@@ -16,7 +16,7 @@ object ApplicationBuild extends Build {
       libraryDependencies ++= Seq(
         "play" %% "play" % "2.1.0" % "provided",
         "com.googlecode.flyway" % "flyway-core" % "2.1.1",
-        "commons-io" % "commons-io" % "2.4"
+        "org.scalatest" %% "scalatest" % "1.9.1" % "test"
       ),
       scalacOptions ++= Seq("-language:_", "-deprecation")
     ) ++ scalariformSettings ++ publishingSettings
@@ -26,9 +26,9 @@ object ApplicationBuild extends Build {
   val appDependencies = Seq(
     "com.h2database" % "h2" % "[1.3,)",
     "org.slf4j" % "slf4j-simple" % "1.7.2" % "test",
-    "com.github.seratch" %% "scalikejdbc" % "1.5.1" % "test",
-    "com.github.seratch" %% "scalikejdbc-interpolation" % "1.5.1" % "test",
-    "com.github.seratch" %% "scalikejdbc-play-plugin" % "1.5.1" % "test",
+    "com.github.seratch" %% "scalikejdbc" % "1.5.2" % "test",
+    "com.github.seratch" %% "scalikejdbc-interpolation" % "1.5.2" % "test",
+    "com.github.seratch" %% "scalikejdbc-play-plugin" % "1.5.2" % "test",
     "org.scalatest" %% "scalatest" % "1.9.1" % "test"
   )
 

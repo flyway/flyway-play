@@ -22,11 +22,11 @@ import play.api.mvc.Results._
 import com.googlecode.flyway.core.Flyway
 import com.googlecode.flyway.core.api.MigrationInfo
 import play.core._
-import org.apache.commons.io.FileUtils._
 
 class Plugin(implicit app: Application) extends play.api.Plugin
     with HandleWebCommandSupport
-    with PluginConfiguration {
+    with PluginConfiguration
+    with FileUtils {
 
   private val configReader = new ConfigReader(app)
 

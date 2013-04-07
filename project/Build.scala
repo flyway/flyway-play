@@ -63,7 +63,7 @@ object ApplicationBuild extends Build {
     <url>http://github.com/tototoshi/play-flyway</url>
     <licenses>
       <license>
-        <name>Two-clause BSD-style license</name>
+        <name>Apache License, Version 2.0</name>
         <url>http://github.com/tototoshi/play-flyway/blob/master/LICENSE.txt</url>
         <distribution>repo</distribution>
       </license>

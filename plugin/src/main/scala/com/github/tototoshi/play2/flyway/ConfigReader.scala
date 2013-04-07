@@ -21,8 +21,7 @@ class ConfigReader(app: Application) {
 
   private def getAllDatabaseNames: Seq[String] = (for {
     config <- app.configuration.getConfig("db").toList
-    key <- config.keys
-    dbName <- key.split("\\.").headOption.toList
+    dbName <- config.subKeys
   } yield {
     dbName
   }).distinct
@@ -31,7 +30,8 @@ class ConfigReader(app: Application) {
     (for {
       dbName <- getAllDatabaseNames
     } yield {
-      val url = app.configuration.getString(s"db.${dbName}.url").getOrElse(throw new MigrationConfigurationException(s"db.${dbName}.url is not set."))
+      val url = app.configuration.getString(s"db.${dbName}.url").getOrElse(
+        throw new MigrationConfigurationException(s"db.${dbName}.url is not set."))
       val user = app.configuration.getString(s"db.${dbName}.user").orNull
       val password = app.configuration.getString(s"db.${dbName}.password").orNull
       dbName -> DatabaseConfiguration(url, user, password)

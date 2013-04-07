@@ -67,7 +67,8 @@ class PluginSpec extends FunSpec
   describe("Plugin") {
 
     it("should migrate automatically when testing") {
-      running(FakeApplication(path = new File("playapp"))) {
+      running(FakeApplication(path = new File("playapp"),
+        additionalPlugins = Seq("scalikejdbc.PlayPlugin"))) {
         test()
       }
     }
@@ -78,8 +79,8 @@ class PluginSpec extends FunSpec
         path = new File("playapp"),
         additionalConfiguration =
           inMemoryDatabase(name = "default", Map("DB_CLOSE_DELAY" -> "-1")) ++
-            inMemoryDatabase(name = "secondary", Map("DB_CLOSE_DELAY" -> "-1"))
-      )) {
+            inMemoryDatabase(name = "secondary", Map("DB_CLOSE_DELAY" -> "-1")),
+        additionalPlugins = Seq("scalikejdbc.PlayPlugin"))) {
         test()
       }
     }

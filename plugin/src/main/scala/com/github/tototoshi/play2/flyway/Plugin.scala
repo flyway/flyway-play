@@ -47,6 +47,7 @@ class Plugin(implicit app: Application) extends play.api.Plugin
       val flyway = new Flyway
       flyway.setDataSource(configuration.url, configuration.user, configuration.password)
       flyway.setLocations(migrationFilesLocation)
+      flyway.setInitOnMigrate(true)
       dbName -> flyway
     }
   }

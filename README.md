@@ -22,7 +22,7 @@ and write play.plugins.
 
 Almost the same as play-evolutions.
 
-Place your migration scripts in config/db/migration/${dbName} .
+Place your migration scripts in conf/db/migration/${dbName} .
 
 
 ![screenshot](/screenshot1.png)

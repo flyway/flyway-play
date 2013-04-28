@@ -7,7 +7,7 @@ Flyway plugin for Play 2.1. It aims to be a substitute for play-evolutions.
 In Build.scala/build.sbt
 
 ```scala
-libraryDependencies += "com.github.tototoshi" %% "play-flyway" % "0.1.0"
+libraryDependencies += "com.github.tototoshi" %% "play-flyway" % "0.1.3"
 ```
 
 and write play.plugins.

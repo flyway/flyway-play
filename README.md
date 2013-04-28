@@ -28,6 +28,14 @@ Place your migration scripts in conf/db/migration/${dbName} .
 ![screenshot](/screenshot1.png)
 
 
+For existing schema, Flyway has a option called 'initOnMigrate'. This option is enabled when -Ddb.${dbName}.migration.initOnMigrate=true.
+For example,
+```
+$ play -Ddb.default.migration.initOnMigrate
+```
+
+Of course, You can write this in your `application.conf`.
+
 ### Test
 
 In Test, migration is done automatically.

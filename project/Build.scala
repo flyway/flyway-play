@@ -13,6 +13,7 @@ object ApplicationBuild extends Build {
       organization := "com.github.tototoshi",
       version := "0.1.3-SNAPSHOT",
       scalaVersion := "2.10.0",
+      resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
       libraryDependencies ++= Seq(
         "play" %% "play" % "2.1.1" % "provided",
         "com.googlecode.flyway" % "flyway-core" % "2.1.1",
@@ -25,7 +26,6 @@ object ApplicationBuild extends Build {
 
   val appDependencies = Seq(
     "com.h2database" % "h2" % "[1.3,)",
-    "org.slf4j" % "slf4j-simple" % "1.7.2" % "test",
     "com.github.seratch" %% "scalikejdbc" % "1.5.2" % "test",
     "com.github.seratch" %% "scalikejdbc-interpolation" % "1.5.2" % "test",
     "com.github.seratch" %% "scalikejdbc-play-plugin" % "1.5.2" % "test",

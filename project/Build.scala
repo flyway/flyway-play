@@ -11,7 +11,7 @@ object ApplicationBuild extends Build {
     settings = Defaults.defaultSettings ++ Seq (
       name := "play-flyway",
       organization := "com.github.tototoshi",
-      version := "0.1.3-SNAPSHOT",
+      version := "0.1.3",
       scalaVersion := "2.10.0",
       resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
       libraryDependencies ++= Seq(
@@ -26,6 +26,7 @@ object ApplicationBuild extends Build {
 
   val appDependencies = Seq(
     "com.h2database" % "h2" % "[1.3,)",
+    "postgresql" % "postgresql" % "9.1-901.jdbc4",
     "com.github.seratch" %% "scalikejdbc" % "1.5.2" % "test",
     "com.github.seratch" %% "scalikejdbc-interpolation" % "1.5.2" % "test",
     "com.github.seratch" %% "scalikejdbc-play-plugin" % "1.5.2" % "test",

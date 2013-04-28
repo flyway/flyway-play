@@ -38,6 +38,9 @@ class Plugin(implicit app: Application) extends play.api.Plugin
 
   private val playConfigDir = "conf"
 
+  private def initOnMigrate(dbName: String): Boolean =
+    app.configuration.getBoolean(s"db.${dbName}.migration.initOnMigrate").getOrElse(false)
+
   private val flyways: Map[String, Flyway] = {
     for {
       (dbName, configuration) <- configReader.getDatabaseConfigurations
@@ -47,7 +50,9 @@ class Plugin(implicit app: Application) extends play.api.Plugin
       val flyway = new Flyway
       flyway.setDataSource(configuration.url, configuration.user, configuration.password)
       flyway.setLocations(migrationFilesLocation)
-      flyway.setInitOnMigrate(true)
+      if (initOnMigrate(dbName)) {
+        flyway.setInitOnMigrate(true)
+      }
       dbName -> flyway
     }
   }

@@ -17,7 +17,7 @@ package com.github.tototoshi.play2.flyway
 
 import org.scalatest.FunSpec
 import org.scalatest.matchers._
-import java.io.File
+import java.io.{ FileInputStream, File }
 
 class FileUtilsSpec extends FunSpec with ShouldMatchers {
 
@@ -25,16 +25,9 @@ class FileUtilsSpec extends FunSpec with ShouldMatchers {
 
   describe("FileUtils") {
 
-    it("should join paths and get File") {
-      val f = new File("/a")
-      val f1 = "b"
-      val f2 = "c"
-      fileutils.getFile(f, f1, f2).getAbsolutePath should be("/a/b/c")
-    }
-
-    it("should read File") {
-      val f = new File("plugin/src/test/resources/sample.sql")
-      val s = fileutils.readFileToString(f)
+    it("should read InputStream to String") {
+      val f = new FileInputStream("plugin/src/test/resources/sample.sql")
+      val s = fileutils.readInputStreamToString(f)
       s should be("""|create table person (
                      |    id int not null,
                      |    name varchar(100) not null

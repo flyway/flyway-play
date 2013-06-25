@@ -15,18 +15,12 @@
  */
 package com.github.tototoshi.play2.flyway
 
-import java.io.File
+import java.io.InputStream
 
 trait FileUtils {
 
-  def getFile(directory: File, names: String*): File = {
-    names.foldLeft(directory) { (result, name) =>
-      new File(result, name);
-    }
-  }
-
-  def readFileToString(file: File): String = {
-    val src = scala.io.Source.fromFile(file)
+  def readInputStreamToString(in: InputStream): String = {
+    val src = scala.io.Source.fromInputStream(in)
     try {
       src.mkString
     } finally {

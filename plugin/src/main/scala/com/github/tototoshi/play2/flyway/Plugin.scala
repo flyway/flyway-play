@@ -15,13 +15,13 @@
  */
 package com.github.tototoshi.play2.flyway
 
-import java.io.File
 import play.api._
 import play.api.mvc._
 import play.api.mvc.Results._
 import com.googlecode.flyway.core.Flyway
 import com.googlecode.flyway.core.api.MigrationInfo
 import play.core._
+import java.io.FileNotFoundException
 
 class Plugin(implicit app: Application) extends play.api.Plugin
     with HandleWebCommandSupport
@@ -30,22 +30,31 @@ class Plugin(implicit app: Application) extends play.api.Plugin
 
   private val configReader = new ConfigReader(app)
 
-  private val databaseConfigurations = configReader.getDatabaseConfigurations
-
   private val allDatabaseNames = configReader.getDatabaseConfigurations.keys
 
   private val flywayPrefixToMigrationScript = "db/migration"
 
-  private val playConfigDir = "conf"
-
   private def initOnMigrate(dbName: String): Boolean =
     app.configuration.getBoolean(s"db.${dbName}.migration.initOnMigrate").getOrElse(false)
+
+  private def migrationFileDirectoryExists(path: String): Boolean = {
+    app.resource(path) match {
+      case Some(r) => {
+        Logger.debug(s"Directory for migration files found. ${path}")
+        true
+      }
+      case None => {
+        Logger.warn(s"Directory for migration files not found. ${path}")
+        false
+      }
+    }
+  }
 
   private val flyways: Map[String, Flyway] = {
     for {
       (dbName, configuration) <- configReader.getDatabaseConfigurations
       migrationFilesLocation = s"db/migration/${dbName}"
-      if app.getFile(playConfigDir + "/" + migrationFilesLocation).exists
+      if migrationFileDirectoryExists(migrationFilesLocation)
     } yield {
       val flyway = new Flyway
       flyway.setDataSource(configuration.url, configuration.user, configuration.password)
@@ -60,9 +69,10 @@ class Plugin(implicit app: Application) extends play.api.Plugin
   override lazy val enabled: Boolean = true
 
   private def migrationDescriptionToShow(dbName: String, migration: MigrationInfo): String = {
-    val scriptPath = getFile(app.path, playConfigDir, flywayPrefixToMigrationScript, dbName, migration.getScript)
-    s"""|--- ${migration.getScript} ---
-        |${readFileToString(scriptPath)}""".stripMargin
+    app.resourceAsStream(s"${flywayPrefixToMigrationScript}/${dbName}/${migration.getScript}").map { in =>
+      s"""|--- ${migration.getScript} ---
+          |${readInputStreamToString(in)}""".stripMargin
+    }.getOrElse(throw new FileNotFoundException(s"Migration file not found. ${migration.getScript}"))
   }
 
   private def checkState(dbName: String): Unit = {

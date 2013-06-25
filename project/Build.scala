@@ -11,7 +11,7 @@ object ApplicationBuild extends Build {
     settings = Defaults.defaultSettings ++ Seq (
       name := "play-flyway",
       organization := "com.github.tototoshi",
-      version := "0.1.3",
+      version := "0.1.4-SNAPSHOT",
       scalaVersion := "2.10.0",
       resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
       libraryDependencies ++= Seq(

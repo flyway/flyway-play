@@ -7,7 +7,7 @@ Flyway plugin for Play 2.1. It aims to be a substitute for play-evolutions.
 In Build.scala/build.sbt
 
 ```scala
-libraryDependencies += "com.github.tototoshi" %% "play-flyway" % "0.1.3"
+libraryDependencies += "com.github.tototoshi" %% "play-flyway" % "0.1.4"
 ```
 
 and write play.plugins.
@@ -31,19 +31,22 @@ Place your migration scripts in conf/db/migration/${dbName} .
 For existing schema, Flyway has a option called 'initOnMigrate'. This option is enabled when -Ddb.${dbName}.migration.initOnMigrate=true.
 For example,
 ```
-$ play -Ddb.default.migration.initOnMigrate
+$ play -Ddb.default.migration.initOnMigrate=true
 ```
 
 Of course, You can write this in your `application.conf`.
 
 ### Test
 
-In Test, migration is done automatically.
+In Test mode, migration is done automatically.
 
 
 
 ### Prod
 
-In production mode, migration is done automatically if db.${dbName}.migration.auto is set to be true in application.conf.
+In production mode, migration is done automatically if `db.${dbName}.migration.auto` is set to be true in application.conf.
 Otherwise it failed to start when migration is needed.
 
+```
+$ play -Ddb.default.migration.auto=true start
+```

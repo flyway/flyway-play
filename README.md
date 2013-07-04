@@ -20,16 +20,14 @@ and write play.plugins.
 
 
 ### Sample 
-This repository contains a test application in playapp/. 
-Maybe this is a good example.
+
+[seratch/devteam-app](https://github.com/seratch/devteam-app "seratch/devteam-app") is using play-flyway. Maybe this is a good example.
 
 ### Place migration scripts
 
-Almost the same as play-evolutions. But it doesn't require 'Downs part'.
+A migration script is just a simple SQL file.
 
 ```sql
-
-#!Ups
 CREATE TABLE FOO (.............
 
 

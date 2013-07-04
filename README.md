@@ -20,7 +20,7 @@ and write play.plugins.
 
 
 ### Sample 
-This repository contains test application in playapp/. 
+This repository contains a test application in playapp/. 
 Maybe this is a good example.
 
 ### Place migration scripts
@@ -35,7 +35,7 @@ CREATE TABLE FOO (.............
 
 ```
 
-Place your migration scripts in conf/db/migration/${dbName} .
+Place your migration scripts in `conf/db/migration/${dbName}` .
 Please see flyway's documents about the naming convention for migration scripts.
 
 http://flywaydb.org/documentation/migration/sql.html

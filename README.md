@@ -2,6 +2,12 @@
 
 Flyway plugin for Play 2.1. It aims to be a substitute for play-evolutions.
 
+## Features
+
+ - Based on [Flyway](http://flywaydb.org/)
+ - No 'Downs' part.
+ - Independent of DBPlugin(play.api.db).
+ 
 ## Install
 
 In Build.scala/build.sbt
@@ -67,7 +73,7 @@ http://flywaydb.org/documentation/migration/sql.html
 ![screenshot](/screenshot1.png)
 
 
-For existing schema, Flyway has a option called 'initOnMigrate'. This option is enabled when -Ddb.${dbName}.migration.initOnMigrate=true.
+For existing schema, Flyway has a option called 'initOnMigrate'. This option is enabled when `-Ddb.${dbName}.migration`.initOnMigrate=true.
 For example,
 ```
 $ play -Ddb.default.migration.initOnMigrate=true

@@ -18,11 +18,30 @@ and write play.plugins.
 
 ## Usage
 
-### Dev
 
-Almost the same as play-evolutions.
+### Sample 
+This repository contains test application in playapp/. 
+Maybe this is a good example.
+
+### Place migration scripts
+
+Almost the same as play-evolutions. But it doesn't require 'Downs part'.
+
+```sql
+
+#!Ups
+CREATE TABLE FOO (.............
+
+
+```
 
 Place your migration scripts in conf/db/migration/${dbName} .
+Please see flyway's documents about the naming convention for migration scripts.
+
+http://flywaydb.org/documentation/migration/sql.html
+
+
+### Dev
 
 
 ![screenshot](/screenshot1.png)

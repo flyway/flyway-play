@@ -34,6 +34,28 @@ CREATE TABLE FOO (.............
 ```
 
 Place your migration scripts in `conf/db/migration/${dbName}` .
+
+```
+playapp
+├── app
+│   ├── controllers
+│   ├── models
+│   └── views
+├── conf
+│   ├── application.conf
+│   ├── db
+│   │   └── migration
+│   │       ├── default
+│   │       │   ├── V1__Create_person_table.sql
+│   │       │   └── V2__Add_people.sql
+│   │       └── secondary
+│   │           ├── V1__create_job_table.sql
+│   │           └── V2__Add_job.sql
+│   ├── play.plugins
+│   └── routes
+```
+
+
 Please see flyway's documents about the naming convention for migration scripts.
 
 http://flywaydb.org/documentation/migration/sql.html

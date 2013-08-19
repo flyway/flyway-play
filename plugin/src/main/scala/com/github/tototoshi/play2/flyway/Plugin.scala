@@ -123,6 +123,67 @@ class Plugin(implicit app: Application) extends play.api.Plugin
           Redirect(getRedirectUrlFromRequest(request))
         }
       }
+      case showInfoPath(dbName) => {
+        val description = for {
+          flyway <- flyways.get(dbName).toList
+          info <- flyway.info().all()
+        } yield {
+          val sql = app.resourceAsStream(s"${flywayPrefixToMigrationScript}/${dbName}/${info.getScript}").map { in =>
+            readInputStreamToString(in)
+          }.getOrElse("")
+
+          val status = {
+            if (info.getState.isApplied) {
+              <span style="color: blue;">applied</span>
+            } else if (info.getState.isFailed) {
+              <span style="color: red;">failed</span>
+            } else if (info.getState.isResolved) {
+              <span style="color: green">resolved</span>
+            }
+          }
+
+          <p>
+            <h2>
+              { info.getScript }
+              ({ status }
+              )
+            </h2>
+            <pre>{ sql }</pre>
+          </p>
+        }
+
+        val html =
+          <html>
+            <head><title>Flyway</title></head>
+            <body>
+              <h1>Database: { dbName }</h1>
+              { description }
+            </body>
+          </html>
+
+        Some(Ok(html).as("text/html"))
+
+      }
+      case "/@flyway" => {
+        val links = for {
+          (dbName, flyway) <- flyways
+          path = s"/@flyway/${dbName}"
+        } yield {
+          <div>
+            <a href={ path }>{ dbName }</a>
+          </div>
+        }
+
+        val html =
+          <html>
+            <head><title>Flyway</title></head>
+            <body>
+              { links }
+            </body>
+          </html>
+
+        Some(Ok(html).as("text/html"))
+      }
       case _ => {
         None
       }

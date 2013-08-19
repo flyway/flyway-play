@@ -18,6 +18,7 @@ package com.github.tototoshi.play2.flyway
 trait PluginConfiguration {
   private val applyPathRoot = "/@flyway/apply"
   private val applyPathRegex = s"""${applyPathRoot}/([a-zA-Z0-9_]+)/""".r
+  private val showInfoPathRegex = """/@flyway/([a-zA-Z0-9_]+)""".r
 
   object applyPath {
 
@@ -27,6 +28,14 @@ trait PluginConfiguration {
 
     def unapply(path: String): Option[String] = {
       applyPathRegex.findFirstMatchIn(path).map(_.group(1))
+    }
+
+  }
+
+  object showInfoPath {
+
+    def unapply(path: String): Option[String] = {
+      showInfoPathRegex.findFirstMatchIn(path).map(_.group(1))
     }
 
   }

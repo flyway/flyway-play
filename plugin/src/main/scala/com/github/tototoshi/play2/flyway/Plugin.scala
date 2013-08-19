@@ -113,6 +113,24 @@ class Plugin(implicit app: Application) extends play.api.Plugin
   }
 
   override def handleWebCommand(request: RequestHeader, sbtLink: SBTLink, path: java.io.File): Option[Result] = {
+
+    val css = {
+      <style>
+        body {{
+        width: 760px;
+        margin: 20px auto 50px auto;
+        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif
+        }}
+        h2 {{ color: #000000; }}
+        h3 {{ color: #000080; margin-left: 10px; }}
+        h4 {{ color: #808000; margin-left: 20px; }}
+        .l2 {{ margin-left: 10px; }}
+        .l3 {{ margin-left: 20px; }}
+        .l4 {{ margin-left: 30px; }}
+        .l5 {{ margin-left: 40px; }}
+      </style>
+    }
+
     request.path match {
       case applyPath(dbName) => {
         for {
@@ -122,6 +140,14 @@ class Plugin(implicit app: Application) extends play.api.Plugin
           sbtLink.forceReload()
           Redirect(getRedirectUrlFromRequest(request))
         }
+      }
+      case cleanPath(dbName) => {
+        flyways.get(dbName).foreach(_.clean())
+        Some(Redirect(getRedirectUrlFromRequest(request)))
+      }
+      case initPath(dbName) => {
+        flyways.get(dbName).foreach(_.init())
+        Some(Redirect(getRedirectUrlFromRequest(request)))
       }
       case showInfoPath(dbName) => {
         val description = for {
@@ -143,20 +169,33 @@ class Plugin(implicit app: Application) extends play.api.Plugin
           }
 
           <p>
-            <h2>
+            <h3>
               { info.getScript }
               ({ status }
               )
-            </h2>
+            </h3>
             <pre>{ sql }</pre>
           </p>
         }
 
+        def withRedirectParam(path: String) = path + "?redirect=" + java.net.URLEncoder.encode(request.path, "utf-8")
+
+        val applyPathWithRedirectParam = withRedirectParam(applyPath(dbName))
+        val cleanPathWithRedirectParam = withRedirectParam(cleanPath(dbName))
+        val initPathWithRedirectParam = withRedirectParam(initPath(dbName))
+
         val html =
           <html>
-            <head><title>Flyway</title></head>
+            <head>
+              <title>play-flyway</title>
+              { css }
+            </head>
             <body>
-              <h1>Database: { dbName }</h1>
+              <h1><a href="/@flyway">play-flyway</a></h1>
+              <h2>Database: { dbName }</h2>
+              <a style="color: blue;" href={ applyPathWithRedirectParam }>apply</a>
+              <a style="color: red;" href={ cleanPathWithRedirectParam }>clean</a>
+              <a style="color: red;" href={ initPathWithRedirectParam }>init</a>
               { description }
             </body>
           </html>
@@ -176,8 +215,12 @@ class Plugin(implicit app: Application) extends play.api.Plugin
 
         val html =
           <html>
-            <head><title>Flyway</title></head>
+            <head>
+              <title>play-flyway</title>
+              { css }
+            </head>
             <body>
+              <h1><a href="/@flyway">play-flway</a></h1>
               { links }
             </body>
           </html>

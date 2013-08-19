@@ -81,6 +81,12 @@ $ play -Ddb.default.migration.initOnMigrate=true
 
 Of course, You can write this in your `application.conf`.
 
+
+Manual migration will be supported in next version. Open /@flyway/${dbName}.
+
+![screenshot](/screenshot2.png)
+
+
 ### Test
 
 In Test mode, migration is done automatically.

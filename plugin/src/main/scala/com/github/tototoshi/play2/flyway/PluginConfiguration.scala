@@ -16,14 +16,15 @@
 package com.github.tototoshi.play2.flyway
 
 trait PluginConfiguration {
-  private val applyPathRoot = "/@flyway/apply"
-  private val applyPathRegex = s"""${applyPathRoot}/([a-zA-Z0-9_]+)/""".r
+  private val applyPathRegex = s"""/@flyway/([a-zA-Z0-9_]+)/apply""".r
   private val showInfoPathRegex = """/@flyway/([a-zA-Z0-9_]+)""".r
+  private val cleanPathRegex = """/@flyway/([a-zA-Z0-9_]+)/clean""".r
+  private val initPathRegex = """/@flyway/([a-zA-Z0-9_]+)/init""".r
 
   object applyPath {
 
     def apply(dbName: String): String = {
-      applyPathRoot + "/" + dbName
+      s"/@flyway/${dbName}/apply"
     }
 
     def unapply(path: String): Option[String] = {
@@ -36,6 +37,30 @@ trait PluginConfiguration {
 
     def unapply(path: String): Option[String] = {
       showInfoPathRegex.findFirstMatchIn(path).map(_.group(1))
+    }
+
+  }
+
+  object cleanPath {
+
+    def apply(dbName: String): String = {
+      s"/@flyway/${dbName}/clean"
+    }
+
+    def unapply(path: String): Option[String] = {
+      cleanPathRegex.findFirstMatchIn(path).map(_.group(1))
+    }
+
+  }
+
+  object initPath {
+
+    def apply(dbName: String): String = {
+      s"/@flyway/${dbName}/init"
+    }
+
+    def unapply(path: String): Option[String] = {
+      initPathRegex.findFirstMatchIn(path).map(_.group(1))
     }
 
   }

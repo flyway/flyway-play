@@ -7,7 +7,7 @@ Flyway plugin for Play 2.1. It aims to be a substitute for play-evolutions.
  - Based on [Flyway](http://flywaydb.org/)
  - No 'Downs' part.
  - Independent of DBPlugin(play.api.db).
- 
+
 ## Install
 
 In Build.scala/build.sbt
@@ -25,7 +25,7 @@ and write play.plugins.
 ## Usage
 
 
-### Sample 
+### Sample
 
 [seratch/devteam-app](https://github.com/seratch/devteam-app "seratch/devteam-app") is using play-flyway. Maybe this is a good example.
 
@@ -82,7 +82,7 @@ $ play -Ddb.default.migration.initOnMigrate=true
 Of course, You can write this in your `application.conf`.
 
 
-Manual migration will be supported in next version. Open /@flyway/${dbName}.
+Manual migration will be supported in next version. Open `/@flyway/${dbName}`.
 
 ![screenshot](/screenshot2.png)
 

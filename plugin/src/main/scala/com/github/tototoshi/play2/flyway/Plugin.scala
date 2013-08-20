@@ -132,7 +132,7 @@ class Plugin(implicit app: Application) extends play.api.Plugin
     }
 
     request.path match {
-      case applyPath(dbName) => {
+      case migratePath(dbName) => {
         for {
           flyway <- flyways.get(dbName)
         } yield {
@@ -180,7 +180,7 @@ class Plugin(implicit app: Application) extends play.api.Plugin
 
         def withRedirectParam(path: String) = path + "?redirect=" + java.net.URLEncoder.encode(request.path, "utf-8")
 
-        val applyPathWithRedirectParam = withRedirectParam(applyPath(dbName))
+        val migratePathWithRedirectParam = withRedirectParam(migratePath(dbName))
         val cleanPathWithRedirectParam = withRedirectParam(cleanPath(dbName))
         val initPathWithRedirectParam = withRedirectParam(initPath(dbName))
 
@@ -193,7 +193,7 @@ class Plugin(implicit app: Application) extends play.api.Plugin
             <body>
               <h1><a href="/@flyway">play-flyway</a></h1>
               <h2>Database: { dbName }</h2>
-              <a style="color: blue;" href={ applyPathWithRedirectParam }>apply</a>
+              <a style="color: blue;" href={ migratePathWithRedirectParam }>migrate</a>
               <a style="color: red;" href={ cleanPathWithRedirectParam }>clean</a>
               <a style="color: red;" href={ initPathWithRedirectParam }>init</a>
               { description }

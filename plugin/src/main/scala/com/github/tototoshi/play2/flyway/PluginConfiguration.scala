@@ -16,15 +16,15 @@
 package com.github.tototoshi.play2.flyway
 
 trait PluginConfiguration {
-  private val applyPathRegex = s"""/@flyway/([a-zA-Z0-9_]+)/apply""".r
+  private val applyPathRegex = s"""/@flyway/([a-zA-Z0-9_]+)/migrate""".r
   private val showInfoPathRegex = """/@flyway/([a-zA-Z0-9_]+)""".r
   private val cleanPathRegex = """/@flyway/([a-zA-Z0-9_]+)/clean""".r
   private val initPathRegex = """/@flyway/([a-zA-Z0-9_]+)/init""".r
 
-  object applyPath {
+  object migratePath {
 
     def apply(dbName: String): String = {
-      s"/@flyway/${dbName}/apply"
+      s"/@flyway/${dbName}/migrate"
     }
 
     def unapply(path: String): Option[String] = {

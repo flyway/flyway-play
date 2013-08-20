@@ -26,7 +26,7 @@ case class InvalidDatabaseRevision(db: String, script: String) extends PlayExcep
   def content = script
 
   private val javascript = s"""
-    document.location = '${applyPath(db)}/?redirect=' + encodeURIComponent(location);
+    document.location = '${migratePath(db)}/?redirect=' + encodeURIComponent(location);
     """
 
   def htmlDescription = {

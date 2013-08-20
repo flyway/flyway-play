@@ -24,13 +24,13 @@ class PluginConfigurationSpec extends FunSpec with ShouldMatchers {
 
   describe("PluginConfiguration") {
 
-    describe("applyPath") {
+    describe("migratePath") {
       it("construct path to apply migration") {
-        config.applyPath("foo") should be("/@flyway/apply/foo")
+        config.migratePath("foo") should be("/@flyway/foo/migrate")
       }
-      it("extract db to apply migration") {
-        val dbName = "/@flyway/apply/foo/" match {
-          case config.applyPath(db) => Some(db)
+      it("extract db to migrate migration") {
+        val dbName = "/@flyway/foo/migrate" match {
+          case config.migratePath(db) => Some(db)
           case _ => None
         }
         dbName should be(Some("foo"))

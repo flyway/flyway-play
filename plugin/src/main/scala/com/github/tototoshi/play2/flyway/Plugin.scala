@@ -124,10 +124,7 @@ class Plugin(implicit app: Application) extends play.api.Plugin
         h2 {{ color: #000000; }}
         h3 {{ color: #000080; margin-left: 10px; }}
         h4 {{ color: #808000; margin-left: 20px; }}
-        .l2 {{ margin-left: 10px; }}
-        .l3 {{ margin-left: 20px; }}
-        .l4 {{ margin-left: 30px; }}
-        .l5 {{ margin-left: 40px; }}
+        .container {{ margin-top: 20px; }}
       </style>
     }
 
@@ -192,11 +189,14 @@ class Plugin(implicit app: Application) extends play.api.Plugin
             </head>
             <body>
               <h1><a href="/@flyway">play-flyway</a></h1>
-              <h2>Database: { dbName }</h2>
-              <a style="color: blue;" href={ migratePathWithRedirectParam }>migrate</a>
-              <a style="color: red;" href={ cleanPathWithRedirectParam }>clean</a>
-              <a style="color: red;" href={ initPathWithRedirectParam }>init</a>
-              { description }
+              <a href="/">&lt;&lt; Back to app</a>
+              <div class="container">
+                <h2>Database: { dbName }</h2>
+                <a style="color: blue;" href={ migratePathWithRedirectParam }>migrate</a>
+                <a style="color: red;" href={ cleanPathWithRedirectParam }>clean</a>
+                <a style="color: red;" href={ initPathWithRedirectParam }>init</a>
+                { description }
+              </div>
             </body>
           </html>
 
@@ -221,7 +221,10 @@ class Plugin(implicit app: Application) extends play.api.Plugin
             </head>
             <body>
               <h1><a href="/@flyway">play-flway</a></h1>
-              { links }
+              <a href="/">&lt;&lt; Back to app</a>
+              <div class="container">
+                { links }
+              </div>
             </body>
           </html>
 

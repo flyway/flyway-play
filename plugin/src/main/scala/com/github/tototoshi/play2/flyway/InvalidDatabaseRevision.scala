@@ -25,13 +25,18 @@ case class InvalidDatabaseRevision(db: String, script: String) extends PlayExcep
   def subTitle = "This SQL script must be run:"
   def content = script
 
-  private val javascript = s"""
+  private val redirectToApply = s"""
     document.location = '${migratePath(db)}/?redirect=' + encodeURIComponent(location);
-    """
+  """
+
+  private val redirectToAdmin = s"""
+    document.location = '/@flyway/' + encodeURIComponent('${db}')
+  """
 
   def htmlDescription = {
     <span>An SQL script will be run on your database -</span>
-    <input name="evolution-button" type="button" value="Apply this script now!" onclick={ javascript }/>
+    <input name="evolution-button" type="button" value="Apply this script now!" onclick={ redirectToApply }/>
+    <input name="evolution-button" type="button" value="Other operations" onclick={ redirectToAdmin }/>
   }.mkString
 }
 

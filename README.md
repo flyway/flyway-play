@@ -82,7 +82,7 @@ $ play -Ddb.default.migration.initOnMigrate=true
 Of course, You can write this in your `application.conf`.
 
 
-Manual migration will be supported in next version. Open `/@flyway/${dbName}`.
+Manual migration is also supported. Click 'Other operations' or open `/@flyway/${dbName}` directly.
 
 ![screenshot](/screenshot2.png)
 

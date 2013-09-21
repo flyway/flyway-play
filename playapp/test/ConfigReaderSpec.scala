@@ -26,7 +26,7 @@ class ConfigReaderSpec extends FunSpec with ShouldMatchers {
   describe("ConfigReader") {
 
     it("should get database configurations") {
-      running(FakeApplication(path = new File("playapp"))) {
+      running(FakeApplication()) {
         val reader = new ConfigReader(play.api.Play.current)
         val configMap = reader.getDatabaseConfigurations
         configMap.get("default") should be(Some(DatabaseConfiguration("jdbc:h2:mem:example;DB_CLOSE_DELAY=-1", "sa", null)))

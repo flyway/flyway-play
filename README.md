@@ -114,3 +114,11 @@ Otherwise it failed to start when migration is needed.
 ```
 $ play -Ddb.default.migration.auto=true start
 ```
+
+
+## Change Log
+
+### 1.0.1
+- Supports reading the driver configuration parameter from Play2 config.
+- Updated flyway to 2.3.
+

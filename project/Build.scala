@@ -15,8 +15,8 @@ object ApplicationBuild extends Build {
       resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
       libraryDependencies ++= Seq(
         "com.typesafe.play" %% "play" % "2.2.0" % "provided",
-        "com.googlecode.flyway" % "flyway-core" % "2.1.1",
-        "org.scalatest" %% "scalatest" % "1.9.1" % "test"
+        "com.googlecode.flyway" % "flyway-core" % "2.3",
+        "org.scalatest" %% "scalatest" % "2.0" % "test"
       ),
       scalacOptions ++= Seq("-language:_", "-deprecation")
     ) ++ scalariformSettings ++ publishingSettings

@@ -15,8 +15,7 @@
  */
 package com.github.tototoshi.play2.flyway
 
-import org.scalatest.FunSpec
-import org.scalatest.matchers._
+import org.scalatest.{ ShouldMatchers, FunSpec }
 
 class PluginConfigurationSpec extends FunSpec with ShouldMatchers {
 

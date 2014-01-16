@@ -15,8 +15,7 @@
  */
 package com.github.tototoshi.play2.flyway
 
-import org.scalatest.FunSpec
-import org.scalatest.matchers._
+import org.scalatest.{ ShouldMatchers, FunSpec }
 import java.io.FileInputStream
 
 class FileUtilsSpec extends FunSpec with ShouldMatchers {

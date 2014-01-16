@@ -58,11 +58,7 @@ class Plugin(implicit app: Application) extends play.api.Plugin
       if migrationFileDirectoryExists(migrationFilesLocation)
     } yield {
       val flyway = new Flyway
-      if (configuration.driver.isDefined) {
-        flyway.setDataSource(new DriverDataSource(configuration.driver.get, configuration.url, configuration.user, configuration.password))
-      } else {
-        flyway.setDataSource(configuration.url, configuration.user, configuration.password)
-      }
+      flyway.setDataSource(new DriverDataSource(configuration.driver, configuration.url, configuration.user, configuration.password))
       flyway.setLocations(migrationFilesLocation)
       if (initOnMigrate(dbName)) {
         flyway.setInitOnMigrate(true)

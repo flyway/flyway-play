@@ -17,7 +17,6 @@ package com.github.tototoshi.play2.flyway
 
 import play.api.test._
 import play.api.test.Helpers._
-import java.io.File
 import org.scalatest.FunSpec
 import org.scalatest.matchers._
 
@@ -29,9 +28,9 @@ class ConfigReaderSpec extends FunSpec with ShouldMatchers {
       running(FakeApplication()) {
         val reader = new ConfigReader(play.api.Play.current)
         val configMap = reader.getDatabaseConfigurations
-        configMap.get("default") should be(Some(DatabaseConfiguration(Some("org.h2.Driver"), "jdbc:h2:mem:example;DB_CLOSE_DELAY=-1", "sa", null)))
-        configMap.get("secondary") should be(Some(DatabaseConfiguration(Some("org.h2.Driver"), "jdbc:h2:mem:example2;db_CLOSE_DELAY=-1", "sa", "secret")))
-        configMap.get("third") should be(Some(DatabaseConfiguration(Some("org.h2.Driver"), "jdbc:h2:mem:example3;DB_CLOSE_DELAY=-1", "sa", null)))
+        configMap.get("default") should be(Some(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:example;DB_CLOSE_DELAY=-1", "sa", null)))
+        configMap.get("secondary") should be(Some(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:example2;db_CLOSE_DELAY=-1", "sa", "secret")))
+        configMap.get("third") should be(Some(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:example3;DB_CLOSE_DELAY=-1", "sa", null)))
       }
     }
 

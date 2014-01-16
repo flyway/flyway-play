@@ -19,7 +19,6 @@ import org.scalatest.FunSpec
 import org.scalatest.matchers._
 import play.api.test._
 import play.api.test.Helpers._
-import java.io.File
 import scalikejdbc._
 import scalikejdbc.SQLInterpolation._
 

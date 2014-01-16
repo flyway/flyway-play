@@ -1,7 +1,6 @@
 import com.typesafe.sbt.SbtScalariform.scalariformSettings
 import sbt._
 import Keys._
-import play.Project._
 
 object ApplicationBuild extends Build {
 
@@ -11,7 +10,7 @@ object ApplicationBuild extends Build {
     settings = Defaults.defaultSettings ++ Seq (
       name := "play-flyway",
       organization := "com.github.tototoshi",
-      version := "1.0.0",
+      version := "1.0.1-SNAPSHOT",
       scalaVersion := "2.10.0",
       resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
       libraryDependencies ++= Seq(

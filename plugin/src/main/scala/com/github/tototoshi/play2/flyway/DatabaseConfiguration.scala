@@ -15,4 +15,4 @@
  */
 package com.github.tototoshi.play2.flyway
 
-case class DatabaseConfiguration(driver: Option[String], url: String, user: String, password: String)
+case class DatabaseConfiguration(driver: String, url: String, user: String, password: String)

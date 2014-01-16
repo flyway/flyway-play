@@ -32,9 +32,10 @@ class ConfigReader(app: Application) {
     } yield {
       val url = app.configuration.getString(s"db.${dbName}.url").getOrElse(
         throw new MigrationConfigurationException(s"db.${dbName}.url is not set."))
+      val driver = app.configuration.getString(s"db.${dbName}.driver")
       val user = app.configuration.getString(s"db.${dbName}.user").orNull
       val password = app.configuration.getString(s"db.${dbName}.password").orNull
-      dbName -> DatabaseConfiguration(url, user, password)
+      dbName -> DatabaseConfiguration(driver, url, user, password)
     }).toMap
 
   }

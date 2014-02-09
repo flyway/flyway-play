@@ -118,7 +118,7 @@ $ play -Ddb.default.migration.auto=true start
 
 ## Change Log
 
-### 1.0.1
+### 1.0.2
 - Fixed #7: Reading "db.${dbName}.password", but not "db.${dbName}.pass"
 
 ### 1.0.1

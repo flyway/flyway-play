@@ -36,11 +36,12 @@ class ConfigReader(app: Application) {
         throw new MigrationConfigurationException(s"db.${dbName}.driver is not set.")
       )
       val user = app.configuration.getString(s"db.${dbName}.user").orNull
-      val password = app.configuration.getString(s"db.${dbName}.password").orNull
+      val password = app.configuration.getString(s"db.${dbName}.password")
+        .orElse(app.configuration.getString(s"db.${dbName}.pass"))
+        .orNull
       dbName -> DatabaseConfiguration(driver, url, user, password)
     }).toMap
 
   }
 
 }
-

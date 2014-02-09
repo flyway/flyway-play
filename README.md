@@ -14,7 +14,7 @@ Flyway plugin for Play 2.1. It aims to be a substitute for play-evolutions.
 In Build.scala/build.sbt
 
 ```scala
-libraryDependencies += "com.github.tototoshi" %% "play-flyway" % "1.0.1"
+libraryDependencies += "com.github.tototoshi" %% "play-flyway" % "1.0.2"
 ```
 
 and write play.plugins.
@@ -119,6 +119,8 @@ $ play -Ddb.default.migration.auto=true start
 ## Change Log
 
 ### 1.0.1
+- Fixed #7: Reading "db.${dbName}.password", but not "db.${dbName}.pass"
+
+### 1.0.1
 - Supports reading the driver configuration parameter from Play2 config.
 - Updated flyway to 2.3.
-

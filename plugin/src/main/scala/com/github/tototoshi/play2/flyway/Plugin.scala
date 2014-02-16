@@ -67,7 +67,8 @@ class Plugin(implicit app: Application) extends play.api.Plugin
     }
   }
 
-  override lazy val enabled: Boolean = true
+  override lazy val enabled: Boolean =
+    !app.configuration.getString("flywayplugin").exists(_ == "disabled")
 
   private def migrationDescriptionToShow(dbName: String, migration: MigrationInfo): String = {
     app.resourceAsStream(s"${flywayPrefixToMigrationScript}/${dbName}/${migration.getScript}").map { in =>

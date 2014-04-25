@@ -17,7 +17,7 @@ package com.github.tototoshi.play2.flyway
 
 import play.api._
 
-class ConfigReader(app: Application) {
+class ConfigReader(app: Application) extends UrlParser {
 
   private def getAllDatabaseNames: Seq[String] = (for {
     config <- app.configuration.getConfig("db").toList
@@ -30,13 +30,15 @@ class ConfigReader(app: Application) {
     (for {
       dbName <- getAllDatabaseNames
     } yield {
-      val url = app.configuration.getString(s"db.${dbName}.url").getOrElse(
-        throw new MigrationConfigurationException(s"db.${dbName}.url is not set."))
+      val (url, parsedUser, parsedPass) = app.configuration.getString(s"db.${dbName}.url").map(parseUrl(_)).getOrElse(
+        throw new MigrationConfigurationException(s"db.${dbName}.url is not set.")
+      )
       val driver = app.configuration.getString(s"db.${dbName}.driver").getOrElse(
         throw new MigrationConfigurationException(s"db.${dbName}.driver is not set.")
       )
-      val user = app.configuration.getString(s"db.${dbName}.user").orNull
-      val password = app.configuration.getString(s"db.${dbName}.password")
+      val user = parsedUser.orElse(app.configuration.getString(s"db.${dbName}.user")).orNull
+      val password = parsedPass
+        .orElse(app.configuration.getString(s"db.${dbName}.password"))
         .orElse(app.configuration.getString(s"db.${dbName}.pass"))
         .orNull
       dbName -> DatabaseConfiguration(driver, url, user, password)

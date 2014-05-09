@@ -114,7 +114,7 @@ class Plugin(implicit app: Application) extends play.api.Plugin
     } yield url).getOrElse("/")
   }
 
-  override def handleWebCommand(request: RequestHeader, sbtLink: SBTLink, path: java.io.File): Option[SimpleResult] = {
+  override def handleWebCommand(request: RequestHeader, sbtLink: BuildLink, path: java.io.File): Option[SimpleResult] = {
 
     val css = {
       <style>

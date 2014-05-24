@@ -1,0 +1,13 @@
+language: scala
+
+jdk:
+  - oraclejdk7
+  - oraclejdk8
+
+script:
+  - sbt "$TEST_SCRIPT"
+
+env:
+  - TEST_SCRIPT=";++2.10.4; playapp/test"
+  - TEST_SCRIPT=";++2.11.1; plugin/test"
+

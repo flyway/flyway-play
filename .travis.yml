@@ -4,10 +4,10 @@ jdk:
   - oraclejdk7
   - oraclejdk8
 
-script:
-  - sbt "$TEST_SCRIPT"
+scala:
+  - 2.10.4
+  - 2.11.1
 
-env:
-  - TEST_SCRIPT=";++2.10.4; playapp/test"
-  - TEST_SCRIPT=";++2.11.1; plugin/test"
+script:
+  - sbt ++$TRAVIS_SCALA_VERSION playapp/test
 

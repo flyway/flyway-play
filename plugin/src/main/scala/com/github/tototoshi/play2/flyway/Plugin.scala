@@ -18,11 +18,11 @@ package com.github.tototoshi.play2.flyway
 import play.api._
 import play.api.mvc._
 import play.api.mvc.Results._
-import com.googlecode.flyway.core.Flyway
-import com.googlecode.flyway.core.api.MigrationInfo
-import com.googlecode.flyway.core.util.jdbc.DriverDataSource
+import org.flywaydb.core.Flyway
+import org.flywaydb.core.api.MigrationInfo
 import play.core._
 import java.io.FileNotFoundException
+import org.flywaydb.core.internal.util.jdbc.DriverDataSource
 
 class Plugin(implicit app: Application) extends play.api.Plugin
     with HandleWebCommandSupport
@@ -58,7 +58,7 @@ class Plugin(implicit app: Application) extends play.api.Plugin
       if migrationFileDirectoryExists(migrationFilesLocation)
     } yield {
       val flyway = new Flyway
-      flyway.setDataSource(new DriverDataSource(configuration.driver, configuration.url, configuration.user, configuration.password))
+      flyway.setDataSource(new DriverDataSource(getClass.getClassLoader, configuration.driver, configuration.url, configuration.user, configuration.password))
       flyway.setLocations(migrationFilesLocation)
       if (initOnMigrate(dbName)) {
         flyway.setInitOnMigrate(true)

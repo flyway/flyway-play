@@ -51,7 +51,7 @@ class Plugin(implicit app: Application) extends play.api.Plugin
     }
   }
 
-  private val flyways: Map[String, Flyway] = {
+  private lazy val flyways: Map[String, Flyway] = {
     for {
       (dbName, configuration) <- configReader.getDatabaseConfigurations
       migrationFilesLocation = s"db/migration/${dbName}"

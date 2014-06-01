@@ -117,17 +117,27 @@ class Plugin(implicit app: Application) extends play.api.Plugin
   override def handleWebCommand(request: RequestHeader, sbtLink: BuildLink, path: java.io.File): Option[SimpleResult] = {
 
     val css = {
+      <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" type="text/css"/>
       <style>
         body {{
-        width: 760px;
-        margin: 20px auto 50px auto;
-        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif
+        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
         }}
-        h2 {{ color: #000000; }}
-        h3 {{ color: #000080; margin-left: 10px; }}
-        h4 {{ color: #808000; margin-left: 20px; }}
-        .container {{ margin-top: 20px; }}
       </style>
+    }
+
+    val js = {
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+      <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    }
+
+    val header = {
+      <div class="navbar" role="navigation">
+        <div class="container">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="/@flyway">play-flyway</a>
+          </div>
+        </div>
+      </div>
     }
 
     request.path match {
@@ -186,7 +196,7 @@ class Plugin(implicit app: Application) extends play.api.Plugin
           info <- flyway.info().all()
         } yield {
           val version = info.getVersion().getVersion()
-          <a href={ withRedirectParam(versionedInitPath(dbName, version)) }>Init { version }</a>
+          <li><a href={ withRedirectParam(versionedInitPath(dbName, version)) }>version: { version }</a></li>
         }
 
         val migratePathWithRedirectParam = withRedirectParam(migratePath(dbName))
@@ -199,16 +209,25 @@ class Plugin(implicit app: Application) extends play.api.Plugin
               { css }
             </head>
             <body>
-              <h1><a href="/@flyway">play-flyway</a></h1>
-              <a href="/">&lt;&lt; Back to app</a>
+              { header }
               <div class="container">
+                <a href="/">&lt;&lt; Back to app</a>
                 <h2>Database: { dbName }</h2>
-                <a style="color: blue;" href={ migratePathWithRedirectParam }>migrate</a>
-                <a style="color: red;" href={ cleanPathWithRedirectParam }>clean</a>
-                { initLinks }
+                <a class="btn btn-primary" href={ migratePathWithRedirectParam }>migrate</a>
+                <a class="btn btn-danger" href={ cleanPathWithRedirectParam }>clean</a>
+                <!-- Split button -->
+                <div class="btn-group">
+                  <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown">
+                    init&nbsp;<span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu" role="menu">
+                    { initLinks }
+                  </ul>
+                </div>
                 <!--<a style="color: red;" href={ initPathWithRedirectParam }>init</a>-->
                 { description }
               </div>
+              { js }
             </body>
           </html>
 
@@ -220,9 +239,9 @@ class Plugin(implicit app: Application) extends play.api.Plugin
           (dbName, flyway) <- flyways
           path = s"/@flyway/${dbName}"
         } yield {
-          <div>
-            <a href={ path }>{ dbName }</a>
-          </div>
+          <ul>
+            <li><a href={ path }>{ dbName }</a></li>
+          </ul>
         }
 
         val html =
@@ -232,11 +251,14 @@ class Plugin(implicit app: Application) extends play.api.Plugin
               { css }
             </head>
             <body>
-              <h1><a href="/@flyway">play-flway</a></h1>
-              <a href="/">&lt;&lt; Back to app</a>
+              { header }
               <div class="container">
-                { links }
+                <a href="/">&lt;&lt; Back to app</a>
+                <div class="well">
+                  { links }
+                </div>
               </div>
+              { js }
             </body>
           </html>
 

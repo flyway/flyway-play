@@ -14,7 +14,7 @@ object ApplicationBuild extends Build {
       name := "play-flyway",
       organization := "com.github.tototoshi",
       version := "1.0.5-SNAPSHOT",
-      scalaVersion := "2.10.0",
+      scalaVersion := "2.10.4",
       crossScalaVersions := scalaVersion.value :: "2.11.1" :: Nil,
       resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
       libraryDependencies ++= Seq(
@@ -29,9 +29,7 @@ object ApplicationBuild extends Build {
   val appDependencies = Seq(
     "com.h2database" % "h2" % "[1.3,)",
     "postgresql" % "postgresql" % "9.1-901.jdbc4",
-    // TODO scalikejdbc-play-plugin for Scala2.11, play2.3
-    // https://github.com/scalikejdbc/scalikejdbc-play-support/issues/4
-    "org.scalikejdbc" %% "scalikejdbc-play-plugin" % "2.2.0" % "test",
+    "org.scalikejdbc" %% "scalikejdbc-play-plugin" % "2.3.0" % "test",
     scalatest
   )
 

@@ -1,6 +1,6 @@
 # play-flyway
 
-Flyway plugin for Play 2.1. It aims to be a substitute for play-evolutions.
+Flyway plugin for Play 2.1 or later. It aims to be a substitute for play-evolutions.
 
 ## Features
 

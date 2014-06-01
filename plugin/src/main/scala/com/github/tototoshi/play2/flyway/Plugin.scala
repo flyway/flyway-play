@@ -144,7 +144,9 @@ class Plugin(implicit app: Application) extends play.api.Plugin
         flyways.get(dbName).foreach(_.clean())
         Some(Redirect(getRedirectUrlFromRequest(request)))
       }
-      case initPath(dbName) => {
+      case versionedInitPath(dbName, version) => {
+
+        flyways.get(dbName).foreach(_.setInitVersion(version))
         flyways.get(dbName).foreach(_.init())
         Some(Redirect(getRedirectUrlFromRequest(request)))
       }
@@ -179,9 +181,16 @@ class Plugin(implicit app: Application) extends play.api.Plugin
 
         def withRedirectParam(path: String) = path + "?redirect=" + java.net.URLEncoder.encode(request.path, "utf-8")
 
+        val initLinks = for {
+          flyway <- flyways.get(dbName).toList
+          info <- flyway.info().all()
+        } yield {
+          val version = info.getVersion().getVersion()
+          <a href={ withRedirectParam(versionedInitPath(dbName, version)) }>Init { version }</a>
+        }
+
         val migratePathWithRedirectParam = withRedirectParam(migratePath(dbName))
         val cleanPathWithRedirectParam = withRedirectParam(cleanPath(dbName))
-        val initPathWithRedirectParam = withRedirectParam(initPath(dbName))
 
         val html =
           <html>
@@ -196,7 +205,8 @@ class Plugin(implicit app: Application) extends play.api.Plugin
                 <h2>Database: { dbName }</h2>
                 <a style="color: blue;" href={ migratePathWithRedirectParam }>migrate</a>
                 <a style="color: red;" href={ cleanPathWithRedirectParam }>clean</a>
-                <a style="color: red;" href={ initPathWithRedirectParam }>init</a>
+                { initLinks }
+                <!--<a style="color: red;" href={ initPathWithRedirectParam }>init</a>-->
                 { description }
               </div>
             </body>

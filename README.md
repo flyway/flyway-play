@@ -11,9 +11,10 @@ Flyway plugin for Play 2.1. It aims to be a substitute for play-evolutions.
 ## Install
 
 ### For Play 2.3.x
+In Build.scala/build.sbt
 
 ```scala
-libraryDependencies += "com.github.tototoshi" %% "play-flyway" % "1.0.5-SNAPSHOT"
+libraryDependencies += "com.github.tototoshi" %% "play-flyway" % "1.1.0"
 ```
 
 and write play.plugins.
@@ -21,8 +22,6 @@ and write play.plugins.
 ```
 1000:com.github.tototoshi.play2.flyway.Plugin
 ```
-
-
 
 ### For Play 2.2.x
 In Build.scala/build.sbt
@@ -132,6 +131,12 @@ $ play -Ddb.default.migration.auto=true start
 
 ## Change Log
 
+### 1.1.0
+- Suport Play 2.3.0 and Flyway 3.0
+- Applied Twitter Bootstrap theme
+- Delay initialization (#17)
+- Init with version number (#8)
+
 ### 1.0.4
 - Add URL parser for URLs starting with "postgres://" etc. (#11)
 
@@ -144,3 +149,4 @@ $ play -Ddb.default.migration.auto=true start
 ### 1.0.1
 - Supports reading the driver configuration parameter from Play2 config.
 - Updated flyway to 2.3.
+

@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+
+  <!-- Always force latest IE rendering engine or request Chrome Frame -->
+  <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+
+  <!-- Use title if it's in the page YAML frontmatter -->
+  <title><%= current_page.data.title || "The Middleman" %></title>
+
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/play-flyway/stylesheets/normalize.css" rel="stylesheet">
+  <link href="/play-flyway/stylesheets/all.css" rel="stylesheet">
+</head>
+
+<body data-spy="scroll" data-target=".navbar">
+
+  <div id="header" class="navbar navbar-fixed-top" role="navigation">
+    <div class="container">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="/play-flyway/">play-flyway</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div id="nav" class="col-sm-3 col-md-3">
+        <div class="bs-docs-sidebar affix collapse navbar-collapse">
+          <ul class="nav nnav-stacked navbar">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#install">Install</a></li>
+            <li><a href="#getting-started">Getting Started</a></li>
+            <li><a href="#example">Example application</a></li>
+            <li><a href="#changelog">Change Log</a></li>
+            <li><a href="#license">License</a></li>
+            <li><a href="//github.com/tototoshi/play-flyway" target="_blank">Repository</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-sm-9 col-md-9" role="main">
+        <div id="claim" class="well">
+          Flyway plugin for Play 2.1 or later. It aims to be a substitute for play-evolutions.
+        </div>
+       <%= yield %>
+     </div>
+   </div>
+ </div>
+ <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+ <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+</body>
+</html>

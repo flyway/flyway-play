@@ -38,6 +38,9 @@ class Plugin(implicit app: Application) extends play.api.Plugin
   private def initOnMigrate(dbName: String): Boolean =
     app.configuration.getBoolean(s"db.${dbName}.migration.initOnMigrate").getOrElse(false)
 
+  private def validateOnMigrate(dbName: String): Boolean =
+    app.configuration.getBoolean(s"db.${dbName}.migration.validateOnMigrate").getOrElse(true)
+
   private def migrationFileDirectoryExists(path: String): Boolean = {
     app.resource(path) match {
       case Some(r) => {
@@ -60,6 +63,7 @@ class Plugin(implicit app: Application) extends play.api.Plugin
       val flyway = new Flyway
       flyway.setDataSource(new DriverDataSource(getClass.getClassLoader, configuration.driver, configuration.url, configuration.user, configuration.password))
       flyway.setLocations(migrationFilesLocation)
+      flyway.setValidateOnMigrate(validateOnMigrate(dbName))
       if (initOnMigrate(dbName)) {
         flyway.setInitOnMigrate(true)
       }

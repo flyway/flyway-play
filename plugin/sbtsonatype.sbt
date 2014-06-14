@@ -1,4 +1,0 @@
-import SonatypeKeys._
-
-sonatypeSettings
-

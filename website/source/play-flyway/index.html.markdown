@@ -14,7 +14,7 @@ title: play-flyway
 In Build.scala/build.sbt
 
 ```scala
-libraryDependencies += "com.github.tototoshi" %% "play-flyway" % "1.1.1"
+libraryDependencies += "com.github.tototoshi" %% "play-flyway" % "1.1.2"
 ```
 
 and write play.plugins.
@@ -89,6 +89,33 @@ Please see flyway's documents about the naming convention for migration scripts.
 
 http://flywaydb.org/documentation/migration/sql.html
 
+### Placeholders
+
+Flyway can replace placeholders in Sql migrations.
+The default pattern is ${placeholder}.
+This can be configured using the placeholderPrefix and placeholderSuffix properties.
+
+The placeholder prefix, suffix and key-value pairs can be specificed in application.conf, e.g.
+
+```
+db.default.migration.placeholderPrefix="$flyway{{{"
+db.default.migration.placeholderSuffix="}}}"
+db.default.migration.placeholders.foo="bar"
+db.default.migration.placeholders.hoge="pupi"
+```
+
+This would cause
+
+```sql
+INSERT INTO USERS ($flyway{{{foo}}}) VALUES ('$flyway{{{hoge}}}')
+```
+
+to be rewritten to
+
+```sql
+INSERT INTO USERS (bar) VALUES ('pupi')
+```
+
 
 ### Dev
 
@@ -128,6 +155,9 @@ $ play -Ddb.default.migration.auto=true start
 [seratch/devteam-app](https://github.com/seratch/devteam-app "seratch/devteam-app") is using play-flyway. Maybe this is a good example.
 
 ## <a class="anchor" name="changelog"></a>Change Log
+
+### 1.1.2
+- Added support for placeholders in migration files (#22)
 
 ### 1.1.1
 - Added a configuration key to disable validateOnMigrate for compatibility (#18)

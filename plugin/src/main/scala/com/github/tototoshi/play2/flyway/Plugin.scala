@@ -23,6 +23,7 @@ import org.flywaydb.core.api.MigrationInfo
 import play.core._
 import java.io.FileNotFoundException
 import org.flywaydb.core.internal.util.jdbc.DriverDataSource
+import scala.collection.JavaConverters._
 
 class Plugin(implicit app: Application) extends play.api.Plugin
     with HandleWebCommandSupport
@@ -40,6 +41,18 @@ class Plugin(implicit app: Application) extends play.api.Plugin
 
   private def validateOnMigrate(dbName: String): Boolean =
     app.configuration.getBoolean(s"db.${dbName}.migration.validateOnMigrate").getOrElse(true)
+
+  private def placeholderPrefix(dbName: String): Option[String] =
+    app.configuration.getString(s"db.${dbName}.migration.placeholderPrefix")
+
+  private def placeholderSuffix(dbName: String): Option[String] =
+    app.configuration.getString(s"db.${dbName}.migration.placeholderSuffix")
+
+  private def placeholders(dbName: String): Map[String, String] = {
+    app.configuration.getConfig(s"db.${dbName}.migration.placeholders").map { config =>
+      config.subKeys.map { key => (key -> config.getString(key).getOrElse("")) }.toMap
+    }.getOrElse(Map.empty)
+  }
 
   private def migrationFileDirectoryExists(path: String): Boolean = {
     app.resource(path) match {
@@ -67,6 +80,14 @@ class Plugin(implicit app: Application) extends play.api.Plugin
       if (initOnMigrate(dbName)) {
         flyway.setInitOnMigrate(true)
       }
+      for (prefix <- placeholderPrefix(dbName)) {
+        flyway.setPlaceholderPrefix(prefix)
+      }
+      for (suffix <- placeholderSuffix(dbName)) {
+        flyway.setPlaceholderSuffix(suffix)
+      }
+      flyway.setPlaceholders(placeholders(dbName).asJava)
+
       dbName -> flyway
     }
   }

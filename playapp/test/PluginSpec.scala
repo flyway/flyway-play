@@ -61,6 +61,22 @@ class PluginSpec extends FunSpec
       sql"""DROP TABLE "schema_version"""".execute.apply()
     }
 
+    NamedDB('placeholders) autoCommit { implicit session =>
+      val wows =
+        sql"SELECT * FROM wow" // This table name is substituted for a placeholder during migration
+          .map(rs => rs.int("id") -> rs.string("name"))
+          .list
+          .apply()
+
+      wows.size should be(1)
+      wows.head should be((1, "Oh!"))
+
+      sql"DROP TABLE wow".execute.apply()
+
+      // Table created by flyway
+      sql"""DROP TABLE "schema_version"""".execute.apply()
+    }
+
   }
 
   describe("Plugin") {

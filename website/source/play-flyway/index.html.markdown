@@ -116,6 +116,14 @@ to be rewritten to
 INSERT INTO USERS (bar) VALUES ('pupi')
 ```
 
+### Enable/disable Validation
+
+From flyway 3.0, `validate` run before `migrate` by default.
+Set `validateOnMigrate` to false if you want to disable this.
+
+```
+db.${dbName}.migration.validateOnMigrate=false // true by default
+```
 
 ### Dev
 

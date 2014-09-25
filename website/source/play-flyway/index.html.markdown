@@ -122,7 +122,7 @@ INSERT INTO USERS (bar) VALUES ('pupi')
 ![screenshot](images/screenshot1.png)
 
 
-For existing schema, Flyway has a option called 'initOnMigrate'. This option is enabled when `-Ddb.${dbName}.migration`.initOnMigrate=true.
+For existing schema, Flyway has a option called 'initOnMigrate'. This option is enabled when `-Ddb.${dbName}.migration.initOnMigrate=true`.
 For example,
 ```
 $ play -Ddb.default.migration.initOnMigrate=true

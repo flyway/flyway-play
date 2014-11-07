@@ -54,6 +54,10 @@ class Plugin(implicit app: Application) extends play.api.Plugin
     }.getOrElse(Map.empty)
   }
 
+  private def encoding(dbName: String): String = {
+    app.configuration.getString(s"db.${dbName}.migration.encoding").getOrElse("UTF-8")
+  }
+
   private def migrationFileDirectoryExists(path: String): Boolean = {
     app.resource(path) match {
       case Some(r) => {
@@ -77,6 +81,7 @@ class Plugin(implicit app: Application) extends play.api.Plugin
       flyway.setDataSource(new DriverDataSource(getClass.getClassLoader, configuration.driver, configuration.url, configuration.user, configuration.password))
       flyway.setLocations(migrationFilesLocation)
       flyway.setValidateOnMigrate(validateOnMigrate(dbName))
+      flyway.setEncoding(encoding(dbName))
       if (initOnMigrate(dbName)) {
         flyway.setInitOnMigrate(true)
       }

@@ -20,7 +20,7 @@ import java.io.InputStream
 trait FileUtils {
 
   def readInputStreamToString(in: InputStream): String = {
-    val src = scala.io.Source.fromInputStream(in)
+    val src = scala.io.Source.fromInputStream(in, "UTF-8")
     try {
       src.mkString
     } finally {

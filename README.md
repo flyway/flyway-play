@@ -1,5 +1,7 @@
 # play-flyway
 
+![travis](https://api.travis-ci.org/tototoshi/play-flyway.png)
+
 Flyway plugin for Play 2.1 or later. It aims to be a substitute for play-evolutions.
 
 ## Features

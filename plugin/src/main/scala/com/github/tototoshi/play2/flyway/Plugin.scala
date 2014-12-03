@@ -83,7 +83,7 @@ class Plugin(implicit app: Application) extends play.api.Plugin
       flyway.setValidateOnMigrate(validateOnMigrate(dbName))
       flyway.setEncoding(encoding(dbName))
       if (initOnMigrate(dbName)) {
-        flyway.setInitOnMigrate(true)
+        flyway.setBaselineOnMigrate(true)
       }
       for (prefix <- placeholderPrefix(dbName)) {
         flyway.setPlaceholderPrefix(prefix)
@@ -186,8 +186,8 @@ class Plugin(implicit app: Application) extends play.api.Plugin
       }
       case versionedInitPath(dbName, version) => {
 
-        flyways.get(dbName).foreach(_.setInitVersion(version))
-        flyways.get(dbName).foreach(_.init())
+        flyways.get(dbName).foreach(_.setBaselineVersion(version))
+        flyways.get(dbName).foreach(_.baseline())
         Some(Redirect(getRedirectUrlFromRequest(request)))
       }
       case showInfoPath(dbName) => {

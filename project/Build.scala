@@ -13,13 +13,13 @@ object ApplicationBuild extends Build {
     Seq(
       name := "play-flyway",
       organization := "com.github.tototoshi",
-      version := "1.1.3",
+      version := "1.1.4-SNAPSHOT",
       scalaVersion := "2.10.4",
       crossScalaVersions := scalaVersion.value :: "2.11.1" :: Nil,
       resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
       libraryDependencies ++= Seq(
         "com.typesafe.play" %% "play" % play.core.PlayVersion.current % "provided",
-        "org.flywaydb" % "flyway-core" % "3.0",
+        "org.flywaydb" % "flyway-core" % "3.1",
         scalatest
       ),
       scalacOptions ++= Seq("-language:_", "-deprecation")

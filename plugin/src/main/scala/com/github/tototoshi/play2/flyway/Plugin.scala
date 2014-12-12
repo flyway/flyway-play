@@ -104,6 +104,12 @@ class Plugin(implicit app: Application) extends play.api.Plugin
     app.resourceAsStream(s"${flywayPrefixToMigrationScript}/${dbName}/${migration.getScript}").map { in =>
       s"""|--- ${migration.getScript} ---
           |${readInputStreamToString(in)}""".stripMargin
+    }.orElse {
+      import scala.util.control.Exception._
+      allCatch opt { Class.forName(migration.getScript) } map { cls =>
+        s"""|--- ${migration.getScript} ---
+            | (Java-based migration)""".stripMargin
+      }
     }.getOrElse(throw new FileNotFoundException(s"Migration file not found. ${migration.getScript}"))
   }
 

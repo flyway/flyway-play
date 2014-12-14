@@ -14,7 +14,7 @@ title: play-flyway
 In Build.scala/build.sbt
 
 ```scala
-libraryDependencies += "com.github.tototoshi" %% "play-flyway" % "1.1.4"
+libraryDependencies += "com.github.tototoshi" %% "play-flyway" % "1.2.0"
 ```
 
 and write play.plugins.
@@ -163,6 +163,9 @@ $ play -Ddb.default.migration.auto=true start
 [seratch/devteam-app](https://github.com/seratch/devteam-app "seratch/devteam-app") is using play-flyway. Maybe this is a good example.
 
 ## <a class="anchor" name="changelog"></a>Change Log
+
+### 1.2.0
+- Support Java-based migration (#28)
 
 ### 1.1.4
 - Flyway 3.1 (#27)

@@ -77,6 +77,21 @@ class PluginSpec extends FunSpec
       sql"""DROP TABLE "schema_version"""".execute.apply()
     }
 
+    NamedDB('java) autoCommit { implicit session =>
+      val languages =
+        sql"SELECT * FROM language"
+          .map(rs => rs.int("id") -> rs.string("name"))
+          .list
+          .apply()
+
+      languages.size should be(2)
+
+      sql"DROP TABLE language".execute.apply()
+
+      // Table created by flyway
+      sql"""DROP TABLE "schema_version"""".execute.apply()
+    }
+
   }
 
   describe("Plugin") {

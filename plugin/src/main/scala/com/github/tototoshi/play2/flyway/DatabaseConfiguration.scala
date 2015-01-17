@@ -15,4 +15,17 @@
  */
 package com.github.tototoshi.play2.flyway
 
-case class DatabaseConfiguration(driver: String, url: String, user: String, password: String)
+case class FlywayConfiguration(
+  database: DatabaseConfiguration,
+  initOnMigrate: Boolean,
+  validateOnMigrate: Boolean,
+  encoding: String,
+  placeholderPrefix: Option[String],
+  placeholderSuffix: Option[String],
+  placeholders: Map[String, String])
+
+case class DatabaseConfiguration(
+  driver: String,
+  url: String,
+  user: String,
+  password: String)

@@ -38,28 +38,6 @@ class PlayInitializer @Inject() (implicit app: Application)
 
   private val flywayPrefixToMigrationScript = "db/migration"
 
-  private def initOnMigrate(dbName: String): Boolean =
-    app.configuration.getBoolean(s"db.${dbName}.migration.initOnMigrate").getOrElse(false)
-
-  private def validateOnMigrate(dbName: String): Boolean =
-    app.configuration.getBoolean(s"db.${dbName}.migration.validateOnMigrate").getOrElse(true)
-
-  private def placeholderPrefix(dbName: String): Option[String] =
-    app.configuration.getString(s"db.${dbName}.migration.placeholderPrefix")
-
-  private def placeholderSuffix(dbName: String): Option[String] =
-    app.configuration.getString(s"db.${dbName}.migration.placeholderSuffix")
-
-  private def placeholders(dbName: String): Map[String, String] = {
-    app.configuration.getConfig(s"db.${dbName}.migration.placeholders").map { config =>
-      config.subKeys.map { key => (key -> config.getString(key).getOrElse("")) }.toMap
-    }.getOrElse(Map.empty)
-  }
-
-  private def encoding(dbName: String): String = {
-    app.configuration.getString(s"db.${dbName}.migration.encoding").getOrElse("UTF-8")
-  }
-
   private def migrationFileDirectoryExists(path: String): Boolean = {
     app.resource(path) match {
       case Some(r) => {
@@ -80,20 +58,21 @@ class PlayInitializer @Inject() (implicit app: Application)
       if migrationFileDirectoryExists(migrationFilesLocation)
     } yield {
       val flyway = new Flyway
-      flyway.setDataSource(new DriverDataSource(getClass.getClassLoader, configuration.driver, configuration.url, configuration.user, configuration.password))
+      val database = configuration.database
+      flyway.setDataSource(new DriverDataSource(getClass.getClassLoader, database.driver, database.url, database.user, database.password))
       flyway.setLocations(migrationFilesLocation)
-      flyway.setValidateOnMigrate(validateOnMigrate(dbName))
-      flyway.setEncoding(encoding(dbName))
-      if (initOnMigrate(dbName)) {
+      flyway.setValidateOnMigrate(configuration.validateOnMigrate)
+      flyway.setEncoding(configuration.encoding)
+      if (configuration.initOnMigrate) {
         flyway.setBaselineOnMigrate(true)
       }
-      for (prefix <- placeholderPrefix(dbName)) {
+      for (prefix <- configuration.placeholderPrefix) {
         flyway.setPlaceholderPrefix(prefix)
       }
-      for (suffix <- placeholderSuffix(dbName)) {
+      for (suffix <- configuration.placeholderSuffix) {
         flyway.setPlaceholderSuffix(suffix)
       }
-      flyway.setPlaceholders(placeholders(dbName).asJava)
+      flyway.setPlaceholders(configuration.placeholders.asJava)
 
       dbName -> flyway
     }

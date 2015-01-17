@@ -26,7 +26,7 @@ class ConfigReader(app: Application) extends UrlParser {
     dbName
   }).distinct
 
-  def getDatabaseConfigurations: Map[String, DatabaseConfiguration] = {
+  def getDatabaseConfigurations: Map[String, FlywayConfiguration] = {
     (for {
       dbName <- getAllDatabaseNames
     } yield {
@@ -41,7 +41,38 @@ class ConfigReader(app: Application) extends UrlParser {
         .orElse(app.configuration.getString(s"db.${dbName}.password"))
         .orElse(app.configuration.getString(s"db.${dbName}.pass"))
         .orNull
-      dbName -> DatabaseConfiguration(driver, url, user, password)
+      val initOnMigrate =
+        app.configuration.getBoolean(s"db.${dbName}.migration.initOnMigrate").getOrElse(false)
+      val validateOnMigrate =
+        app.configuration.getBoolean(s"db.${dbName}.migration.validateOnMigrate").getOrElse(true)
+      val encoding =
+        app.configuration.getString(s"db.${dbName}.migration.encoding").getOrElse("UTF-8")
+      val placeholderPrefix =
+        app.configuration.getString(s"db.${dbName}.migration.placeholderPrefix")
+      val placeholderSuffix =
+        app.configuration.getString(s"db.${dbName}.migration.placeholderSuffix")
+
+      val placeholders = {
+        app.configuration.getConfig(s"db.${dbName}.migration.placeholders").map { config =>
+          config.subKeys.map { key => (key -> config.getString(key).getOrElse("")) }.toMap
+        }.getOrElse(Map.empty)
+      }
+
+      val database = DatabaseConfiguration(
+        driver,
+        url,
+        user,
+        password)
+
+      dbName -> FlywayConfiguration(
+        database,
+        initOnMigrate,
+        validateOnMigrate,
+        encoding,
+        placeholderPrefix,
+        placeholderSuffix,
+        placeholders
+      )
     }).toMap
 
   }

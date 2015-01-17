@@ -26,7 +26,7 @@ class ConfigReader(app: Application) extends UrlParser {
     dbName
   }).distinct
 
-  def getDatabaseConfigurations: Map[String, FlywayConfiguration] = {
+  def getFlywayConfigurations: Map[String, FlywayConfiguration] = {
     (for {
       dbName <- getAllDatabaseNames
     } yield {

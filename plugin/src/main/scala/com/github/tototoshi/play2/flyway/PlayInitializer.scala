@@ -34,7 +34,7 @@ class PlayInitializer @Inject() (implicit app: Application)
 
   private val flywayConfigurations = {
     val configReader = new ConfigReader(app)
-    configReader.getDatabaseConfigurations
+    configReader.getFlywayConfigurations
   }
 
   private val allDatabaseNames = flywayConfigurations.keys

@@ -47,7 +47,7 @@ class ConfigReaderSpec extends FunSpec with ShouldMatchers {
       additionalConfiguration = defaultDB ++ additionalConfiguration
     )) {
       val reader = new ConfigReader(play.api.Play.current)
-      val configMap = reader.getDatabaseConfigurations
+      val configMap = reader.getFlywayConfigurations
       assertion(configMap.get("default").get)
     }
 
@@ -58,7 +58,7 @@ class ConfigReaderSpec extends FunSpec with ShouldMatchers {
         additionalConfiguration = defaultDB ++ secondaryDB ++ thirdDB
       )) {
         val reader = new ConfigReader(play.api.Play.current)
-        val configMap = reader.getDatabaseConfigurations
+        val configMap = reader.getFlywayConfigurations
         configMap.get("default").get.database should be(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:example;DB_CLOSE_DELAY=-1", "sa", null))
         configMap.get("secondary").get.database should be(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:example2;DB_CLOSE_DELAY=-1", "sa", "secret2"))
         configMap.get("third").get.database should be(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:example3;DB_CLOSE_DELAY=-1", "sa", "secret3"))

@@ -25,11 +25,25 @@ class ConfigReaderSpec extends FunSpec with ShouldMatchers {
   describe("ConfigReader") {
 
     it("should get database configurations") {
-      running(FakeApplication()) {
+      running(FakeApplication(
+        additionalConfiguration = Map(
+          "db.default.driver" -> "org.h2.Driver",
+          "db.default.url" -> "jdbc:h2:mem:example;DB_CLOSE_DELAY=-1",
+          "db.default.user" -> "sa",
+          "db.secondary.driver" -> "org.h2.Driver",
+          "db.secondary.url" -> "jdbc:h2:mem:example2;DB_CLOSE_DELAY=-1",
+          "db.secondary.user" -> "sa",
+          "db.secondary.password" -> "secret2",
+          "db.third.driver" -> "org.h2.Driver",
+          "db.third.url" -> "jdbc:h2:mem:example3;DB_CLOSE_DELAY=-1",
+          "db.third.user" -> "sa",
+          "db.third.password" -> "secret3"
+        )
+      )) {
         val reader = new ConfigReader(play.api.Play.current)
         val configMap = reader.getDatabaseConfigurations
         configMap.get("default") should be(Some(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:example;DB_CLOSE_DELAY=-1", "sa", null)))
-        configMap.get("secondary") should be(Some(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:example2;db_CLOSE_DELAY=-1", "sa", "secret")))
+        configMap.get("secondary") should be(Some(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:example2;DB_CLOSE_DELAY=-1", "sa", "secret2")))
         configMap.get("third") should be(Some(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:example3;DB_CLOSE_DELAY=-1", "sa", "secret3")))
       }
     }

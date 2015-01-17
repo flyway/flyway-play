@@ -31,7 +31,9 @@ object ApplicationBuild extends Build {
   val appDependencies = Seq(
     "com.h2database" % "h2" % "[1.3,)",
     "postgresql" % "postgresql" % "9.1-901.jdbc4",
-    "org.scalikejdbc" %% "scalikejdbc-play-initializer" % "2.4.0-M2-20141215" % "test",
+    "com.typesafe.play" %% "play-test" % play.core.PlayVersion.current % "test"
+      excludeAll(ExclusionRule(organization = "org.specs2")),
+    "org.scalikejdbc" %% "scalikejdbc-play-initializer" % "2.4.0-M2-20141215",
     scalatest
   )
 

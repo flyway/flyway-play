@@ -19,7 +19,8 @@ object ApplicationBuild extends Build {
       resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
       libraryDependencies ++= Seq(
         "com.typesafe.play" %% "play" % play.core.PlayVersion.current % "provided",
-        "com.typesafe.play" %% "play-test" % play.core.PlayVersion.current % "test",
+        "com.typesafe.play" %% "play-test" % play.core.PlayVersion.current % "test"
+          excludeAll(ExclusionRule(organization = "org.specs2")),
         "org.flywaydb" % "flyway-core" % "3.1",
         scalatest
       ),

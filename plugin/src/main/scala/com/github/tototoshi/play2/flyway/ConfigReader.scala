@@ -58,6 +58,9 @@ class ConfigReader(app: Application) extends UrlParser {
         }.getOrElse(Map.empty)
       }
 
+      val outOfOrder =
+        app.configuration.getBoolean(s"db.${dbName}.migration.outOfOrder").getOrElse(false)
+
       val database = DatabaseConfiguration(
         driver,
         url,
@@ -71,7 +74,8 @@ class ConfigReader(app: Application) extends UrlParser {
         encoding,
         placeholderPrefix,
         placeholderSuffix,
-        placeholders
+        placeholders,
+        outOfOrder
       )
     }).toMap
 

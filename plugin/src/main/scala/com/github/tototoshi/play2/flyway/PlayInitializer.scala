@@ -63,6 +63,7 @@ class PlayInitializer @Inject() (implicit app: Application)
       flyway.setLocations(migrationFilesLocation)
       flyway.setValidateOnMigrate(configuration.validateOnMigrate)
       flyway.setEncoding(configuration.encoding)
+      flyway.setOutOfOrder(configuration.outOfOrder)
       if (configuration.initOnMigrate) {
         flyway.setBaselineOnMigrate(true)
       }

@@ -22,7 +22,8 @@ case class FlywayConfiguration(
   encoding: String,
   placeholderPrefix: Option[String],
   placeholderSuffix: Option[String],
-  placeholders: Map[String, String])
+  placeholders: Map[String, String],
+  outOfOrder: Boolean)
 
 case class DatabaseConfiguration(
   driver: String,

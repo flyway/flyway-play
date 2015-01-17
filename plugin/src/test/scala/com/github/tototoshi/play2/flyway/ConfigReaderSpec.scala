@@ -150,5 +150,18 @@ class ConfigReaderSpec extends FunSpec with ShouldMatchers {
       }
     }
 
+    describe("outOfOrder") {
+      it("should be parsed") {
+        withDefaultDB(Map("db.default.migration.outOfOrder" -> "true")) { config =>
+          config.outOfOrder should be(true)
+        }
+      }
+      it("should be false by default") {
+        withDefaultDB(Map.empty) { config =>
+          config.outOfOrder should be(false)
+        }
+      }
+    }
+
   }
 }

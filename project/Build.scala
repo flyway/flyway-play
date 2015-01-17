@@ -63,17 +63,17 @@ object ApplicationBuild extends Build {
   }
 
   val _pomExtra =
-    <url>http://github.com/tototoshi/play-flyway</url>
+    <url>https://github.com/flyway/flyway-play</url>
     <licenses>
       <license>
         <name>Apache License, Version 2.0</name>
-        <url>http://github.com/tototoshi/play-flyway/blob/master/LICENSE.txt</url>
+        <url>https://github.com/flyway/flyway-play/blob/master/LICENSE.txt</url>
         <distribution>repo</distribution>
       </license>
     </licenses>
     <scm>
-      <url>git@github.com:tototoshi/play-flyway.git</url>
-      <connection>scm:git:git@github.com:tototoshi/play-flyway.git</connection>
+      <url>git@github.com:flyway/flyway-play.git</url>
+      <connection>scm:git:git@github.com:flyway/flyway-play.git</connection>
     </scm>
     <developers>
       <developer>

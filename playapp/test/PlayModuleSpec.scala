@@ -22,7 +22,7 @@ import play.api.test.Helpers._
 import scalikejdbc._
 import scalikejdbc.SQLInterpolation._
 
-class PluginSpec extends FunSpec
+class PlayModuleSpec extends FunSpec
     with ShouldMatchers {
 
   def fixture = new {
@@ -94,10 +94,10 @@ class PluginSpec extends FunSpec
 
   }
 
-  describe("Plugin") {
+  describe("PlayModule") {
 
     it("should migrate automatically when testing") {
-      running(FakeApplication(additionalPlugins = Seq("scalikejdbc.PlayPlugin"))) {
+      running(FakeApplication()) {
         test()
       }
     }
@@ -107,12 +107,11 @@ class PluginSpec extends FunSpec
       running(FakeApplication(
         additionalConfiguration =
           inMemoryDatabase(name = "default", Map("DB_CLOSE_DELAY" -> "-1")) ++
-            inMemoryDatabase(name = "secondary", Map("DB_CLOSE_DELAY" -> "-1")),
-        additionalPlugins = Seq("scalikejdbc.PlayPlugin"))) {
+            inMemoryDatabase(name = "secondary", Map("DB_CLOSE_DELAY" -> "-1"))
+      )) {
         test()
       }
     }
 
   }
 }
-

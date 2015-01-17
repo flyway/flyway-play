@@ -20,7 +20,7 @@ import play.api._
 case class InvalidDatabaseRevision(db: String, script: String) extends PlayException.RichDescription(
   "Database '" + db + "' needs migration!",
   "An SQL script need to be run on your database.")
-    with PluginConfiguration {
+    with WebCommandPath {
 
   def subTitle = "This SQL script must be run:"
   def content = script
@@ -39,4 +39,3 @@ case class InvalidDatabaseRevision(db: String, script: String) extends PlayExcep
     <input name="evolution-button" type="button" value="Other operations" onclick={ redirectToAdmin }/>
   }.mkString
 }
-

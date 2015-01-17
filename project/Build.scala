@@ -29,7 +29,7 @@ object ApplicationBuild extends Build {
   val appDependencies = Seq(
     "com.h2database" % "h2" % "[1.3,)",
     "postgresql" % "postgresql" % "9.1-901.jdbc4",
-    "org.scalikejdbc" %% "scalikejdbc-play-plugin" % "2.3.0" % "test",
+    "org.scalikejdbc" %% "scalikejdbc-play-initializer" % "2.4.0-M2-20141215" % "test",
     scalatest
   )
 

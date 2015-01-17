@@ -24,10 +24,12 @@ import play.core._
 import java.io.FileNotFoundException
 import org.flywaydb.core.internal.util.jdbc.DriverDataSource
 import scala.collection.JavaConverters._
+import javax.inject._
+import play.api.inject._
 
-class Plugin(implicit app: Application) extends play.api.Plugin
-    with HandleWebCommandSupport
-    with PluginConfiguration
+@Singleton
+class PlayInitializer @Inject() (implicit app: Application)
+    extends HandleWebCommandSupport
     with FileUtils {
 
   private val configReader = new ConfigReader(app)
@@ -97,9 +99,6 @@ class Plugin(implicit app: Application) extends play.api.Plugin
     }
   }
 
-  override lazy val enabled: Boolean =
-    !app.configuration.getString("flywayplugin").exists(_ == "disabled")
-
   private def migrationDescriptionToShow(dbName: String, migration: MigrationInfo): String = {
     app.resourceAsStream(s"${flywayPrefixToMigrationScript}/${dbName}/${migration.getScript}").map { in =>
       s"""|--- ${migration.getScript} ---
@@ -124,7 +123,7 @@ class Plugin(implicit app: Application) extends play.api.Plugin
     }
   }
 
-  override def onStart(): Unit = {
+  def onStart(): Unit = {
     for (dbName <- allDatabaseNames) {
       if (Play.isTest || app.configuration.getBoolean(s"db.${dbName}.migration.auto").getOrElse(false)) {
         migrateAutomatically(dbName)
@@ -134,18 +133,16 @@ class Plugin(implicit app: Application) extends play.api.Plugin
     }
   }
 
-  override def onStop(): Unit = {
-  }
-
   private def migrateAutomatically(dbName: String): Unit = {
     flyways.get(dbName).foreach { flyway =>
       flyway.migrate()
     }
   }
 
-  override def handleWebCommand(request: RequestHeader, sbtLink: BuildLink, path: java.io.File): Option[SimpleResult] = {
+  override def handleWebCommand(request: RequestHeader, sbtLink: BuildLink, path: java.io.File): Option[Result] = {
     val webCommand = new FlywayWebCommand(app, flywayPrefixToMigrationScript, flyways)
     webCommand.handleWebCommand(request: RequestHeader, sbtLink: BuildLink, path: java.io.File)
   }
 
+  onStart()
 }

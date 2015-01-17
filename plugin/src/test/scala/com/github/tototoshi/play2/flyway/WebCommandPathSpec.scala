@@ -17,9 +17,9 @@ package com.github.tototoshi.play2.flyway
 
 import org.scalatest.{ ShouldMatchers, FunSpec }
 
-class PluginConfigurationSpec extends FunSpec with ShouldMatchers {
+class WebCommandPathSpec extends FunSpec with ShouldMatchers {
 
-  val config = new PluginConfiguration {}
+  val config = new WebCommandPath {}
 
   describe("PluginConfiguration") {
 
@@ -37,4 +37,3 @@ class PluginConfigurationSpec extends FunSpec with ShouldMatchers {
     }
   }
 }
-

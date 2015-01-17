@@ -22,10 +22,10 @@ import play.api.mvc.Results._
 import org.flywaydb.core.Flyway
 
 class FlywayWebCommand(app: Application, flywayPrefixToMigrationScript: String, flyways: Map[String, Flyway])
-    extends PluginConfiguration
+    extends WebCommandPath
     with FileUtils {
 
-  def handleWebCommand(request: RequestHeader, sbtLink: BuildLink, path: java.io.File): Option[SimpleResult] = {
+  def handleWebCommand(request: RequestHeader, sbtLink: BuildLink, path: java.io.File): Option[Result] = {
 
     val css = {
       <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" type="text/css"/>

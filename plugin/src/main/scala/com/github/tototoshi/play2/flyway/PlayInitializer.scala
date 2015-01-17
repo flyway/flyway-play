@@ -28,9 +28,8 @@ import javax.inject._
 import play.api.inject._
 
 @Singleton
-class PlayInitializer @Inject() (implicit app: Application)
-    extends HandleWebCommandSupport
-    with FileUtils {
+class PlayInitializer @Inject() (implicit app: Application, webCommands: WebCommands)
+    extends FileUtils {
 
   private val flywayConfigurations = {
     val configReader = new ConfigReader(app)
@@ -107,6 +106,9 @@ class PlayInitializer @Inject() (implicit app: Application)
   }
 
   def onStart(): Unit = {
+    val flywayWebCommand = new FlywayWebCommand(app, flywayPrefixToMigrationScript, flyways)
+    webCommands.addHandler(flywayWebCommand)
+
     for (dbName <- allDatabaseNames) {
       if (Play.isTest || flywayConfigurations(dbName).auto) {
         migrateAutomatically(dbName)
@@ -120,11 +122,6 @@ class PlayInitializer @Inject() (implicit app: Application)
     flyways.get(dbName).foreach { flyway =>
       flyway.migrate()
     }
-  }
-
-  override def handleWebCommand(request: RequestHeader, sbtLink: BuildLink, path: java.io.File): Option[Result] = {
-    val webCommand = new FlywayWebCommand(app, flywayPrefixToMigrationScript, flyways)
-    webCommand.handleWebCommand(request: RequestHeader, sbtLink: BuildLink, path: java.io.File)
   }
 
   onStart()

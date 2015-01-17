@@ -22,7 +22,8 @@ import play.api.mvc.Results._
 import org.flywaydb.core.Flyway
 
 class FlywayWebCommand(app: Application, flywayPrefixToMigrationScript: String, flyways: Map[String, Flyway])
-    extends WebCommandPath
+    extends HandleWebCommandSupport
+    with WebCommandPath
     with FileUtils {
 
   def handleWebCommand(request: RequestHeader, sbtLink: BuildLink, path: java.io.File): Option[Result] = {

@@ -32,9 +32,12 @@ class PlayInitializer @Inject() (implicit app: Application)
     extends HandleWebCommandSupport
     with FileUtils {
 
-  private val configReader = new ConfigReader(app)
+  private val flywayConfigurations = {
+    val configReader = new ConfigReader(app)
+    configReader.getDatabaseConfigurations
+  }
 
-  private val allDatabaseNames = configReader.getDatabaseConfigurations.keys
+  private val allDatabaseNames = flywayConfigurations.keys
 
   private val flywayPrefixToMigrationScript = "db/migration"
 
@@ -53,7 +56,7 @@ class PlayInitializer @Inject() (implicit app: Application)
 
   private lazy val flyways: Map[String, Flyway] = {
     for {
-      (dbName, configuration) <- configReader.getDatabaseConfigurations
+      (dbName, configuration) <- flywayConfigurations
       migrationFilesLocation = s"db/migration/${dbName}"
       if migrationFileDirectoryExists(migrationFilesLocation)
     } yield {
@@ -105,7 +108,7 @@ class PlayInitializer @Inject() (implicit app: Application)
 
   def onStart(): Unit = {
     for (dbName <- allDatabaseNames) {
-      if (Play.isTest || app.configuration.getBoolean(s"db.${dbName}.migration.auto").getOrElse(false)) {
+      if (Play.isTest || flywayConfigurations(dbName).auto) {
         migrateAutomatically(dbName)
       } else {
         checkState(dbName)

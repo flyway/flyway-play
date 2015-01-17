@@ -60,6 +60,8 @@ class ConfigReader(app: Application) extends UrlParser {
 
       val outOfOrder =
         app.configuration.getBoolean(s"db.${dbName}.migration.outOfOrder").getOrElse(false)
+      val auto =
+        app.configuration.getBoolean(s"db.${dbName}.migration.auto").getOrElse(false)
 
       val database = DatabaseConfiguration(
         driver,
@@ -69,6 +71,7 @@ class ConfigReader(app: Application) extends UrlParser {
 
       dbName -> FlywayConfiguration(
         database,
+        auto,
         initOnMigrate,
         validateOnMigrate,
         encoding,

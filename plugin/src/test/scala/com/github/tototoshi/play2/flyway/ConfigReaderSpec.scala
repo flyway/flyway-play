@@ -65,6 +65,19 @@ class ConfigReaderSpec extends FunSpec with ShouldMatchers {
       }
     }
 
+    describe("auto") {
+      it("should be parsed") {
+        withDefaultDB(Map("db.default.migration.auto" -> "true")) { config =>
+          config.auto should be(true)
+        }
+      }
+      it("should be false by default") {
+        withDefaultDB(Map.empty) { config =>
+          config.auto should be(false)
+        }
+      }
+    }
+
     describe("initOnMigrate") {
       it("should be parsed") {
         withDefaultDB(Map("db.default.migration.initOnMigrate" -> "true")) { config =>

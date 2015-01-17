@@ -17,6 +17,7 @@ package com.github.tototoshi.play2.flyway
 
 case class FlywayConfiguration(
   database: DatabaseConfiguration,
+  auto: Boolean,
   initOnMigrate: Boolean,
   validateOnMigrate: Boolean,
   encoding: String,

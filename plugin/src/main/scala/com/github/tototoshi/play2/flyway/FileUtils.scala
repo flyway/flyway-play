@@ -34,6 +34,7 @@ trait FileUtils {
       src.mkString
     } finally {
       src.close()
+      in.close()
     }
   }
 

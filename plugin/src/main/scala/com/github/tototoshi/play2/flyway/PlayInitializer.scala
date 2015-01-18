@@ -28,8 +28,7 @@ import javax.inject._
 import play.api.inject._
 
 @Singleton
-class PlayInitializer @Inject() (implicit app: Application, webCommands: WebCommands)
-    extends FileUtils {
+class PlayInitializer @Inject() (implicit app: Application, webCommands: WebCommands) {
 
   private val flywayConfigurations = {
     val configReader = new ConfigReader(app)
@@ -84,12 +83,12 @@ class PlayInitializer @Inject() (implicit app: Application, webCommands: WebComm
   private def migrationDescriptionToShow(dbName: String, migration: MigrationInfo): String = {
     app.resourceAsStream(s"${flywayPrefixToMigrationScript}/${dbName}/${migration.getScript}").map { in =>
       s"""|--- ${migration.getScript} ---
-          |${readInputStreamToString(in)}""".stripMargin
+          |${FileUtils.readInputStreamToString(in)}""".stripMargin
     }.orElse {
       import scala.util.control.Exception._
       val code = for {
-        script <- findJdbcMigrationFile(app.path, migration.getScript)
-      } yield readFileToString(script)
+        script <- FileUtils.findJdbcMigrationFile(app.path, migration.getScript)
+      } yield FileUtils.readFileToString(script)
       allCatch opt { Class.forName(migration.getScript) } map { cls =>
         s"""|--- ${migration.getScript} ---
             |$code""".stripMargin

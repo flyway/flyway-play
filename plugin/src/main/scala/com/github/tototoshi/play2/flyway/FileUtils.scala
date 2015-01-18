@@ -17,7 +17,7 @@ package com.github.tototoshi.play2.flyway
 
 import java.io.{ File, InputStream }
 
-trait FileUtils {
+object FileUtils {
 
   def readFileToString(filename: File): String = {
     val src = scala.io.Source.fromFile(filename, "UTF-8")

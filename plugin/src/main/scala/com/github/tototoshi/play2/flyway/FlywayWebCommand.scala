@@ -23,8 +23,7 @@ import org.flywaydb.core.Flyway
 
 class FlywayWebCommand(app: Application, flywayPrefixToMigrationScript: String, flyways: Map[String, Flyway])
     extends HandleWebCommandSupport
-    with WebCommandPath
-    with FileUtils {
+    with WebCommandPath {
 
   def handleWebCommand(request: RequestHeader, sbtLink: BuildLink, path: java.io.File): Option[Result] = {
 
@@ -78,11 +77,11 @@ class FlywayWebCommand(app: Application, flywayPrefixToMigrationScript: String, 
           info <- flyway.info().all()
         } yield {
           val sql = app.resourceAsStream(s"${flywayPrefixToMigrationScript}/${dbName}/${info.getScript}").map { in =>
-            readInputStreamToString(in)
+            FileUtils.readInputStreamToString(in)
           }.orElse {
             for {
-              script <- findJdbcMigrationFile(app.path, info.getScript)
-            } yield readFileToString(script)
+              script <- FileUtils.findJdbcMigrationFile(app.path, info.getScript)
+            } yield FileUtils.readFileToString(script)
           }.getOrElse("")
 
           val status = {

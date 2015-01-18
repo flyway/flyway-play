@@ -87,9 +87,12 @@ class PlayInitializer @Inject() (implicit app: Application, webCommands: WebComm
           |${readInputStreamToString(in)}""".stripMargin
     }.orElse {
       import scala.util.control.Exception._
+      val code = for {
+        script <- findJdbcMigrationFile(app.path, migration.getScript)
+      } yield readFileToString(script)
       allCatch opt { Class.forName(migration.getScript) } map { cls =>
         s"""|--- ${migration.getScript} ---
-            | (Java-based migration)""".stripMargin
+            |$code""".stripMargin
       }
     }.getOrElse(throw new FileNotFoundException(s"Migration file not found. ${migration.getScript}"))
   }

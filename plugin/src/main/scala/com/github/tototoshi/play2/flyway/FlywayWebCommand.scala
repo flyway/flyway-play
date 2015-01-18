@@ -79,6 +79,10 @@ class FlywayWebCommand(app: Application, flywayPrefixToMigrationScript: String, 
         } yield {
           val sql = app.resourceAsStream(s"${flywayPrefixToMigrationScript}/${dbName}/${info.getScript}").map { in =>
             readInputStreamToString(in)
+          }.orElse {
+            for {
+              script <- findJdbcMigrationFile(app.path, info.getScript)
+            } yield readFileToString(script)
           }.getOrElse("")
 
           val status = {

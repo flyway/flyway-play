@@ -55,7 +55,7 @@ class FileUtilsSpec extends FunSpec with ShouldMatchers {
       val testfile2 = new File(sub2, "BBB.scala")
       testfile2.createNewFile()
 
-      FileUtils.recursiveListFiles(temp) should be(
+      FileUtils.recursiveListFiles(temp) should contain theSameElementsAs (
         Seq(sub1, sub2, testfile1, testfile2)
       )
 

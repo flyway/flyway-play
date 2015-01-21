@@ -13,21 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.tototoshi.play2.flyway
+package org.flywaydb.play
 
-case class FlywayConfiguration(
-  database: DatabaseConfiguration,
-  auto: Boolean,
-  initOnMigrate: Boolean,
-  validateOnMigrate: Boolean,
-  encoding: String,
-  placeholderPrefix: Option[String],
-  placeholderSuffix: Option[String],
-  placeholders: Map[String, String],
-  outOfOrder: Boolean)
+import play.api._
+import play.api.inject._
 
-case class DatabaseConfiguration(
-  driver: String,
-  url: String,
-  user: String,
-  password: String)
+class PlayModule extends Module {
+  def bindings(environment: Environment, configuration: Configuration) = {
+    Seq(
+      bind[PlayInitializer].toSelf.eagerly
+    )
+  }
+}

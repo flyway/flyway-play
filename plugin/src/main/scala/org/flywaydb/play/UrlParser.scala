@@ -1,4 +1,4 @@
-package com.github.tototoshi.play2.flyway
+package org.flywaydb.play
 
 import play.api.{ Mode, Play }
 

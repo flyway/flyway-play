@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.tototoshi.play2.flyway
+package org.flywaydb.play
 
 class MigrationConfigurationException(val message: String)
   extends Exception(message)
-

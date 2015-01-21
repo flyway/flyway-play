@@ -11,8 +11,8 @@ object ApplicationBuild extends Build {
     base = file ("plugin")
   ).settings(
     Seq(
-      name := "play-flyway",
-      organization := "com.github.tototoshi",
+      name := "flyway-play",
+      organization := "org.flywaydb",
       version := "2.0.0-SNAPSHOT",
       scalaVersion := "2.10.4",
       crossScalaVersions := scalaVersion.value :: "2.11.5" :: Nil,

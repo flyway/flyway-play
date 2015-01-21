@@ -13,7 +13,7 @@ object ApplicationBuild extends Build {
     Seq(
       name := "play-flyway",
       organization := "com.github.tototoshi",
-      version := "1.2.0",
+      version := "2.0.0-SNAPSHOT",
       scalaVersion := "2.10.4",
       crossScalaVersions := scalaVersion.value :: "2.11.5" :: Nil,
       resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",

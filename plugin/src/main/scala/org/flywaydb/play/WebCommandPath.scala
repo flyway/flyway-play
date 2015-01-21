@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.tototoshi.play2.flyway
+package org.flywaydb.play
 
 trait WebCommandPath {
   private val applyPathRegex = s"""/@flyway/([a-zA-Z0-9_]+)/migrate""".r

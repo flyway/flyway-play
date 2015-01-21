@@ -3,10 +3,12 @@ language: scala
 jdk:
   - oraclejdk7
   - oraclejdk8
+  - openjdk6
+  - openjdk7
 
 scala:
   - 2.10.4
-  - 2.11.1
+  - 2.11.5
 
 script:
   - sbt ++$TRAVIS_SCALA_VERSION playapp/test

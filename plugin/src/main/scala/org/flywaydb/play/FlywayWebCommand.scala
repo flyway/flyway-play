@@ -65,8 +65,11 @@ class FlywayWebCommand(app: Application, flywayPrefixToMigrationScript: String, 
         flyways.get(dbName).foreach(_.clean())
         Some(Redirect(getRedirectUrlFromRequest(request)))
       }
+      case repairPath(dbName) => {
+        flyways.get(dbName).foreach(_.repair())
+        Some(Redirect(getRedirectUrlFromRequest(request)))
+      }
       case versionedInitPath(dbName, version) => {
-
         flyways.get(dbName).foreach(_.setBaselineVersion(version))
         flyways.get(dbName).foreach(_.baseline())
         Some(Redirect(getRedirectUrlFromRequest(request)))
@@ -116,6 +119,7 @@ class FlywayWebCommand(app: Application, flywayPrefixToMigrationScript: String, 
 
         val migratePathWithRedirectParam = withRedirectParam(migratePath(dbName))
         val cleanPathWithRedirectParam = withRedirectParam(cleanPath(dbName))
+        val repairPathWithRedirectParam = withRedirectParam(repairPath(dbName))
 
         val html =
           <html>
@@ -129,6 +133,7 @@ class FlywayWebCommand(app: Application, flywayPrefixToMigrationScript: String, 
                 <a href="/">&lt;&lt; Back to app</a>
                 <h2>Database: { dbName }</h2>
                 <a class="btn btn-primary" href={ migratePathWithRedirectParam }>migrate</a>
+                <a class="btn btn-primary" href={ repairPathWithRedirectParam }>repair</a>
                 <a class="btn btn-danger" href={ cleanPathWithRedirectParam }>clean</a>
                 <!-- Split button -->
                 <div class="btn-group">

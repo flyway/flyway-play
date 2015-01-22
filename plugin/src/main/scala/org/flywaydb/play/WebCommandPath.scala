@@ -19,6 +19,7 @@ trait WebCommandPath {
   private val applyPathRegex = s"""/@flyway/([a-zA-Z0-9_]+)/migrate""".r
   private val showInfoPathRegex = """/@flyway/([a-zA-Z0-9_]+)""".r
   private val cleanPathRegex = """/@flyway/([a-zA-Z0-9_]+)/clean""".r
+  private val repairPathRegex = """/@flyway/([a-zA-Z0-9_]+)/repair""".r
   private val initPathRegex = """/@flyway/([a-zA-Z0-9_]+)/init/""".r
   private val versionedInitPathRegex = """/@flyway/([a-zA-Z0-9_]+)/init/([0-9.]+)""".r
 
@@ -50,6 +51,18 @@ trait WebCommandPath {
 
     def unapply(path: String): Option[String] = {
       cleanPathRegex.findFirstMatchIn(path).map(_.group(1))
+    }
+
+  }
+
+  object repairPath {
+
+    def apply(dbName: String): String = {
+      s"/@flyway/${dbName}/repair"
+    }
+
+    def unapply(path: String): Option[String] = {
+      repairPathRegex.findFirstMatchIn(path).map(_.group(1))
     }
 
   }

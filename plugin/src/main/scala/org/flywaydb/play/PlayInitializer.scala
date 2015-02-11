@@ -126,5 +126,11 @@ class PlayInitializer @Inject() (implicit app: Application, webCommands: WebComm
     }
   }
 
-  onStart()
+  val enabled: Boolean =
+    !app.configuration.getString("flywayplugin").exists(_ == "disabled")
+
+  if (enabled) {
+    onStart()
+  }
+
 }

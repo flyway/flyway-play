@@ -15,7 +15,7 @@ object ApplicationBuild extends Build {
       organization := "org.flywaydb",
       version := "2.0.0-SNAPSHOT",
       scalaVersion := "2.10.4",
-      crossScalaVersions := scalaVersion.value :: "2.11.5" :: Nil,
+      crossScalaVersions := scalaVersion.value :: "2.11.6" :: Nil,
       resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
       libraryDependencies ++= Seq(
         "com.typesafe.play" %% "play" % play.core.PlayVersion.current % "provided",

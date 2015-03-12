@@ -1,6 +1,6 @@
 # flyway-play
 
-![travis](https://api.travis-ci.org/flyway/flyway-play.svg)
+[![Build Status](https://travis-ci.org/flyway/flyway-play.svg?branch=master)](https://travis-ci.org/flyway/flyway-play)
 
 Flyway module for Play 2.4 or later. It aims to be a substitute for play-evolutions.
 

@@ -65,6 +65,9 @@ class PlayInitializer @Inject() (implicit app: Application, webCommands: WebComm
       flyway.setValidateOnMigrate(configuration.validateOnMigrate)
       flyway.setEncoding(configuration.encoding)
       flyway.setOutOfOrder(configuration.outOfOrder)
+      for (schemas <- configuration.schemas) {
+        flyway.setSchemas(schemas)
+      }
       if (configuration.initOnMigrate) {
         flyway.setBaselineOnMigrate(true)
       }

@@ -12,11 +12,8 @@ This module is successor of [tototoshi/play-flyway](https://github.com/tototoshi
 build.sbt
 
 ```scala
-resolvers +=
-  "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
-
 libraryDependencies ++= Seq(
-  "org.flywaydb" %% "flyway-play" % "2.0.0-SNAPSHOT"
+  "org.flywaydb" %% "flyway-play" % "2.0.0-RC1"
 )
 ```
 

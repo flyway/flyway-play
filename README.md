@@ -6,7 +6,7 @@ Flyway module for Play 2.4 or later. It aims to be a substitute for play-evoluti
 
 This module is successor of [tototoshi/play-flyway](https://github.com/tototoshi/play-flyway), which is a Play Plugin supporting Play 2.1 ~ 2.3.
 
-Documents is here. https://github.com/flyway/flyway-play/tree/master/doc
+Documents is here. https://github.com/flyway/flyway-play/tree/master/doc/index.md
 
 ![image](./screenshot1.png)
 

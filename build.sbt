@@ -11,7 +11,7 @@ lazy val plugin = Project (
     name := "flyway-play",
     organization := "org.flywaydb",
     version := "2.0.0-RC1",
-    scalaVersion := "2.10.4",
+    scalaVersion := "2.10.5",
     crossScalaVersions := scalaVersion.value :: "2.11.6" :: Nil,
     resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
     libraryDependencies ++= Seq(
@@ -43,7 +43,7 @@ lazy val playapp = Project(
 ).enablePlugins(play.PlayScala).settings(scalariformSettings:_*)
 .settings(
   resourceDirectories in Test += baseDirectory.value / "conf",
-  scalaVersion := "2.10.4",
+  scalaVersion := "2.10.5",
   version := playAppVersion,
   libraryDependencies ++= appDependencies
 )
@@ -83,4 +83,3 @@ val _pomExtra =
       <url>http://tototoshi.github.com</url>
     </developer>
   </developers>
-

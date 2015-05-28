@@ -18,7 +18,7 @@ build.sbt
 
 ```scala
 libraryDependencies ++= Seq(
-  "org.flywaydb" %% "flyway-play" % "2.0.0-RC2"
+  "org.flywaydb" %% "flyway-play" % "2.0.0"
 )
 ```
 

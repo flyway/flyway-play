@@ -36,7 +36,10 @@ class ConfigReader(app: Application) extends UrlParser {
       val driver = app.configuration.getString(s"db.${dbName}.driver").getOrElse(
         throw new MigrationConfigurationException(s"db.${dbName}.driver is not set.")
       )
-      val user = parsedUser.orElse(app.configuration.getString(s"db.${dbName}.user")).orNull
+      val user = parsedUser
+        .orElse(app.configuration.getString(s"db.${dbName}.username"))
+        .orElse(app.configuration.getString(s"db.${dbName}.user"))
+        .orNull
       val password = parsedPass
         .orElse(app.configuration.getString(s"db.${dbName}.password"))
         .orElse(app.configuration.getString(s"db.${dbName}.pass"))

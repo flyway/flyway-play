@@ -25,13 +25,13 @@ class ConfigReaderSpec extends FunSpec with ShouldMatchers {
   val defaultDB = Map(
     "db.default.driver" -> "org.h2.Driver",
     "db.default.url" -> "jdbc:h2:mem:example;DB_CLOSE_DELAY=-1",
-    "db.default.user" -> "sa"
+    "db.default.username" -> "sa"
   )
 
   val secondaryDB = Map(
     "db.secondary.driver" -> "org.h2.Driver",
     "db.secondary.url" -> "jdbc:h2:mem:example2;DB_CLOSE_DELAY=-1",
-    "db.secondary.user" -> "sa",
+    "db.secondary.username" -> "sa",
     "db.secondary.password" -> "secret2"
   )
 
@@ -39,7 +39,7 @@ class ConfigReaderSpec extends FunSpec with ShouldMatchers {
     "db.third.driver" -> "org.h2.Driver",
     "db.third.url" -> "jdbc:h2:mem:example3;DB_CLOSE_DELAY=-1",
     "db.third.user" -> "sa",
-    "db.third.password" -> "secret3"
+    "db.third.pass" -> "secret3"
   )
 
   def withDefaultDB[A](additionalConfiguration: Map[String, String])(assertion: FlywayConfiguration => A): A =

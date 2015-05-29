@@ -1,5 +1,6 @@
 scalariformSettings
 
+val flywayPlayVersion = "2.0.1-SNAPSHOT"
 
 val scalatest = "org.scalatest" %% "scalatest" % "2.1.5" % "test"
 
@@ -10,7 +11,7 @@ lazy val plugin = Project (
   Seq(
     name := "flyway-play",
     organization := "org.flywaydb",
-    version := "2.0.0",
+    version := flywayPlayVersion,
     scalaVersion := "2.10.5",
     crossScalaVersions := scalaVersion.value :: "2.11.6" :: Nil,
     resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",

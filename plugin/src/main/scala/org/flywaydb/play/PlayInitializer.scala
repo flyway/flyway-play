@@ -75,6 +75,9 @@ class PlayInitializer @Inject() (implicit app: Application, webCommands: WebComm
         flyway.setPlaceholderSuffix(suffix)
       }
       flyway.setPlaceholders(configuration.placeholders.asJava)
+      for (callbacks <- configuration.callbacks) {
+        flyway.setCallbacks(callbacks: _*)
+      }
 
       dbName -> flyway
     }

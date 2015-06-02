@@ -138,6 +138,15 @@ Otherwise it failed to start when migration is needed.
 $ play -Ddb.default.migration.auto=true start
 ```
 
+### Callbacks
+
+You can register callbacks during the migration process.
+For that use `callbacks`, and give an array with all the callbacks to run.
+
+```
+db.default.migration.callbacks=["db.MigrationLogCallback"]
+```
+
 ## <a class="anchor" name="example"></a>Example application
 
 [seratch/devteam-app](https://github.com/seratch/devteam-app "seratch/devteam-app") is using play-flyway. Maybe this is a good example.

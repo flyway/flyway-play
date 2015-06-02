@@ -16,6 +16,7 @@
 package org.flywaydb.play
 
 import play.api._
+import scala.collection.JavaConverters._
 
 class ConfigReader(app: Application) extends UrlParser {
 
@@ -65,6 +66,8 @@ class ConfigReader(app: Application) extends UrlParser {
         app.configuration.getBoolean(s"db.${dbName}.migration.outOfOrder").getOrElse(false)
       val auto =
         app.configuration.getBoolean(s"db.${dbName}.migration.auto").getOrElse(false)
+      val callbacks =
+        app.configuration.getStringList(s"db.${dbName}.migration.callbacks").map(_.asScala.toSeq)
 
       val database = DatabaseConfiguration(
         driver,
@@ -81,7 +84,8 @@ class ConfigReader(app: Application) extends UrlParser {
         placeholderPrefix,
         placeholderSuffix,
         placeholders,
-        outOfOrder
+        outOfOrder,
+        callbacks
       )
     }).toMap
 

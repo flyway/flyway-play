@@ -176,5 +176,18 @@ class ConfigReaderSpec extends FunSpec with ShouldMatchers {
       }
     }
 
+    describe("cleanOnStart") {
+      it("should be parsed") {
+        withDefaultDB(Map("db.default.migration.cleanOnStart" -> "true")) { config =>
+          config.cleanOnStart should be(true)
+        }
+      }
+      it("should be false by default") {
+        withDefaultDB(Map.empty) { config =>
+          config.cleanOnStart should be(false)
+        }
+      }
+    }
+
   }
 }

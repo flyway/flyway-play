@@ -20,6 +20,14 @@ build.sbt
 libraryDependencies ++= Seq(
   "org.flywaydb" %% "flyway-play" % "2.0.1"
 )
+
+// or snapshot version
+resolvers += 
+  "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+
+libraryDependencies ++= Seq(
+  "org.flywaydb" %% "flyway-play" % "2.1.0-SNAPSHOT"
+)
 ```
 
 conf/application.conf
@@ -31,6 +39,19 @@ play.modules.enabled += "org.flywaydb.play.PlayModule"
 
 ## <a class="anchor" name="getting-started"></a>Getting Started
 
+### Basic configuration
+
+Database settings can be set in manner of Play2.
+
+```
+db.default.driver=org.h2.Driver
+db.default.url="jdbc:h2:mem:example2;db_CLOSE_DELAY=-1"
+db.default.user="sa"
+db.default.password="secret"
+
+# optional
+db.default.schemas=["public", "other"]
+```
 
 ### Place migration scripts
 

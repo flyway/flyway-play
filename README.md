@@ -46,7 +46,7 @@ Database settings can be set in manner of Play2.
 ```
 db.default.driver=org.h2.Driver
 db.default.url="jdbc:h2:mem:example2;db_CLOSE_DELAY=-1"
-db.default.user="sa"
+db.default.username="sa"
 db.default.password="secret"
 
 # optional

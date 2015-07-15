@@ -42,7 +42,7 @@ class ConfigReaderSpec extends FunSpec with ShouldMatchers {
     "db.third.pass" -> "secret3"
   )
 
-  def withDefaultDB[A](additionalConfiguration: Map[String, String])(assertion: FlywayConfiguration => A): A =
+  def withDefaultDB[A](additionalConfiguration: Map[String, Object])(assertion: FlywayConfiguration => A): A =
     running(FakeApplication(
       additionalConfiguration = defaultDB ++ additionalConfiguration
     )) {
@@ -185,6 +185,19 @@ class ConfigReaderSpec extends FunSpec with ShouldMatchers {
       it("should be false by default") {
         withDefaultDB(Map.empty) { config =>
           config.cleanOnStart should be(false)
+        }
+      }
+    }
+
+    describe("schemas") {
+      it("should be parsed") {
+        withDefaultDB(Map("db.default.migration.schemas" -> List("public", "other"))) { config =>
+          config.schemas should be(List("public", "other"))
+        }
+      }
+      it("should be None by default") {
+        withDefaultDB(Map.empty) { config =>
+          config.schemas should be(List.empty)
         }
       }
     }

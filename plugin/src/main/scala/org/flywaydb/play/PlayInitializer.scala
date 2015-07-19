@@ -90,7 +90,7 @@ class PlayInitializer @Inject() (implicit app: Application, webCommands: WebComm
       val code = for {
         script <- FileUtils.findJdbcMigrationFile(app.path, migration.getScript)
       } yield FileUtils.readFileToString(script)
-      allCatch opt { Class.forName(migration.getScript) } map { cls =>
+      allCatch opt { app.classloader.loadClass(migration.getScript) } map { cls =>
         s"""|--- ${migration.getScript} ---
             |$code""".stripMargin
       }

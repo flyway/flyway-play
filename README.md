@@ -18,15 +18,7 @@ build.sbt
 
 ```scala
 libraryDependencies ++= Seq(
-  "org.flywaydb" %% "flyway-play" % "2.0.1"
-)
-
-// or snapshot version
-resolvers += 
-  "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
-
-libraryDependencies ++= Seq(
-  "org.flywaydb" %% "flyway-play" % "2.1.0-SNAPSHOT"
+  "org.flywaydb" %% "flyway-play" % "2.1.0"
 )
 ```
 

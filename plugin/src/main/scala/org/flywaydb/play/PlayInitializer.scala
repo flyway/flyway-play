@@ -113,6 +113,9 @@ class PlayInitializer @Inject() (implicit app: Application, webCommands: WebComm
     webCommands.addHandler(flywayWebCommand)
 
     for (dbName <- allDatabaseNames) {
+      if (flywayConfigurations(dbName).cleanOnStart) {
+        flyways.get(dbName).foreach { flyway => flyway.clean() }
+      }
       if (Play.isTest || flywayConfigurations(dbName).auto) {
         migrateAutomatically(dbName)
       } else {

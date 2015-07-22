@@ -66,6 +66,8 @@ class ConfigReader(app: Application) extends UrlParser {
         app.configuration.getBoolean(s"db.${dbName}.migration.outOfOrder").getOrElse(false)
       val auto =
         app.configuration.getBoolean(s"db.${dbName}.migration.auto").getOrElse(false)
+      val cleanOnStart =
+        app.configuration.getBoolean(s"db.${dbName}.migration.cleanOnStart").getOrElse(false)
       val schemas =
         app.configuration.getStringList(s"db.${dbName}.migration.schemas").getOrElse(java.util.Collections.emptyList[String]).asScala.toList
 
@@ -85,6 +87,7 @@ class ConfigReader(app: Application) extends UrlParser {
         placeholderSuffix,
         placeholders,
         outOfOrder,
+        cleanOnStart,
         schemas
       )
     }).toMap

@@ -157,6 +157,15 @@ $ play -Ddb.default.migration.auto=true start
 
 ## <a class="anchor" name="changelog"></a>Change Log
 
+### 2.2.0
+
+ - Removed dependency on play.api.Application
+
+### 2.1.0
+
+ - Support for specifying a list of schemas
+ - Fixed classloader issue
+
 ### 2.0.1
 
  - Supported new configuration key, `db.default.username`.

@@ -21,7 +21,11 @@ import play.api.mvc._
 import play.api.mvc.Results._
 import org.flywaydb.core.Flyway
 
-class FlywayWebCommand(app: Application, flywayPrefixToMigrationScript: String, flyways: Map[String, Flyway])
+class FlywayWebCommand(
+  configuration: Configuration,
+  environment: Environment,
+  flywayPrefixToMigrationScript: String,
+  flyways: Map[String, Flyway])
     extends HandleWebCommandSupport
     with WebCommandPath {
 
@@ -79,11 +83,11 @@ class FlywayWebCommand(app: Application, flywayPrefixToMigrationScript: String, 
           flyway <- flyways.get(dbName).toList
           info <- flyway.info().all()
         } yield {
-          val sql = app.resourceAsStream(s"${flywayPrefixToMigrationScript}/${dbName}/${info.getScript}").map { in =>
+          val sql = environment.resourceAsStream(s"${flywayPrefixToMigrationScript}/${dbName}/${info.getScript}").map { in =>
             FileUtils.readInputStreamToString(in)
           }.orElse {
             for {
-              script <- FileUtils.findJdbcMigrationFile(app.path, info.getScript)
+              script <- FileUtils.findJdbcMigrationFile(environment.rootPath, info.getScript)
             } yield FileUtils.readFileToString(script)
           }.getOrElse("")
 

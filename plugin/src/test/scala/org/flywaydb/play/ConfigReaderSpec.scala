@@ -15,6 +15,7 @@
  */
 package org.flywaydb.play
 
+import play.api.{ Environment, Configuration }
 import play.api.test._
 import play.api.test.Helpers._
 import org.scalatest.FunSpec
@@ -42,27 +43,24 @@ class ConfigReaderSpec extends FunSpec with ShouldMatchers {
     "db.third.pass" -> "secret3"
   )
 
-  def withDefaultDB[A](additionalConfiguration: Map[String, Object])(assertion: FlywayConfiguration => A): A =
-    running(FakeApplication(
-      additionalConfiguration = defaultDB ++ additionalConfiguration
-    )) {
-      val reader = new ConfigReader(play.api.Play.current)
-      val configMap = reader.getFlywayConfigurations
-      assertion(configMap.get("default").get)
-    }
+  def withDefaultDB[A](additionalConfiguration: Map[String, Object])(assertion: FlywayConfiguration => A): A = {
+    val configuration = Configuration((defaultDB ++ additionalConfiguration).toSeq: _*)
+    val environment = Environment.simple()
+    val reader = new ConfigReader(configuration, environment)
+    val configMap = reader.getFlywayConfigurations
+    assertion(configMap.get("default").get)
+  }
 
   describe("ConfigReader") {
 
     it("should get database configurations") {
-      running(FakeApplication(
-        additionalConfiguration = defaultDB ++ secondaryDB ++ thirdDB
-      )) {
-        val reader = new ConfigReader(play.api.Play.current)
-        val configMap = reader.getFlywayConfigurations
-        configMap.get("default").get.database should be(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:example;DB_CLOSE_DELAY=-1", "sa", null))
-        configMap.get("secondary").get.database should be(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:example2;DB_CLOSE_DELAY=-1", "sa", "secret2"))
-        configMap.get("third").get.database should be(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:example3;DB_CLOSE_DELAY=-1", "sa", "secret3"))
-      }
+      val configuration = Configuration((defaultDB ++ secondaryDB ++ thirdDB).toSeq: _*)
+      val environment = Environment.simple()
+      val reader = new ConfigReader(configuration, environment)
+      val configMap = reader.getFlywayConfigurations
+      configMap.get("default").get.database should be(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:example;DB_CLOSE_DELAY=-1", "sa", null))
+      configMap.get("secondary").get.database should be(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:example2;DB_CLOSE_DELAY=-1", "sa", "secret2"))
+      configMap.get("third").get.database should be(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:example3;DB_CLOSE_DELAY=-1", "sa", "secret3"))
     }
 
     describe("auto") {

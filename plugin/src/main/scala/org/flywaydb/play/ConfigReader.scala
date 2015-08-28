@@ -18,10 +18,12 @@ package org.flywaydb.play
 import play.api._
 import scala.collection.JavaConverters._
 
-class ConfigReader(app: Application) extends UrlParser {
+class ConfigReader(configuration: Configuration, environment: Environment) {
+
+  val urlParser = new UrlParser(environment: Environment)
 
   private def getAllDatabaseNames: Seq[String] = (for {
-    config <- app.configuration.getConfig("db").toList
+    config <- configuration.getConfig("db").toList
     dbName <- config.subKeys
   } yield {
     dbName
@@ -31,43 +33,43 @@ class ConfigReader(app: Application) extends UrlParser {
     (for {
       dbName <- getAllDatabaseNames
     } yield {
-      val (url, parsedUser, parsedPass) = app.configuration.getString(s"db.${dbName}.url").map(parseUrl(_)).getOrElse(
+      val (url, parsedUser, parsedPass) = configuration.getString(s"db.${dbName}.url").map(urlParser.parseUrl(_)).getOrElse(
         throw new MigrationConfigurationException(s"db.${dbName}.url is not set.")
       )
-      val driver = app.configuration.getString(s"db.${dbName}.driver").getOrElse(
+      val driver = configuration.getString(s"db.${dbName}.driver").getOrElse(
         throw new MigrationConfigurationException(s"db.${dbName}.driver is not set.")
       )
       val user = parsedUser
-        .orElse(app.configuration.getString(s"db.${dbName}.username"))
-        .orElse(app.configuration.getString(s"db.${dbName}.user"))
+        .orElse(configuration.getString(s"db.${dbName}.username"))
+        .orElse(configuration.getString(s"db.${dbName}.user"))
         .orNull
       val password = parsedPass
-        .orElse(app.configuration.getString(s"db.${dbName}.password"))
-        .orElse(app.configuration.getString(s"db.${dbName}.pass"))
+        .orElse(configuration.getString(s"db.${dbName}.password"))
+        .orElse(configuration.getString(s"db.${dbName}.pass"))
         .orNull
       val initOnMigrate =
-        app.configuration.getBoolean(s"db.${dbName}.migration.initOnMigrate").getOrElse(false)
+        configuration.getBoolean(s"db.${dbName}.migration.initOnMigrate").getOrElse(false)
       val validateOnMigrate =
-        app.configuration.getBoolean(s"db.${dbName}.migration.validateOnMigrate").getOrElse(true)
+        configuration.getBoolean(s"db.${dbName}.migration.validateOnMigrate").getOrElse(true)
       val encoding =
-        app.configuration.getString(s"db.${dbName}.migration.encoding").getOrElse("UTF-8")
+        configuration.getString(s"db.${dbName}.migration.encoding").getOrElse("UTF-8")
       val placeholderPrefix =
-        app.configuration.getString(s"db.${dbName}.migration.placeholderPrefix")
+        configuration.getString(s"db.${dbName}.migration.placeholderPrefix")
       val placeholderSuffix =
-        app.configuration.getString(s"db.${dbName}.migration.placeholderSuffix")
+        configuration.getString(s"db.${dbName}.migration.placeholderSuffix")
 
       val placeholders = {
-        app.configuration.getConfig(s"db.${dbName}.migration.placeholders").map { config =>
+        configuration.getConfig(s"db.${dbName}.migration.placeholders").map { config =>
           config.subKeys.map { key => (key -> config.getString(key).getOrElse("")) }.toMap
         }.getOrElse(Map.empty)
       }
 
       val outOfOrder =
-        app.configuration.getBoolean(s"db.${dbName}.migration.outOfOrder").getOrElse(false)
+        configuration.getBoolean(s"db.${dbName}.migration.outOfOrder").getOrElse(false)
       val auto =
-        app.configuration.getBoolean(s"db.${dbName}.migration.auto").getOrElse(false)
+        configuration.getBoolean(s"db.${dbName}.migration.auto").getOrElse(false)
       val schemas =
-        app.configuration.getStringList(s"db.${dbName}.migration.schemas").getOrElse(java.util.Collections.emptyList[String]).asScala.toList
+        configuration.getStringList(s"db.${dbName}.migration.schemas").getOrElse(java.util.Collections.emptyList[String]).asScala.toList
 
       val database = DatabaseConfiguration(
         driver,

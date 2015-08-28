@@ -15,12 +15,12 @@
  */
 package org.flywaydb.play
 
-import play.api.{ Mode, Play }
+import play.api.{ Environment, Mode }
 
 /**
  * Most of the code is taken from package play.api.db.DB.
  */
-trait UrlParser {
+class UrlParser(environment: Environment) {
   val PostgresFullUrl = "^postgres://([a-zA-Z0-9_]+):([^@]+)@([^/]+)/([^\\s]+)$".r
   val MysqlFullUrl = "^mysql://([a-zA-Z0-9_]+):([^@]+)@([^/]+)/([^\\s]+)$".r
   val MysqlCustomProperties = ".*\\?(.*)".r
@@ -36,7 +36,7 @@ trait UrlParser {
         val addDefaultPropertiesIfNeeded = MysqlCustomProperties.findFirstMatchIn(url).map(_ => "").getOrElse(defaultProperties)
         ("jdbc:mysql://%s/%s".format(host, dbname + addDefaultPropertiesIfNeeded), Some(username), Some(password))
       case url @ H2DefaultUrl() if !url.contains("DB_CLOSE_DELAY") =>
-        val jdbcUrl = if (Play.maybeApplication.exists(_.mode == Mode.Dev)) {
+        val jdbcUrl = if (environment.mode == Mode.Dev) {
           url + ";DB_CLOSE_DELAY=-1"
         } else {
           url

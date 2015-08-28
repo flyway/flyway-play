@@ -15,23 +15,25 @@
  */
 package org.flywaydb.play
 
-import play.api._
-import play.api.mvc._
-import play.api.mvc.Results._
+import java.io.FileNotFoundException
+import javax.inject._
+
 import org.flywaydb.core.Flyway
 import org.flywaydb.core.api.MigrationInfo
-import play.core._
-import java.io.FileNotFoundException
 import org.flywaydb.core.internal.util.jdbc.DriverDataSource
+import play.api._
+import play.core._
+
 import scala.collection.JavaConverters._
-import javax.inject._
-import play.api.inject._
 
 @Singleton
-class PlayInitializer @Inject() (implicit app: Application, webCommands: WebCommands) {
+class PlayInitializer @Inject() (
+    configuration: Configuration,
+    environment: Environment,
+    webCommands: WebCommands) {
 
   private val flywayConfigurations = {
-    val configReader = new ConfigReader(app)
+    val configReader = new ConfigReader(configuration, environment)
     configReader.getFlywayConfigurations
   }
 
@@ -40,7 +42,7 @@ class PlayInitializer @Inject() (implicit app: Application, webCommands: WebComm
   private val flywayPrefixToMigrationScript = "db/migration"
 
   private def migrationFileDirectoryExists(path: String): Boolean = {
-    app.resource(path) match {
+    environment.resource(path) match {
       case Some(r) => {
         Logger.debug(s"Directory for migration files found. ${path}")
         true
@@ -82,15 +84,15 @@ class PlayInitializer @Inject() (implicit app: Application, webCommands: WebComm
   }
 
   private def migrationDescriptionToShow(dbName: String, migration: MigrationInfo): String = {
-    app.resourceAsStream(s"${flywayPrefixToMigrationScript}/${dbName}/${migration.getScript}").map { in =>
+    environment.resourceAsStream(s"${flywayPrefixToMigrationScript}/${dbName}/${migration.getScript}").map { in =>
       s"""|--- ${migration.getScript} ---
           |${FileUtils.readInputStreamToString(in)}""".stripMargin
     }.orElse {
       import scala.util.control.Exception._
       val code = for {
-        script <- FileUtils.findJdbcMigrationFile(app.path, migration.getScript)
+        script <- FileUtils.findJdbcMigrationFile(environment.rootPath, migration.getScript)
       } yield FileUtils.readFileToString(script)
-      allCatch opt { app.classloader.loadClass(migration.getScript) } map { cls =>
+      allCatch opt { environment.classLoader.loadClass(migration.getScript) } map { cls =>
         s"""|--- ${migration.getScript} ---
             |$code""".stripMargin
       }
@@ -109,11 +111,11 @@ class PlayInitializer @Inject() (implicit app: Application, webCommands: WebComm
   }
 
   def onStart(): Unit = {
-    val flywayWebCommand = new FlywayWebCommand(app, flywayPrefixToMigrationScript, flyways)
+    val flywayWebCommand = new FlywayWebCommand(configuration, environment, flywayPrefixToMigrationScript, flyways)
     webCommands.addHandler(flywayWebCommand)
 
     for (dbName <- allDatabaseNames) {
-      if (Play.isTest || flywayConfigurations(dbName).auto) {
+      if (environment.mode == Mode.Test || flywayConfigurations(dbName).auto) {
         migrateAutomatically(dbName)
       } else {
         checkState(dbName)
@@ -128,7 +130,7 @@ class PlayInitializer @Inject() (implicit app: Application, webCommands: WebComm
   }
 
   val enabled: Boolean =
-    !app.configuration.getString("flywayplugin").exists(_ == "disabled")
+    !configuration.getString("flywayplugin").exists(_ == "disabled")
 
   if (enabled) {
     onStart()

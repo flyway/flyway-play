@@ -29,7 +29,8 @@ class FlywayWebCommand(
 ) extends HandleWebCommandSupport
      with WebCommandPath {
 
-  val bashURI = configuration.getString("flyway.webCommand.baseURI").getOrElse("")
+  override val baseURI = configuration.getString("flyway.webCommand.baseURI").getOrElse("")
+  override val flywayPathName = configuration.getString("flyway.webCommand.baseName").getOrElse("@flyway")
 
   def handleWebCommand(request: RequestHeader, sbtLink: BuildLink, path: java.io.File): Option[Result] = {
     val css = {
@@ -135,7 +136,7 @@ class FlywayWebCommand(
             <body>
               { header }
               <div class="container">
-                <a href={ bashURI + "/" }>&lt;&lt; Back to app</a>
+                <a href={ baseURI + "/" }>&lt;&lt; Back to app</a>
                 <h2>Database: { dbName }</h2>
                 <a class="btn btn-primary" href={ migratePathWithRedirectParam }>migrate</a>
                 <a class="btn btn-primary" href={ repairPathWithRedirectParam }>repair</a>
@@ -178,7 +179,7 @@ class FlywayWebCommand(
             <body>
               { header }
               <div class="container">
-                <a href={ bashURI + "/" }>&lt;&lt; Back to app</a>
+                <a href={ baseURI + "/" }>&lt;&lt; Back to app</a>
                 <div class="well">
                   { links }
                 </div>

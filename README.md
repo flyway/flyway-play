@@ -92,7 +92,7 @@ playapp
 │   │   │       └── V2__Add_job.sql
 │   │   │    
 │   │   └── slick    
-│   │       ├── default
+│   │       └── default
 │   │           ├── V1__Create_person_table.sql
 │   │           └── V2__Add_people.sql
 │   │    

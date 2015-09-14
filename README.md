@@ -55,7 +55,7 @@ slick.dbs.yourAwesomeDbName.db.username="sa"
 slick.dbs.yourAwesomeDbName.db.password="secret"
 ```
 
-One detail here is that you should add any flyway configuration under the path `slick.dbs.yourAwesomeDbName.db` 
+One detail here is that you should add any flyway configuration under the path `slick.dbs.yourAwesomeDbName.db`
 
 
 ### Place migration scripts
@@ -68,8 +68,8 @@ CREATE TABLE FOO (.............
 
 ```
 
-# Place your migration scripts 
- 
+# Place your migration scripts
+
  - For slick put them in the following path `conf/migration/slick/{dbName}`
  - For default play database put them in `conf/migration/db/{dbName}`
 
@@ -90,12 +90,12 @@ playapp
 │   │   │   └── secondary
 │   │   │       ├── V1__create_job_table.sql
 │   │   │       └── V2__Add_job.sql
-│   │   │    
-│   │   └── slick    
+│   │   │
+│   │   └── slick
 │   │       └── default
 │   │           ├── V1__Create_person_table.sql
 │   │           └── V2__Add_people.sql
-│   │    
+│   │
 │   ├── play.plugins
 │   └── routes
 ```
@@ -113,7 +113,7 @@ This can be configured using the placeholderPrefix and placeholderSuffix propert
 
 The placeholder prefix, suffix and key-value pairs can be specificed in application.conf, e.g.
 
-  - For default play database handling: 
+  - For default play database handling:
     ```
     db.${dbName}.migration.placeholderPrefix="$flyway{{{"
     db.${dbName}.migration.placeholderSuffix="}}}"
@@ -157,7 +157,7 @@ slick.dbs.${dbName}.db.migration.validateOnMigrate=false // true by default
 ```
 
 ### Configuring a custom web command URI path
-By default, you can apply you flyway migration entering on the uri `/@flyway` on you application.
+By default, you can apply you flyway migration entering on the URI `/@flyway` on you application.
 
 If you wish you could customize those paths
 ```
@@ -165,7 +165,7 @@ flyway.webCommand.baseURI = "my/admin/uri"
 flyway.webCommand.baseName = "migrations"
 ```
 
-and this will end up in a url like this
+and this will end up in a URL like this
 
 `http://<your-address>/my/admin/uri/migrations/<db|slick>/{dbname}/<flyway-command>`
 

@@ -28,18 +28,19 @@ import scala.collection.JavaConverters._
 
 @Singleton
 class PlayInitializer @Inject() (
-    configuration: Configuration,
-    environment: Environment,
-    webCommands: WebCommands) {
+  configuration: Configuration,
+  environment: Environment,
+  webCommands: WebCommands
+) {
 
   private val flywayConfigurations = {
     val configReader = new ConfigReader(configuration, environment)
     configReader.getFlywayConfigurations
   }
 
-  private val allDatabaseNames = flywayConfigurations.keys
+  private val allDatabaseInfo = flywayConfigurations.keys
 
-  private val flywayPrefixToMigrationScript = "db/migration"
+  private val flywayPrefixToMigrationScript = "migrations"
 
   private def migrationFileDirectoryExists(path: String): Boolean = {
     environment.resource(path) match {
@@ -54,10 +55,17 @@ class PlayInitializer @Inject() (
     }
   }
 
-  private lazy val flyways: Map[String, Flyway] = {
+  private def getMigrationDirectoryPath(databaseInfo: DatabaseInfo): String = {
+    databaseInfo match {
+      case DefaultDatabaseInfo(dbName, confPath) => s"$flywayPrefixToMigrationScript/db/${dbName}"
+      case SlickDatabaseInfo(slickDbName, slickConfPath) => s"$flywayPrefixToMigrationScript/slick/${slickDbName}"
+    }
+  }
+
+  private lazy val flyways: Map[DatabaseInfo, Flyway] = {
     for {
-      (dbName, configuration) <- flywayConfigurations
-      migrationFilesLocation = s"db/migration/${dbName}"
+      (dbInfo, configuration) <- flywayConfigurations
+      migrationFilesLocation = getMigrationDirectoryPath(dbInfo)
       if migrationFileDirectoryExists(migrationFilesLocation)
     } yield {
       val flyway = new Flyway
@@ -67,23 +75,28 @@ class PlayInitializer @Inject() (
       flyway.setValidateOnMigrate(configuration.validateOnMigrate)
       flyway.setEncoding(configuration.encoding)
       flyway.setOutOfOrder(configuration.outOfOrder)
+
       if (configuration.initOnMigrate) {
         flyway.setBaselineOnMigrate(true)
       }
+
       for (prefix <- configuration.placeholderPrefix) {
         flyway.setPlaceholderPrefix(prefix)
       }
+
       for (suffix <- configuration.placeholderSuffix) {
         flyway.setPlaceholderSuffix(suffix)
       }
+
       flyway.setSchemas(configuration.schemas: _*)
       flyway.setPlaceholders(configuration.placeholders.asJava)
 
-      dbName -> flyway
+      dbInfo -> flyway
     }
   }
 
   private def migrationDescriptionToShow(dbName: String, migration: MigrationInfo): String = {
+
     environment.resourceAsStream(s"${flywayPrefixToMigrationScript}/${dbName}/${migration.getScript}").map { in =>
       s"""|--- ${migration.getScript} ---
           |${FileUtils.readInputStreamToString(in)}""".stripMargin
@@ -105,7 +118,8 @@ class PlayInitializer @Inject() (
       if (!pendingMigrations.isEmpty) {
         throw InvalidDatabaseRevision(
           dbName,
-          pendingMigrations.map(migration => migrationDescriptionToShow(dbName, migration)).mkString("\n"))
+          pendingMigrations.map(migration => migrationDescriptionToShow(dbName, migration)).mkString("\n")
+        )
       }
     }
   }
@@ -114,11 +128,11 @@ class PlayInitializer @Inject() (
     val flywayWebCommand = new FlywayWebCommand(configuration, environment, flywayPrefixToMigrationScript, flyways)
     webCommands.addHandler(flywayWebCommand)
 
-    for (dbName <- allDatabaseNames) {
-      if (environment.mode == Mode.Test || flywayConfigurations(dbName).auto) {
-        migrateAutomatically(dbName)
+    for (dbInfo <- allDatabaseInfo) {
+      if (environment.mode == Mode.Test || flywayConfigurations(dbInfo).auto) {
+        migrateAutomatically(dbInfo)
       } else {
-        checkState(dbName)
+        checkState(dbInfo)
       }
     }
   }
@@ -129,11 +143,9 @@ class PlayInitializer @Inject() (
     }
   }
 
-  val enabled: Boolean =
-    !configuration.getString("flywayplugin").exists(_ == "disabled")
+  val enabled: Boolean = !configuration.getString("flywayplugin").exists(_ == "disabled")
 
   if (enabled) {
     onStart()
   }
-
 }

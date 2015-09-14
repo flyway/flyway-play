@@ -25,22 +25,26 @@ class UrlParserSpec extends FunSpec with ShouldMatchers {
 
     it("should parse URI that starts with 'postgres:'") {
       urlParser.parseUrl("postgres://john:secret@host.example.com/dbname") should be(
-        ("jdbc:postgresql://host.example.com/dbname", Some("john"), Some("secret")))
+        ("jdbc:postgresql://host.example.com/dbname", Some("john"), Some("secret"))
+      )
     }
 
     it("should parse URI that starts with 'mysql:' and has no extra parameters") {
       urlParser.parseUrl("mysql://john:secret@host.example.com/dbname") should be(
-        ("jdbc:mysql://host.example.com/dbname?useUnicode=yes&characterEncoding=UTF-8&connectionCollation=utf8_general_ci", Some("john"), Some("secret")))
+        ("jdbc:mysql://host.example.com/dbname?useUnicode=yes&characterEncoding=UTF-8&connectionCollation=utf8_general_ci", Some("john"), Some("secret"))
+      )
     }
 
     it("should parse URI that starts with 'mysql:' and has parameter(s)") {
       urlParser.parseUrl("mysql://john:secret@host.example.com/dbname?foo=bar") should be(
-        ("jdbc:mysql://host.example.com/dbname?foo=bar", Some("john"), Some("secret")))
+        ("jdbc:mysql://host.example.com/dbname?foo=bar", Some("john"), Some("secret"))
+      )
     }
 
     it("should return as is for URIs other than 'postgres' or 'mysql' ones") {
       urlParser.parseUrl("jdbc:yoursql://host.example.com/dbname") should be(
-        ("jdbc:yoursql://host.example.com/dbname", None, None))
+        ("jdbc:yoursql://host.example.com/dbname", None, None)
+      )
     }
 
   }

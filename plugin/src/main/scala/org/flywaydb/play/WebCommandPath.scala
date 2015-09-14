@@ -16,60 +16,57 @@
 package org.flywaydb.play
 
 trait WebCommandPath {
-  private val applyPathRegex = s"""/@flyway/([a-zA-Z0-9_]+)/migrate""".r
-  private val showInfoPathRegex = """/@flyway/([a-zA-Z0-9_]+)""".r
-  private val cleanPathRegex = """/@flyway/([a-zA-Z0-9_]+)/clean""".r
-  private val repairPathRegex = """/@flyway/([a-zA-Z0-9_]+)/repair""".r
-  private val initPathRegex = """/@flyway/([a-zA-Z0-9_]+)/init/""".r
-  private val versionedInitPathRegex = """/@flyway/([a-zA-Z0-9_]+)/init/([0-9.]+)""".r
+  val baseURI: String = ""
+  val flywayPathName = "@flyway"
+  val webCommandBasePath = s"$baseURI/$flywayPathName"
+
+  private val applyPathRegex = s"""$webCommandBasePath/([a-zA-Z0-9_]+)/migrate""".r
+  private val showInfoPathRegex = s"""$webCommandBasePath/([a-zA-Z0-9_]+)""".r
+  private val cleanPathRegex = s"""$webCommandBasePath/([a-zA-Z0-9_]+)/clean""".r
+  private val repairPathRegex = s"""$webCommandBasePath/([a-zA-Z0-9_]+)/repair""".r
+  private val initPathRegex = s"""$webCommandBasePath/([a-zA-Z0-9_]+)/init/""".r
+  private val versionedInitPathRegex = s"""$webCommandBasePath/([a-zA-Z0-9_]+)/init/([0-9.]+)""".r
+
 
   object migratePath {
-
     def apply(dbName: String): String = {
-      s"/@flyway/${dbName}/migrate"
+      s"$webCommandBasePath/${dbName}/migrate"
     }
 
     def unapply(path: String): Option[String] = {
       applyPathRegex.findFirstMatchIn(path).map(_.group(1))
     }
-
   }
 
   object showInfoPath {
-
     def unapply(path: String): Option[String] = {
       showInfoPathRegex.findFirstMatchIn(path).map(_.group(1))
     }
-
   }
 
   object cleanPath {
-
     def apply(dbName: String): String = {
-      s"/@flyway/${dbName}/clean"
+      s"$webCommandBasePath/${dbName}/clean"
     }
 
     def unapply(path: String): Option[String] = {
       cleanPathRegex.findFirstMatchIn(path).map(_.group(1))
     }
-
   }
 
   object repairPath {
-
     def apply(dbName: String): String = {
-      s"/@flyway/${dbName}/repair"
+      s"$webCommandBasePath/${dbName}/repair"
     }
 
     def unapply(path: String): Option[String] = {
       repairPathRegex.findFirstMatchIn(path).map(_.group(1))
     }
-
   }
 
   object versionedInitPath {
     def apply(dbName: String, version: String): String = {
-      s"/@flyway/${dbName}/init/${version}"
+      s"$webCommandBasePath/${dbName}/init/${version}"
     }
 
     def unapply(path: String): Option[(String, String)] = {
@@ -81,15 +78,7 @@ trait WebCommandPath {
   }
 
   object initPath {
-
-    def apply(dbName: String): String = {
-      s"/@flyway/${dbName}/init"
-    }
-
-    def unapply(path: String): Option[String] = {
-      initPathRegex.findFirstMatchIn(path).map(_.group(1))
-    }
-
+    def apply(dbName: String): String = s"$webCommandBasePath/${dbName}/init"
+    def unapply(path: String): Option[String] = initPathRegex.findFirstMatchIn(path).map(_.group(1))
   }
-
 }

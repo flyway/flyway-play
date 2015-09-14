@@ -25,12 +25,13 @@ class FlywayWebCommand(
   configuration: Configuration,
   environment: Environment,
   flywayPrefixToMigrationScript: String,
-  flyways: Map[String, Flyway])
-    extends HandleWebCommandSupport
-    with WebCommandPath {
+  flyways: Map[DatabaseInfo, Flyway]
+) extends HandleWebCommandSupport
+     with WebCommandPath {
+
+  val bashURI = configuration.getString("flyway.webCommand.baseURI").getOrElse("")
 
   def handleWebCommand(request: RequestHeader, sbtLink: BuildLink, path: java.io.File): Option[Result] = {
-
     val css = {
       <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" type="text/css"/>
       <style>
@@ -134,7 +135,7 @@ class FlywayWebCommand(
             <body>
               { header }
               <div class="container">
-                <a href="/">&lt;&lt; Back to app</a>
+                <a href={ bashURI + "/" }>&lt;&lt; Back to app</a>
                 <h2>Database: { dbName }</h2>
                 <a class="btn btn-primary" href={ migratePathWithRedirectParam }>migrate</a>
                 <a class="btn btn-primary" href={ repairPathWithRedirectParam }>repair</a>
@@ -158,10 +159,10 @@ class FlywayWebCommand(
         Some(Ok(html).as("text/html"))
 
       }
-      case "/@flyway" => {
+      case webCommandBasePath => {
         val links = for {
           (dbName, flyway) <- flyways
-          path = s"/@flyway/${dbName}"
+          path = s"$webCommandBasePath/${dbName}"
         } yield {
           <ul>
             <li><a href={ path }>{ dbName }</a></li>
@@ -177,7 +178,7 @@ class FlywayWebCommand(
             <body>
               { header }
               <div class="container">
-                <a href="/">&lt;&lt; Back to app</a>
+                <a href={ bashURI + "/" }>&lt;&lt; Back to app</a>
                 <div class="well">
                   { links }
                 </div>

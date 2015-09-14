@@ -160,11 +160,13 @@ slick.dbs.${dbName}.db.migration.validateOnMigrate=false // true by default
 By default, you can apply you flyway migration entering on the uri `/@flyway` on you application.
 
 If you wish you could customize those paths
+```
+flyway.webCommand.baseURI = "my/admin/uri
+flyway.webCommand.baseName = "migrations"
+```
 
-`flyway.webCommand.baseURI = "my/admin/uri`
-`flyway.webCommand.baseName = "migrations"`
-
-and this will end up in a url like this `http://<your-address>/my/admin/uri/migrations/{dbname}/<flyway-command>`
+and this will end up in a url like this 
+`http://<your-address>/my/admin/uri/migrations/{dbname}/<flyway-command>`
 
 
 ### Dev

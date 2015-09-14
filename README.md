@@ -45,7 +45,7 @@ db.default.password="secret"
 db.default.schemas=["public", "other"]
 ```
 
-# Slick Support
+### Slick Support
 
 ```
 slick.dbs.yourAwesomeDbName.driver = "slick.driver.H2Driver$"
@@ -55,7 +55,7 @@ slick.dbs.yourAwesomeDbName.db.username="sa"
 slick.dbs.yourAwesomeDbName.db.password="secret"
 ```
 
-# One detail here is that you should add any flyway configuration under the path `slick.dbs.yourAwesomeDbName.db` 
+One detail here is that you should add any flyway configuration under the path `slick.dbs.yourAwesomeDbName.db` 
 
 
 ### Place migration scripts

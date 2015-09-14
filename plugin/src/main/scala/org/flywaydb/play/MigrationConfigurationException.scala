@@ -15,5 +15,4 @@
  */
 package org.flywaydb.play
 
-class MigrationConfigurationException(val message: String)
-  extends Exception(message)
+class MigrationConfigurationException(val message: String) extends Exception(message)

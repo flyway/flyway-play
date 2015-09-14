@@ -25,10 +25,19 @@ case class FlywayConfiguration(
   placeholderSuffix: Option[String],
   placeholders: Map[String, String],
   outOfOrder: Boolean,
-  schemas: List[String])
+  schemas: List[String]
+)
 
 case class DatabaseConfiguration(
   driver: String,
   url: String,
   user: String,
-  password: String)
+  password: String
+)
+
+sealed trait DatabaseInfo {
+  val name: String
+  val configPath: String
+}
+case class SlickDatabaseInfo(name: String, configPath: String) extends DatabaseInfo
+case class DefaultDatabaseInfo(name: String, configPath: String) extends DatabaseInfo

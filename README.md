@@ -18,7 +18,7 @@ build.sbt
 
 ```scala
 libraryDependencies ++= Seq(
-  "org.flywaydb" %% "flyway-play" % "2.2.0"
+  "org.flywaydb" %% "flyway-play" % "2.3.0"
 )
 ```
 
@@ -45,6 +45,19 @@ db.default.password="secret"
 db.default.schemas=["public", "other"]
 ```
 
+### Slick Support
+
+```
+slick.dbs.yourAwesomeDbName.driver = "slick.driver.H2Driver$"
+slick.dbs.yourAwesomeDbName.db.driver = "org.h2.Driver"
+slick.dbs.yourAwesomeDbName.db.url="jdbc:h2:mem:example2;db_CLOSE_DELAY=-1"
+slick.dbs.yourAwesomeDbName.db.username="sa"
+slick.dbs.yourAwesomeDbName.db.password="secret"
+```
+
+One detail here is that you should add any flyway configuration under the path `slick.dbs.yourAwesomeDbName.db`
+
+
 ### Place migration scripts
 
 A migration script is just a simple SQL file.
@@ -55,7 +68,11 @@ CREATE TABLE FOO (.............
 
 ```
 
-Place your migration scripts in `conf/db/migration/${dbName}` .
+# Place your migration scripts
+
+ - For slick put them in the following path `conf/migration/slick/{dbName}`
+ - For default play database put them in `conf/migration/db/{dbName}`
+
 
 ```
 playapp
@@ -65,14 +82,20 @@ playapp
 │   └── views
 ├── conf
 │   ├── application.conf
-│   ├── db
-│   │   └── migration
-│   │       ├── default
-│   │       │   ├── V1__Create_person_table.sql
-│   │       │   └── V2__Add_people.sql
-│   │       └── secondary
-│   │           ├── V1__create_job_table.sql
-│   │           └── V2__Add_job.sql
+│   ├── migration
+│   │   └── db
+│   │   │   ├── default
+│   │   │   │   ├── V1__Create_person_table.sql
+│   │   │   │   └── V2__Add_people.sql
+│   │   │   └── secondary
+│   │   │       ├── V1__create_job_table.sql
+│   │   │       └── V2__Add_job.sql
+│   │   │
+│   │   └── slick
+│   │       └── default
+│   │           ├── V1__Create_person_table.sql
+│   │           └── V2__Add_people.sql
+│   │
 │   ├── play.plugins
 │   └── routes
 ```
@@ -90,12 +113,21 @@ This can be configured using the placeholderPrefix and placeholderSuffix propert
 
 The placeholder prefix, suffix and key-value pairs can be specificed in application.conf, e.g.
 
-```
-db.default.migration.placeholderPrefix="$flyway{{{"
-db.default.migration.placeholderSuffix="}}}"
-db.default.migration.placeholders.foo="bar"
-db.default.migration.placeholders.hoge="pupi"
-```
+  - For default play database handling:
+    ```
+    db.${dbName}.migration.placeholderPrefix="$flyway{{{"
+    db.${dbName}.migration.placeholderSuffix="}}}"
+    db.${dbName}.migration.placeholders.foo="bar"
+    db.${dbName}.migration.placeholders.hoge="pupi"
+  ```
+
+  - For slick:
+    ```
+    slick.dbs.${dbName}.db.migration.placeholderPrefix="$flyway{{{"
+    slick.dbs.${dbName}.db.migration.placeholderSuffix="}}}"
+    slick.dbs.${dbName}.db.migration.placeholders.foo="bar"
+    slick.dbs.${dbName}.db.migration.placeholders.hoge="pupi"
+    ```
 
 This would cause
 
@@ -118,6 +150,26 @@ Set `validateOnMigrate` to false if you want to disable this.
 db.${dbName}.migration.validateOnMigrate=false // true by default
 ```
 
+or for slick
+
+```
+slick.dbs.${dbName}.db.migration.validateOnMigrate=false // true by default
+```
+
+### Configuring a custom web command URI path
+By default, you can apply you flyway migration entering on the URI `/@flyway` on you application.
+
+If you wish you could customize those paths
+```
+flyway.webCommand.baseURI = "my/admin/uri"
+flyway.webCommand.baseName = "migrations"
+```
+
+and this will end up in a URL like this
+
+`http://<your-address>/my/admin/uri/migrations/<db|slick>/{dbname}/<flyway-command>`
+
+
 ### Dev
 
 ![screenshot](screenshot1.png)
@@ -132,7 +184,7 @@ $ play -Ddb.default.migration.initOnMigrate=true
 Of course, You can write this in your `application.conf`.
 
 
-Manual migration is also supported. Click 'Other operations' or open `/@flyway/${dbName}` directly.
+Manual migration is also supported. Click 'Other operations' or open `/@flyway/<db|slick>/${dbName}` directly.
 
 ![screenshot](screenshot2.png)
 
@@ -156,6 +208,11 @@ $ play -Ddb.default.migration.auto=true start
 [seratch/devteam-app](https://github.com/seratch/devteam-app "seratch/devteam-app") is using play-flyway. Maybe this is a good example.
 
 ## <a class="anchor" name="changelog"></a>Change Log
+
+### 2.3.0
+
+ - Add support to slick migrations and remove hardcoded database config path.
+ - Add configurable flyway base uri.
 
 ### 2.2.0
 

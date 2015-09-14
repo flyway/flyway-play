@@ -30,16 +30,17 @@ import scala.collection.JavaConverters._
 class PlayInitializer @Inject() (
     configuration: Configuration,
     environment: Environment,
-    webCommands: WebCommands) {
+    webCommands: WebCommands
+) {
 
   private val flywayConfigurations = {
     val configReader = new ConfigReader(configuration, environment)
     configReader.getFlywayConfigurations
   }
 
-  private val allDatabaseNames = flywayConfigurations.keys
+  private val allDatabaseInfo = flywayConfigurations.keys
 
-  private val flywayPrefixToMigrationScript = "db/migration"
+  private val flywayPrefixToMigrationScript = "migrations"
 
   private def migrationFileDirectoryExists(path: String): Boolean = {
     environment.resource(path) match {
@@ -54,10 +55,17 @@ class PlayInitializer @Inject() (
     }
   }
 
-  private lazy val flyways: Map[String, Flyway] = {
+  private def getMigrationDirectoryPath(databaseInfo: DatabaseInfo): String = {
+    databaseInfo match {
+      case DefaultDatabaseInfo(dbName, confPath) => s"$flywayPrefixToMigrationScript/db/${dbName}"
+      case SlickDatabaseInfo(slickDbName, slickConfPath) => s"$flywayPrefixToMigrationScript/slick/${slickDbName}"
+    }
+  }
+
+  private lazy val flyways: Map[DatabaseInfo, Flyway] = {
     for {
-      (dbName, configuration) <- flywayConfigurations
-      migrationFilesLocation = s"db/migration/${dbName}"
+      (dbInfo, configuration) <- flywayConfigurations
+      migrationFilesLocation = getMigrationDirectoryPath(dbInfo)
       if migrationFileDirectoryExists(migrationFilesLocation)
     } yield {
       val flyway = new Flyway
@@ -67,24 +75,29 @@ class PlayInitializer @Inject() (
       flyway.setValidateOnMigrate(configuration.validateOnMigrate)
       flyway.setEncoding(configuration.encoding)
       flyway.setOutOfOrder(configuration.outOfOrder)
+
       if (configuration.initOnMigrate) {
         flyway.setBaselineOnMigrate(true)
       }
+
       for (prefix <- configuration.placeholderPrefix) {
         flyway.setPlaceholderPrefix(prefix)
       }
+
       for (suffix <- configuration.placeholderSuffix) {
         flyway.setPlaceholderSuffix(suffix)
       }
+
       flyway.setSchemas(configuration.schemas: _*)
       flyway.setPlaceholders(configuration.placeholders.asJava)
 
-      dbName -> flyway
+      dbInfo -> flyway
     }
   }
 
-  private def migrationDescriptionToShow(dbName: String, migration: MigrationInfo): String = {
-    environment.resourceAsStream(s"${flywayPrefixToMigrationScript}/${dbName}/${migration.getScript}").map { in =>
+  private def migrationDescriptionToShow(dbName: String, migration: MigrationInfo, dbType: String = "db"): String = {
+
+    environment.resourceAsStream(s"${flywayPrefixToMigrationScript}/${dbType}/${dbName}/${migration.getScript}").map { in =>
       s"""|--- ${migration.getScript} ---
           |${FileUtils.readInputStreamToString(in)}""".stripMargin
     }.orElse {
@@ -99,13 +112,19 @@ class PlayInitializer @Inject() (
     }.getOrElse(throw new FileNotFoundException(s"Migration file not found. ${migration.getScript}"))
   }
 
-  private def checkState(dbName: String): Unit = {
-    flyways.get(dbName).foreach { flyway =>
+  private def checkState(dbInfo: DatabaseInfo): Unit = {
+    flyways.get(dbInfo).foreach { flyway =>
       val pendingMigrations = flyway.info().pending
       if (!pendingMigrations.isEmpty) {
+        val dbType = dbInfo match {
+          case s: SlickDatabaseInfo => "slick"
+          case _ => "db"
+        }
         throw InvalidDatabaseRevision(
-          dbName,
-          pendingMigrations.map(migration => migrationDescriptionToShow(dbName, migration)).mkString("\n"))
+          dbInfo.name,
+          dbType,
+          pendingMigrations.map(migration => migrationDescriptionToShow(dbInfo.name, migration, dbType)).mkString("\n")
+        )
       }
     }
   }
@@ -114,26 +133,24 @@ class PlayInitializer @Inject() (
     val flywayWebCommand = new FlywayWebCommand(configuration, environment, flywayPrefixToMigrationScript, flyways)
     webCommands.addHandler(flywayWebCommand)
 
-    for (dbName <- allDatabaseNames) {
-      if (environment.mode == Mode.Test || flywayConfigurations(dbName).auto) {
-        migrateAutomatically(dbName)
+    for (dbInfo <- allDatabaseInfo) {
+      if (environment.mode == Mode.Test || flywayConfigurations(dbInfo).auto) {
+        migrateAutomatically(dbInfo)
       } else {
-        checkState(dbName)
+        checkState(dbInfo)
       }
     }
   }
 
-  private def migrateAutomatically(dbName: String): Unit = {
-    flyways.get(dbName).foreach { flyway =>
+  private def migrateAutomatically(dbInfo: DatabaseInfo): Unit = {
+    flyways.get(dbInfo).foreach { flyway =>
       flyway.migrate()
     }
   }
 
-  val enabled: Boolean =
-    !configuration.getString("flywayplugin").exists(_ == "disabled")
+  val enabled: Boolean = !configuration.getString("flywayplugin").exists(_ == "disabled")
 
   if (enabled) {
     onStart()
   }
-
 }

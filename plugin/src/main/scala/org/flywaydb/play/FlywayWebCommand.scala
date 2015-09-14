@@ -27,7 +27,7 @@ class FlywayWebCommand(
   flywayPrefixToMigrationScript: String,
   flyways: Map[DatabaseInfo, Flyway]
 ) extends HandleWebCommandSupport
-     with WebCommandPath {
+    with WebCommandPath {
 
   override val baseURI = configuration.getString("flyway.webCommand.baseURI").getOrElse("")
   override val flywayPathName = configuration.getString("flyway.webCommand.baseName").getOrElse("@flyway")
@@ -51,41 +51,41 @@ class FlywayWebCommand(
       <div class="navbar" role="navigation">
         <div class="container">
           <div class="navbar-header">
-            <a class="navbar-brand" href="/@flyway">play-flyway</a>
+            <a class="navbar-brand" href={ webCommandBasePath }>play-flyway</a>
           </div>
         </div>
       </div>
     }
 
     request.path match {
-      case migratePath(dbName) => {
+      case migratePath(dbName, dbType) => {
         for {
-          flyway <- flyways.get(dbName)
+          flyway <- getFlyway(dbName, dbType)
         } yield {
           flyway.migrate()
           sbtLink.forceReload()
           Redirect(getRedirectUrlFromRequest(request))
         }
       }
-      case cleanPath(dbName) => {
-        flyways.get(dbName).foreach(_.clean())
+      case cleanPath(dbName, dbType) => {
+        getFlyway(dbName, dbType).foreach(_.clean())
         Some(Redirect(getRedirectUrlFromRequest(request)))
       }
-      case repairPath(dbName) => {
-        flyways.get(dbName).foreach(_.repair())
+      case repairPath(dbName, dbType) => {
+        getFlyway(dbName, dbType).foreach(_.repair())
         Some(Redirect(getRedirectUrlFromRequest(request)))
       }
-      case versionedInitPath(dbName, version) => {
-        flyways.get(dbName).foreach(_.setBaselineVersion(version))
-        flyways.get(dbName).foreach(_.baseline())
+      case versionedInitPath(dbName, version, dbType) => {
+        getFlyway(dbName, dbType).foreach(_.setBaselineVersion(version))
+        getFlyway(dbName, dbType).foreach(_.baseline())
         Some(Redirect(getRedirectUrlFromRequest(request)))
       }
-      case showInfoPath(dbName) => {
+      case showInfoPath(dbName, dbType) => {
         val description = for {
-          flyway <- flyways.get(dbName).toList
+          flyway <- getFlyway(dbName, dbType).toList
           info <- flyway.info().all()
         } yield {
-          val sql = environment.resourceAsStream(s"${flywayPrefixToMigrationScript}/${dbName}/${info.getScript}").map { in =>
+          val sql = environment.resourceAsStream(s"${flywayPrefixToMigrationScript}/${dbType}/${dbName}/${info.getScript}").map { in =>
             FileUtils.readInputStreamToString(in)
           }.orElse {
             for {
@@ -116,7 +116,7 @@ class FlywayWebCommand(
         def withRedirectParam(path: String) = path + "?redirect=" + java.net.URLEncoder.encode(request.path, "utf-8")
 
         val initLinks = for {
-          flyway <- flyways.get(dbName).toList
+          flyway <- getFlyway(dbName, dbType).toList
           info <- flyway.info().all()
         } yield {
           val version = info.getVersion().getVersion()
@@ -160,7 +160,7 @@ class FlywayWebCommand(
         Some(Ok(html).as("text/html"))
 
       }
-      case webCommandBasePath => {
+      case `webCommandBasePath` => {
         val links = for {
           (dbName, flyway) <- flyways
           path = s"$webCommandBasePath/${dbName}"
@@ -203,4 +203,11 @@ class FlywayWebCommand(
     } yield url).getOrElse("/")
   }
 
+  private def getFlyway(dbName: String, dbType: String): Option[Flyway] = {
+    flyways.find {
+      case (DefaultDatabaseInfo(name, fw), _) if dbType == "db" && dbName == name => true
+      case (SlickDatabaseInfo(slickName, slickFw), _) if dbType == "slick" && dbName == slickName => true
+      case _ => false
+    }.map(_._2)
+  }
 }

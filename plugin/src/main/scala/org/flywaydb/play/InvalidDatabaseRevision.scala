@@ -17,8 +17,8 @@ package org.flywaydb.play
 
 import play.api._
 
-case class InvalidDatabaseRevision(db: String, script: String) extends PlayException.RichDescription(
-  "Database '" + db + "' needs migration!",
+case class InvalidDatabaseRevision(db: String, dbType: String, script: String) extends PlayException.RichDescription(
+  "Database '" + db + "' needs migration! [" + dbType + "]",
   "An SQL script need to be run on your database."
 ) with WebCommandPath {
 
@@ -26,7 +26,7 @@ case class InvalidDatabaseRevision(db: String, script: String) extends PlayExcep
   def content = script
 
   private val redirectToApply = s"""
-    document.location = '${migratePath(db)}/?redirect=' + encodeURIComponent(location);
+    document.location = '${migratePath(db, dbType)}/?redirect=' + encodeURIComponent(location);
   """
 
   private val redirectToAdmin = s"""

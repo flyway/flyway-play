@@ -18,7 +18,7 @@ build.sbt
 
 ```scala
 libraryDependencies ++= Seq(
-  "org.flywaydb" %% "flyway-play" % "2.2.0"
+  "org.flywaydb" %% "flyway-play" % "2.3.0"
 )
 ```
 
@@ -161,12 +161,13 @@ By default, you can apply you flyway migration entering on the uri `/@flyway` on
 
 If you wish you could customize those paths
 ```
-flyway.webCommand.baseURI = "my/admin/uri
+flyway.webCommand.baseURI = "my/admin/uri"
 flyway.webCommand.baseName = "migrations"
 ```
 
-and this will end up in a url like this 
-`http://<your-address>/my/admin/uri/migrations/{dbname}/<flyway-command>`
+and this will end up in a url like this
+
+`http://<your-address>/my/admin/uri/migrations/<db|slick>/{dbname}/<flyway-command>`
 
 
 ### Dev
@@ -183,7 +184,7 @@ $ play -Ddb.default.migration.initOnMigrate=true
 Of course, You can write this in your `application.conf`.
 
 
-Manual migration is also supported. Click 'Other operations' or open `/@flyway/${dbName}` directly.
+Manual migration is also supported. Click 'Other operations' or open `/@flyway/<db|slick>/${dbName}` directly.
 
 ![screenshot](screenshot2.png)
 

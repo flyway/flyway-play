@@ -1,4 +1,4 @@
-package db.migration.java
+package migration.db.java
 
 import java.sql.Connection
 

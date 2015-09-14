@@ -78,12 +78,19 @@ class ConfigReaderSpec extends FunSpec with ShouldMatchers {
     "mySlick.path.fifth.db.pass" -> "secret3"
   )
 
-  def withDefaultDB[A](additionalConfiguration: Map[String, Object], key: String = "default")(assertion: FlywayConfiguration => A): A = {
+  def genDbInfo(key: String, path: String = "db", isSlick: Boolean = false): DatabaseInfo =
+    if (!isSlick) {
+      DefaultDatabaseInfo(key, path + "." + key)
+    } else {
+      SlickDatabaseInfo(key, path + "." + key + ".db")
+    }
+
+  def withDefaultDB[A](additionalConfiguration: Map[String, Object], key: String = "default", path: String = "db", isSlick: Boolean = false)(assertion: FlywayConfiguration => A): A = {
     val configuration = Configuration((playDefaultConfig ++ defaultDB ++ slickDB ++ differentPathDB ++ additionalConfiguration).toSeq: _*)
     val environment = Environment.simple()
     val reader = new ConfigReader(configuration, environment)
     val configMap = reader.getFlywayConfigurations
-    assertion(configMap.get(key).get)
+    assertion(configMap.get(genDbInfo(key, path, isSlick)).get)
   }
 
   describe("ConfigReader") {
@@ -93,9 +100,10 @@ class ConfigReaderSpec extends FunSpec with ShouldMatchers {
       val environment = Environment.simple()
       val reader = new ConfigReader(configuration, environment)
       val configMap = reader.getFlywayConfigurations
-      configMap.get("default").get.database should be(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:defaultDB;DB_CLOSE_DELAY=-1", "sa", null))
-      configMap.get("secondary").get.database should be(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:secondaryDB;DB_CLOSE_DELAY=-1", "sa", "secret2"))
-      configMap.get("third").get.database should be(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:thirdDB;DB_CLOSE_DELAY=-1", "sa", "secret3"))
+
+      configMap.get(genDbInfo("default")).get.database should be(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:defaultDB;DB_CLOSE_DELAY=-1", "sa", null))
+      configMap.get(genDbInfo("secondary")).get.database should be(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:secondaryDB;DB_CLOSE_DELAY=-1", "sa", "secret2"))
+      configMap.get(genDbInfo("third")).get.database should be(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:thirdDB;DB_CLOSE_DELAY=-1", "sa", "secret3"))
     }
 
     it("should get database configurations for different path driver") {
@@ -103,7 +111,7 @@ class ConfigReaderSpec extends FunSpec with ShouldMatchers {
       val environment = Environment.simple()
       val reader = new ConfigReader(configuration, environment)
       val configMap = reader.getFlywayConfigurations
-      configMap.get("fourth").get.database should be(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:differentPathDB;DB_CLOSE_DELAY=-1", "sa", "secret3"))
+      configMap.get(genDbInfo("fourth", "mydb.path")).get.database should be(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:differentPathDB;DB_CLOSE_DELAY=-1", "sa", "secret3"))
     }
 
     it("should get database configurations for slick") {
@@ -111,8 +119,8 @@ class ConfigReaderSpec extends FunSpec with ShouldMatchers {
       val environment = Environment.simple()
       val reader = new ConfigReader(configuration, environment)
       val configMap = reader.getFlywayConfigurations
-      configMap.get("fifth").get.database should be(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:slickDB;DB_CLOSE_DELAY=-1", "sa", "secret3"))
-      configMap.get("default").get.database should be(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:slickDefaultDB;DB_CLOSE_DELAY=-1", "sa", "secret3"))
+      configMap.get(genDbInfo("fifth", "slick.dbs", true)).get.database should be(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:slickDB;DB_CLOSE_DELAY=-1", "sa", "secret3"))
+      configMap.get(genDbInfo("default", "slick.dbs", true)).get.database should be(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:slickDefaultDB;DB_CLOSE_DELAY=-1", "sa", "secret3"))
     }
 
     it("should get database configurations for slick with different path") {
@@ -120,7 +128,7 @@ class ConfigReaderSpec extends FunSpec with ShouldMatchers {
       val environment = Environment.simple()
       val reader = new ConfigReader(configuration, environment)
       val configMap = reader.getFlywayConfigurations
-      configMap.get("fifth").get.database should be(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:slickDifferentPathDB;DB_CLOSE_DELAY=-1", "sa", "secret3"))
+      configMap.get(genDbInfo("fifth", "mySlick.path", true)).get.database should be(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:slickDifferentPathDB;DB_CLOSE_DELAY=-1", "sa", "secret3"))
     }
 
     describe("auto") {
@@ -135,12 +143,12 @@ class ConfigReaderSpec extends FunSpec with ShouldMatchers {
         }
       }
       it("should be parsed using a different db path") {
-        withDefaultDB(playMyPathConfig ++ Map("mydb.path.fourth.migration.auto" -> "true"), "fourth") { config =>
+        withDefaultDB(playMyPathConfig ++ Map("mydb.path.fourth.migration.auto" -> "true"), "fourth", "mydb.path") { config =>
           config.auto should be(true)
         }
       }
       it("should be parsed using slick") {
-        withDefaultDB(Map("slick.dbs.fifth.db.migration.auto" -> "true"), "fifth") { config =>
+        withDefaultDB(Map("slick.dbs.fifth.db.migration.auto" -> "true"), "fifth", "slick.dbs", true) { config =>
           config.auto should be(true)
         }
       }
@@ -158,12 +166,12 @@ class ConfigReaderSpec extends FunSpec with ShouldMatchers {
         }
       }
       it("should be parsed using a different db path") {
-        withDefaultDB(playMyPathConfig ++ Map("mydb.path.fourth.migration.initOnMigrate" -> "true"), "fourth") { config =>
+        withDefaultDB(playMyPathConfig ++ Map("mydb.path.fourth.migration.initOnMigrate" -> "true"), "fourth", "mydb.path") { config =>
           config.initOnMigrate should be(true)
         }
       }
       it("should be parsed using slick") {
-        withDefaultDB(Map("slick.dbs.fifth.db.migration.initOnMigrate" -> "true"), "fifth") { config =>
+        withDefaultDB(Map("slick.dbs.fifth.db.migration.initOnMigrate" -> "true"), "fifth", "slick.dbs", true) { config =>
           config.initOnMigrate should be(true)
         }
       }
@@ -181,12 +189,12 @@ class ConfigReaderSpec extends FunSpec with ShouldMatchers {
         }
       }
       it("should be parsed using a different db path") {
-        withDefaultDB(playMyPathConfig ++ Map("mydb.path.fourth.migration.validateOnMigrate" -> "false"), "fourth") { config =>
+        withDefaultDB(playMyPathConfig ++ Map("mydb.path.fourth.migration.validateOnMigrate" -> "false"), "fourth", "mydb.path") { config =>
           config.validateOnMigrate should be(false)
         }
       }
       it("should be parsed using slick") {
-        withDefaultDB(Map("slick.dbs.fifth.db.migration.validateOnMigrate" -> "false"), "fifth") { config =>
+        withDefaultDB(Map("slick.dbs.fifth.db.migration.validateOnMigrate" -> "false"), "fifth", "slick.dbs", true) { config =>
           config.validateOnMigrate should be(false)
         }
       }
@@ -204,12 +212,12 @@ class ConfigReaderSpec extends FunSpec with ShouldMatchers {
         }
       }
       it("should be parsed using a different db path") {
-        withDefaultDB(playMyPathConfig ++ Map("mydb.path.fourth.migration.encoding" -> "EUC-JP"), "fourth") { config =>
+        withDefaultDB(playMyPathConfig ++ Map("mydb.path.fourth.migration.encoding" -> "EUC-JP"), "fourth", "mydb.path") { config =>
           config.encoding should be("EUC-JP")
         }
       }
       it("should be parsed using slick") {
-        withDefaultDB(Map("slick.dbs.fifth.db.migration.encoding" -> "EUC-JP"), "fifth") { config =>
+        withDefaultDB(Map("slick.dbs.fifth.db.migration.encoding" -> "EUC-JP"), "fifth", "slick.dbs", true) { config =>
           config.encoding should be("EUC-JP")
         }
       }
@@ -227,12 +235,12 @@ class ConfigReaderSpec extends FunSpec with ShouldMatchers {
         }
       }
       it("should be parsed using a different db path") {
-        withDefaultDB(playMyPathConfig ++ Map("mydb.path.fourth.migration.placeholderPrefix" -> "PREFIX_"), "fourth") { config =>
+        withDefaultDB(playMyPathConfig ++ Map("mydb.path.fourth.migration.placeholderPrefix" -> "PREFIX_"), "fourth", "mydb.path") { config =>
           config.placeholderPrefix should be(Some("PREFIX_"))
         }
       }
       it("should be parsed using slick") {
-        withDefaultDB(Map("slick.dbs.fifth.db.migration.placeholderPrefix" -> "PREFIX_"), "fifth") { config =>
+        withDefaultDB(Map("slick.dbs.fifth.db.migration.placeholderPrefix" -> "PREFIX_"), "fifth", "slick.dbs", true) { config =>
           config.placeholderPrefix should be(Some("PREFIX_"))
         }
       }
@@ -250,12 +258,12 @@ class ConfigReaderSpec extends FunSpec with ShouldMatchers {
         }
       }
       it("should be parsed using a different db path") {
-        withDefaultDB(playMyPathConfig ++ Map("mydb.path.fourth.migration.placeholderSuffix" -> "SUFFIX_"), "fourth") { config =>
+        withDefaultDB(playMyPathConfig ++ Map("mydb.path.fourth.migration.placeholderSuffix" -> "SUFFIX_"), "fourth", "mydb.path") { config =>
           config.placeholderSuffix should be(Some("SUFFIX_"))
         }
       }
       it("should be parsed using slick") {
-        withDefaultDB(Map("slick.dbs.fifth.db.migration.placeholderSuffix" -> "SUFFIX_"), "fifth") { config =>
+        withDefaultDB(Map("slick.dbs.fifth.db.migration.placeholderSuffix" -> "SUFFIX_"), "fifth", "slick.dbs", true) { config =>
           config.placeholderSuffix should be(Some("SUFFIX_"))
         }
       }
@@ -284,7 +292,7 @@ class ConfigReaderSpec extends FunSpec with ShouldMatchers {
         withDefaultDB(playMyPathConfig ++ Map(
           "mydb.path.fourth.migration.placeholders.fleetwood" -> "mac",
           "mydb.path.fourth.migration.placeholders.buckingham" -> "nicks"
-        ), "fourth") { config =>
+        ), "fourth", "mydb.path") { config =>
           config.placeholders should be(
             Map(
               "fleetwood" -> "mac",
@@ -297,7 +305,7 @@ class ConfigReaderSpec extends FunSpec with ShouldMatchers {
         withDefaultDB(Map(
           "slick.dbs.fifth.db.migration.placeholders.fleetwood" -> "mac",
           "slick.dbs.fifth.db.migration.placeholders.buckingham" -> "nicks"
-        ), "fifth") { config =>
+        ), "fifth", "slick.dbs", true) { config =>
           config.placeholders should be(
             Map(
               "fleetwood" -> "mac",
@@ -320,12 +328,12 @@ class ConfigReaderSpec extends FunSpec with ShouldMatchers {
         }
       }
       it("should be parsed using a different db path") {
-        withDefaultDB(playMyPathConfig ++ Map("mydb.path.fourth.migration.outOfOrder" -> "true"), "fourth") { config =>
+        withDefaultDB(playMyPathConfig ++ Map("mydb.path.fourth.migration.outOfOrder" -> "true"), "fourth", "mydb.path") { config =>
           config.outOfOrder should be(true)
         }
       }
       it("should be parsed using slick") {
-        withDefaultDB(Map("slick.dbs.fifth.db.migration.outOfOrder" -> "true"), "fifth") { config =>
+        withDefaultDB(Map("slick.dbs.fifth.db.migration.outOfOrder" -> "true"), "fifth", "slick.dbs", true) { config =>
           config.outOfOrder should be(true)
         }
       }
@@ -343,12 +351,12 @@ class ConfigReaderSpec extends FunSpec with ShouldMatchers {
         }
       }
       it("should be parsed using a different db path") {
-        withDefaultDB(playMyPathConfig ++ Map("mydb.path.fourth.migration.schemas" -> List("public", "other")), "fourth") { config =>
+        withDefaultDB(playMyPathConfig ++ Map("mydb.path.fourth.migration.schemas" -> List("public", "other")), "fourth", "mydb.path") { config =>
           config.schemas should be(List("public", "other"))
         }
       }
       it("should be parsed using slick") {
-        withDefaultDB(Map("slick.dbs.fifth.db.migration.schemas" -> List("public", "other")), "fifth") { config =>
+        withDefaultDB(Map("slick.dbs.fifth.db.migration.schemas" -> List("public", "other")), "fifth", "slick.dbs", true) { config =>
           config.schemas should be(List("public", "other"))
         }
       }

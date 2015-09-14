@@ -25,14 +25,24 @@ class WebCommandPathSpec extends FunSpec with ShouldMatchers {
 
     describe("migratePath") {
       it("construct path to apply migration") {
-        config.migratePath("foo") should be("/@flyway/foo/migrate")
+        config.migratePath("foo") should be("/@flyway/db/foo/migrate")
+      }
+      it("construct path to apply migration on slick") {
+        config.migratePath("foo", "slick") should be("/@flyway/slick/foo/migrate")
       }
       it("extract db to migrate migration") {
-        val dbName = "/@flyway/foo/migrate" match {
-          case config.migratePath(db) => Some(db)
+        val dbName = "/@flyway/db/foo/migrate" match {
+          case config.migratePath(db, dbType) => Some(db, dbType)
           case _ => None
         }
-        dbName should be(Some("foo"))
+        dbName should be(Some("foo", "db"))
+      }
+      it("extract db to migrate migration with slick") {
+        val dbName = "/@flyway/slick/foo/migrate" match {
+          case config.migratePath(db, dbType) => Some(db, dbType)
+          case _ => None
+        }
+        dbName should be(Some("foo", "slick"))
       }
     }
   }

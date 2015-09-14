@@ -28,9 +28,9 @@ import scala.collection.JavaConverters._
 
 @Singleton
 class PlayInitializer @Inject() (
-  configuration: Configuration,
-  environment: Environment,
-  webCommands: WebCommands
+    configuration: Configuration,
+    environment: Environment,
+    webCommands: WebCommands
 ) {
 
   private val flywayConfigurations = {
@@ -95,9 +95,9 @@ class PlayInitializer @Inject() (
     }
   }
 
-  private def migrationDescriptionToShow(dbName: String, migration: MigrationInfo): String = {
+  private def migrationDescriptionToShow(dbName: String, migration: MigrationInfo, dbType: String = "db"): String = {
 
-    environment.resourceAsStream(s"${flywayPrefixToMigrationScript}/${dbName}/${migration.getScript}").map { in =>
+    environment.resourceAsStream(s"${flywayPrefixToMigrationScript}/${dbType}/${dbName}/${migration.getScript}").map { in =>
       s"""|--- ${migration.getScript} ---
           |${FileUtils.readInputStreamToString(in)}""".stripMargin
     }.orElse {
@@ -112,13 +112,18 @@ class PlayInitializer @Inject() (
     }.getOrElse(throw new FileNotFoundException(s"Migration file not found. ${migration.getScript}"))
   }
 
-  private def checkState(dbName: String): Unit = {
-    flyways.get(dbName).foreach { flyway =>
+  private def checkState(dbInfo: DatabaseInfo): Unit = {
+    flyways.get(dbInfo).foreach { flyway =>
       val pendingMigrations = flyway.info().pending
       if (!pendingMigrations.isEmpty) {
+        val dbType = dbInfo match {
+          case s: SlickDatabaseInfo => "slick"
+          case _ => "db"
+        }
         throw InvalidDatabaseRevision(
-          dbName,
-          pendingMigrations.map(migration => migrationDescriptionToShow(dbName, migration)).mkString("\n")
+          dbInfo.name,
+          dbType,
+          pendingMigrations.map(migration => migrationDescriptionToShow(dbInfo.name, migration, dbType)).mkString("\n")
         )
       }
     }
@@ -137,8 +142,8 @@ class PlayInitializer @Inject() (
     }
   }
 
-  private def migrateAutomatically(dbName: String): Unit = {
-    flyways.get(dbName).foreach { flyway =>
+  private def migrateAutomatically(dbInfo: DatabaseInfo): Unit = {
+    flyways.get(dbInfo).foreach { flyway =>
       flyway.migrate()
     }
   }

@@ -35,11 +35,9 @@ case class DatabaseConfiguration(
   password: String
 )
 
-
-
 sealed trait DatabaseInfo {
   val name: String
   val configPath: String
 }
-case class SlickDatabaseInfo(name: String, confPath: String) extends DatabaseInfo
-case class DefaultDatabaseInfo(name: String, confPath: String) extends DatabaseInfo
+case class SlickDatabaseInfo(name: String, configPath: String) extends DatabaseInfo
+case class DefaultDatabaseInfo(name: String, configPath: String) extends DatabaseInfo

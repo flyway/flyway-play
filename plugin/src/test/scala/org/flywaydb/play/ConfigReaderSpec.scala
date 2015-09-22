@@ -187,5 +187,18 @@ class ConfigReaderSpec extends FunSpec with ShouldMatchers {
       }
     }
 
+    describe("locations") {
+      it("should be parsed") {
+        withDefaultDB(Map("db.default.migration.locations" -> List("h2", "common"))) { config =>
+          config.locations should be(List("h2", "common"))
+        }
+      }
+      it("should be None by default") {
+        withDefaultDB(Map.empty) { config =>
+          config.locations should be(List.empty)
+        }
+      }
+    }
+
   }
 }

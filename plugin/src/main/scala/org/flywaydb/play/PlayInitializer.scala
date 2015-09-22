@@ -63,7 +63,12 @@ class PlayInitializer @Inject() (
       val flyway = new Flyway
       val database = configuration.database
       flyway.setDataSource(new DriverDataSource(getClass.getClassLoader, database.driver, database.url, database.user, database.password))
-      flyway.setLocations(migrationFilesLocation)
+      if (!configuration.locations.isEmpty) {
+        val locations = configuration.locations.map((location: String) => s"${migrationFilesLocation}/${location}"): List[String]
+        flyway.setLocations(locations: _*)
+      } else {
+        flyway.setLocations(migrationFilesLocation)
+      }
       flyway.setValidateOnMigrate(configuration.validateOnMigrate)
       flyway.setEncoding(configuration.encoding)
       flyway.setOutOfOrder(configuration.outOfOrder)

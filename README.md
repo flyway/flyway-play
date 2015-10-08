@@ -118,6 +118,14 @@ Set `validateOnMigrate` to false if you want to disable this.
 db.${dbName}.migration.validateOnMigrate=false // true by default
 ```
 
+### Migration prefix
+
+Custom sql migration prefix key-value pair can be specified in application.conf:
+
+```
+db.${dbName}.migration.sqlMigrationPrefix="migration_"
+```
+
 ### Dev
 
 ![screenshot](screenshot1.png)

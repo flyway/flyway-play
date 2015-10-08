@@ -92,7 +92,7 @@ class PlayModuleSpec extends FunSpec
       sql"""DROP TABLE "schema_version"""".execute.apply()
     }
 
-    NamedDB(Symbol("migration-prefix")) autoCommit { implicit session =>
+    NamedDB('migration_prefix) autoCommit { implicit session =>
       val projects =
         sql"SELECT * FROM project"
           .map(rs => rs.int("id") -> rs.string("name"))

@@ -78,6 +78,9 @@ class PlayInitializer @Inject() (
       }
       flyway.setSchemas(configuration.schemas: _*)
       flyway.setPlaceholders(configuration.placeholders.asJava)
+      configuration.sqlMigrationPrefix.foreach { sqlMigrationPrefix =>
+        flyway.setSqlMigrationPrefix(sqlMigrationPrefix)
+      }
 
       dbName -> flyway
     }

@@ -92,6 +92,21 @@ class PlayModuleSpec extends FunSpec
       sql"""DROP TABLE "schema_version"""".execute.apply()
     }
 
+    NamedDB(Symbol("migration-prefix")) autoCommit { implicit session =>
+      val projects =
+        sql"SELECT * FROM project"
+          .map(rs => rs.int("id") -> rs.string("name"))
+          .list
+          .apply()
+
+      projects.size should be(2)
+
+      sql"DROP TABLE project".execute.apply()
+
+      // Table created by flyway
+      sql"""DROP TABLE "schema_version"""".execute.apply()
+    }
+
   }
 
   describe("PlayModule") {

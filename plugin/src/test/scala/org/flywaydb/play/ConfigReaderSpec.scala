@@ -187,5 +187,18 @@ class ConfigReaderSpec extends FunSpec with ShouldMatchers {
       }
     }
 
+    describe("sqlMigrationPrefix") {
+      it("should be parsed") {
+        withDefaultDB(Map("db.default.migration.sqlMigrationPrefix" -> "migration_")) { config =>
+          config.sqlMigrationPrefix should be(Some("migration_"))
+        }
+      }
+      it("should be None by default") {
+        withDefaultDB(Map.empty) { config =>
+          config.sqlMigrationPrefix should be(None)
+        }
+      }
+    }
+
   }
 }

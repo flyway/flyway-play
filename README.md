@@ -165,6 +165,10 @@ $ play -Ddb.default.migration.auto=true start
 
 ## <a class="anchor" name="changelog"></a>Change Log
 
+### 2.2.1
+
+ - Add support for Flyway sqlMigrationPrefix parameter.
+
 ### 2.2.0
 
  - Removed dependency on play.api.Application

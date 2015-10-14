@@ -64,7 +64,7 @@ class PlayInitializer @Inject() (
       val database = configuration.database
       flyway.setDataSource(new DriverDataSource(getClass.getClassLoader, database.driver, database.url, database.user, database.password))
       if (!configuration.locations.isEmpty) {
-        val locations = configuration.locations.map((location: String) => s"${migrationFilesLocation}/${location}"): List[String]
+        val locations = configuration.locations.map(location => s"${migrationFilesLocation}/${location}")
         flyway.setLocations(locations: _*)
       } else {
         flyway.setLocations(migrationFilesLocation)
@@ -83,6 +83,9 @@ class PlayInitializer @Inject() (
       }
       flyway.setSchemas(configuration.schemas: _*)
       flyway.setPlaceholders(configuration.placeholders.asJava)
+      configuration.sqlMigrationPrefix.foreach { sqlMigrationPrefix =>
+        flyway.setSqlMigrationPrefix(sqlMigrationPrefix)
+      }
 
       dbName -> flyway
     }

@@ -26,7 +26,8 @@ case class FlywayConfiguration(
   placeholders: Map[String, String],
   outOfOrder: Boolean,
   schemas: List[String],
-  locations: List[String])
+  locations: List[String],
+  sqlMigrationPrefix: Option[String])
 
 case class DatabaseConfiguration(
   driver: String,

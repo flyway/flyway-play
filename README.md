@@ -158,6 +158,14 @@ Set `validateOnMigrate` to false if you want to disable this.
 db.${dbName}.migration.validateOnMigrate=false // true by default
 ```
 
+### Migration prefix
+
+Custom sql migration prefix key-value pair can be specified in application.conf:
+
+```
+db.${dbName}.migration.sqlMigrationPrefix="migration_"
+```
+
 ### Dev
 
 ![screenshot](screenshot1.png)
@@ -196,6 +204,10 @@ $ play -Ddb.default.migration.auto=true start
 [seratch/devteam-app](https://github.com/seratch/devteam-app "seratch/devteam-app") is using play-flyway. Maybe this is a good example.
 
 ## <a class="anchor" name="changelog"></a>Change Log
+
+### 2.2.1
+
+ - Add support for Flyway sqlMigrationPrefix parameter.
 
 ### 2.2.0
 

@@ -55,7 +55,7 @@ CREATE TABLE FOO (.............
 
 ```
 
-Place your migration scripts in `conf/db/migration/${dbName}` .
+By default place your migration scripts in `conf/db/migration/${dbName}` .
 
 ```
 playapp
@@ -70,6 +70,46 @@ playapp
 │   │       ├── default
 │   │       │   ├── V1__Create_person_table.sql
 │   │       │   └── V2__Add_people.sql
+│   │       └── secondary
+│   │           ├── V1__create_job_table.sql
+│   │           └── V2__Add_job.sql
+│   ├── play.plugins
+│   └── routes
+```
+
+Alternatively, specify one or more locations per database and place your migrations in `conf/db/migration/${dbName}/${locations[1...N]}` .  By varying the locations in each environment you are able to specify different scripts per RDBMS for each upgrade.  These differences should be kept minimal.
+
+For example, in testing use the configuration:
+
+```
+db.default.migration.locations=["common","h2"]
+```
+
+And in production use the configuration:
+
+```
+db.default.migration.locations=["common","mysql"]
+```
+
+Then put your migrations in these folders. Note that the migrations for the `secondary` database remain in the default location.
+
+```
+playapp
+├── app
+│   ├── controllers
+│   ├── models
+│   └── views
+├── conf
+│   ├── application.conf
+│   ├── db
+│   │   └── migration
+│   │       ├── default
+│   │       │   ├── common
+│   │       │   │   └── V2__Add_people.sql
+│   │       │   ├── h2
+│   │       │   │   └── V1__Create_person_table.sql
+│   │       │   ├── mysql
+│   │       │   │   └── V1__Create_person_table.sql
 │   │       └── secondary
 │   │           ├── V1__create_job_table.sql
 │   │           └── V2__Add_job.sql

@@ -70,6 +70,8 @@ class ConfigReader(configuration: Configuration, environment: Environment) {
         configuration.getBoolean(s"db.${dbName}.migration.auto").getOrElse(false)
       val schemas =
         configuration.getStringList(s"db.${dbName}.migration.schemas").getOrElse(java.util.Collections.emptyList[String]).asScala.toList
+      val locations =
+        configuration.getStringList(s"db.${dbName}.migration.locations").getOrElse(java.util.Collections.emptyList[String]).asScala.toList
 
       val sqlMigrationPrefix =
         configuration.getString(s"db.${dbName}.migration.sqlMigrationPrefix")
@@ -91,6 +93,7 @@ class ConfigReader(configuration: Configuration, environment: Environment) {
         placeholders,
         outOfOrder,
         schemas,
+        locations,
         sqlMigrationPrefix
       )
     }).toMap

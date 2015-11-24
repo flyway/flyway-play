@@ -208,6 +208,7 @@ $ play -Ddb.default.migration.auto=true start
 ### 2.2.1
 
  - Add support for Flyway sqlMigrationPrefix parameter.
+ - Flyway 3.2.1
 
 ### 2.2.0
 

@@ -74,7 +74,7 @@ class FlywayWebCommand(
         Some(Redirect(getRedirectUrlFromRequest(request)))
       }
       case versionedInitPath(dbName, version) => {
-        flyways.get(dbName).foreach(_.setBaselineVersion(version))
+        flyways.get(dbName).foreach(_.setBaselineVersionAsString(version))
         flyways.get(dbName).foreach(_.baseline())
         Some(Redirect(getRedirectUrlFromRequest(request)))
       }

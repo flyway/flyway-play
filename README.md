@@ -45,6 +45,11 @@ db.default.password="secret"
 db.default.schemas=["public", "other"]
 ```
 
+If there are sections of your database configuration you expressly do not want
+flyway-play to detect and process, you can instruct flyway-play to ignore them
+by adding: `db.name.flywayIgnore = true` where `name` is the database
+name or setting group you wish ignored.
+
 ### Place migration scripts
 
 A migration script is just a simple SQL file.

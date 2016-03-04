@@ -12,14 +12,14 @@ lazy val plugin = Project (
     name := "flyway-play",
     organization := "org.flywaydb",
     version := flywayPlayVersion,
-    scalaVersion := "2.10.5",
-    crossScalaVersions := scalaVersion.value :: "2.11.6" :: Nil,
+    scalaVersion := "2.10.6",
+    crossScalaVersions := scalaVersion.value :: "2.11.7" :: Nil,
     resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
     libraryDependencies ++= Seq(
       "com.typesafe.play" %% "play" % play.core.PlayVersion.current % "provided",
       "com.typesafe.play" %% "play-test" % play.core.PlayVersion.current % "test"
         excludeAll(ExclusionRule(organization = "org.specs2")),
-      "org.flywaydb" % "flyway-core" % "3.2.1",
+      "org.flywaydb" % "flyway-core" % "4.0",
       scalatest
     ),
     scalacOptions ++= Seq("-language:_", "-deprecation")
@@ -44,7 +44,7 @@ lazy val playapp = Project(
 ).enablePlugins(play.PlayScala).settings(scalariformSettings:_*)
 .settings(
   resourceDirectories in Test += baseDirectory.value / "conf",
-  scalaVersion := "2.10.5",
+  scalaVersion := "2.10.6",
   version := playAppVersion,
   libraryDependencies ++= appDependencies
 )

@@ -1,0 +1,18 @@
+@(dbNames: Seq[String])
+
+<html>
+  <head>
+    <title>play-flyway</title>
+    @parts.css()
+  </head>
+  <body>
+    @parts.header()
+    <div class="container">
+      <a href="/">&lt;&lt; Back to app</a>
+      <div class="well">
+        @parts.links(dbNames)
+      </div>
+    </div>
+    @parts.js()
+  </body>
+</html>

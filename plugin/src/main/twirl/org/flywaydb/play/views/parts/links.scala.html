@@ -1,0 +1,7 @@
+@(dbNames: Seq[String])
+
+<ul>
+@dbNames.map { case dbName =>
+    <li><a href="/@@flyway/@dbName">@dbName</a></li>
+}
+</ul>

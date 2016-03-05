@@ -15,7 +15,7 @@
  */
 package org.flywaydb.play
 
-trait WebCommandPath {
+object WebCommandPath {
   private val applyPathRegex = s"""/@flyway/([a-zA-Z0-9_]+)/migrate""".r
   private val showInfoPathRegex = """/@flyway/([a-zA-Z0-9_]+)""".r
   private val cleanPathRegex = """/@flyway/([a-zA-Z0-9_]+)/clean""".r

@@ -15,6 +15,7 @@
  */
 package org.flywaydb.play
 
+import org.flywaydb.core.api.MigrationInfo
 import play.core._
 import play.api._
 import play.api.mvc._
@@ -26,37 +27,12 @@ class FlywayWebCommand(
   environment: Environment,
   flywayPrefixToMigrationScript: String,
   flyways: Map[String, Flyway])
-    extends HandleWebCommandSupport
-    with WebCommandPath {
+    extends HandleWebCommandSupport {
 
   def handleWebCommand(request: RequestHeader, sbtLink: BuildLink, path: java.io.File): Option[Result] = {
 
-    val css = {
-      <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" type="text/css"/>
-      <style>
-        body {{
-        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-      }}
-      </style>
-    }
-
-    val js = {
-      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-      <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-    }
-
-    val header = {
-      <div class="navbar" role="navigation">
-        <div class="container">
-          <div class="navbar-header">
-            <a class="navbar-brand" href="/@flyway">play-flyway</a>
-          </div>
-        </div>
-      </div>
-    }
-
     request.path match {
-      case migratePath(dbName) => {
+      case WebCommandPath.migratePath(dbName) =>
         for {
           flyway <- flyways.get(dbName)
         } yield {
@@ -64,133 +40,32 @@ class FlywayWebCommand(
           sbtLink.forceReload()
           Redirect(getRedirectUrlFromRequest(request))
         }
-      }
-      case cleanPath(dbName) => {
+      case WebCommandPath.cleanPath(dbName) =>
         flyways.get(dbName).foreach(_.clean())
         Some(Redirect(getRedirectUrlFromRequest(request)))
-      }
-      case repairPath(dbName) => {
+      case WebCommandPath.repairPath(dbName) =>
         flyways.get(dbName).foreach(_.repair())
         Some(Redirect(getRedirectUrlFromRequest(request)))
-      }
-      case versionedInitPath(dbName, version) => {
+      case WebCommandPath.versionedInitPath(dbName, version) =>
         flyways.get(dbName).foreach(_.setBaselineVersionAsString(version))
         flyways.get(dbName).foreach(_.baseline())
         Some(Redirect(getRedirectUrlFromRequest(request)))
-      }
-      case showInfoPath(dbName) => {
-        val description = for {
-          flyway <- flyways.get(dbName).toList
-          info <- flyway.info().all()
-        } yield {
-          val sql = environment.resourceAsStream(s"${flywayPrefixToMigrationScript}/${dbName}/${info.getScript}").map { in =>
+      case WebCommandPath.showInfoPath(dbName) =>
+        val allMigrationInfo: Seq[MigrationInfo] = flyways.get(dbName).toSeq.flatMap(_.info().all())
+        val scripts: Seq[String] = allMigrationInfo.map { info =>
+          environment.resourceAsStream(s"${flywayPrefixToMigrationScript}/${dbName}/${info.getScript}").map { in =>
             FileUtils.readInputStreamToString(in)
           }.orElse {
             for {
               script <- FileUtils.findJdbcMigrationFile(environment.rootPath, info.getScript)
             } yield FileUtils.readFileToString(script)
           }.getOrElse("")
-
-          val status = {
-            if (info.getState.isApplied) {
-              <span style="color: blue;">applied</span>
-            } else if (info.getState.isFailed) {
-              <span style="color: red;">failed</span>
-            } else if (info.getState.isResolved) {
-              <span style="color: green">resolved</span>
-            }
-          }
-
-          <p>
-            <h3>
-              { info.getScript }
-              ({ status }
-              )
-            </h3>
-            <pre>{ sql }</pre>
-          </p>
         }
-
-        def withRedirectParam(path: String) = path + "?redirect=" + java.net.URLEncoder.encode(request.path, "utf-8")
-
-        val initLinks = for {
-          flyway <- flyways.get(dbName).toList
-          info <- flyway.info().all()
-        } yield {
-          val version = info.getVersion().getVersion()
-          <li><a href={ withRedirectParam(versionedInitPath(dbName, version)) }>version: { version }</a></li>
-        }
-
-        val migratePathWithRedirectParam = withRedirectParam(migratePath(dbName))
-        val cleanPathWithRedirectParam = withRedirectParam(cleanPath(dbName))
-        val repairPathWithRedirectParam = withRedirectParam(repairPath(dbName))
-
-        val html =
-          <html>
-            <head>
-              <title>play-flyway</title>
-              { css }
-            </head>
-            <body>
-              { header }
-              <div class="container">
-                <a href="/">&lt;&lt; Back to app</a>
-                <h2>Database: { dbName }</h2>
-                <a class="btn btn-primary" href={ migratePathWithRedirectParam }>migrate</a>
-                <a class="btn btn-primary" href={ repairPathWithRedirectParam }>repair</a>
-                <a class="btn btn-danger" href={ cleanPathWithRedirectParam }>clean</a>
-                <!-- Split button -->
-                <div class="btn-group">
-                  <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown">
-                    init&nbsp;<span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu" role="menu">
-                    { initLinks }
-                  </ul>
-                </div>
-                <!--<a style="color: red;" href={ initPathWithRedirectParam }>init</a>-->
-                { description }
-              </div>
-              { js }
-            </body>
-          </html>
-
-        Some(Ok(html).as("text/html"))
-
-      }
-      case "/@flyway" => {
-        val links = for {
-          (dbName, flyway) <- flyways
-          path = s"/@flyway/${dbName}"
-        } yield {
-          <ul>
-            <li><a href={ path }>{ dbName }</a></li>
-          </ul>
-        }
-
-        val html =
-          <html>
-            <head>
-              <title>play-flyway</title>
-              { css }
-            </head>
-            <body>
-              { header }
-              <div class="container">
-                <a href="/">&lt;&lt; Back to app</a>
-                <div class="well">
-                  { links }
-                </div>
-              </div>
-              { js }
-            </body>
-          </html>
-
-        Some(Ok(html).as("text/html"))
-      }
-      case _ => {
+        Some(Ok(views.html.info(request, dbName, allMigrationInfo, scripts)).as("text/html"))
+      case "/@flyway" =>
+        Some(Ok(views.html.index(flyways.keys.toSeq)).as("text/html"))
+      case _ =>
         None
-      }
     }
   }
 

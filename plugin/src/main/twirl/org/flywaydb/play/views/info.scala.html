@@ -1,0 +1,64 @@
+@(request: play.api.mvc.RequestHeader,
+  dbName: String,
+  allMigrationInfo: Seq[org.flywaydb.core.api.MigrationInfo],
+  scripts: Seq[String])
+
+@import org.flywaydb.play.WebCommandPath
+
+@withRedirectParam(path: String) = {
+  @{path}?redirect=@{java.net.URLEncoder.encode(request.path, "utf-8")}
+}
+
+@statusText(info: org.flywaydb.core.api.MigrationInfo) = {
+  @if(info.getState.isApplied) {
+    <span style="color: blue;">applied</span>
+  } else {
+    @if(info.getState.isResolved) {
+      <span style="color: green">resolved</span>
+    }
+  }
+  @if(info.getState.isFailed) {
+    <span style="color: red;">failed</span>
+  }
+}
+
+<html>
+  <head>
+    <title>play-flyway</title>
+    @parts.css()
+  </head>
+  <body>
+    @parts.header()
+    <div class="container">
+      <a href="/">&lt;&lt; Back to app</a>
+      <h2>Database: @dbName</h2>
+      <a class="btn btn-primary" href="@withRedirectParam(WebCommandPath.migratePath(dbName))">migrate</a>
+      <a class="btn btn-primary" href="@withRedirectParam(WebCommandPath.repairPath(dbName))">repair</a>
+      <a class="btn btn-primary" href="@withRedirectParam(WebCommandPath.cleanPath(dbName))">clean</a>
+      <!-- Split button -->
+      <div class="btn-group">
+        <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown">
+          init&nbsp;<span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+          @allMigrationInfo.map { info =>
+            @defining(info.getVersion.getVersion) { version =>
+            <li>
+              <a href="@withRedirectParam(WebCommandPath.versionedInitPath(dbName, version))">version: @version</a>
+            </li>
+            }
+          }
+        </ul>
+      </div>
+      @allMigrationInfo.zip(scripts).map { case (info, script) =>
+        <p>
+          <h3>
+          @info.getScript (@statusText(info))
+          </h3>
+          <pre>@script</pre>
+        </p>
+      }
+    </div>
+    @parts.js()
+  </body>
+</html>

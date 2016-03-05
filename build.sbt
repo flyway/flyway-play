@@ -7,7 +7,7 @@ val scalatest = "org.scalatest" %% "scalatest" % "2.1.5" % "test"
 lazy val plugin = Project (
   id = "plugin",
   base = file ("plugin")
-).settings(
+).enablePlugins(SbtTwirl).settings(
   Seq(
     name := "flyway-play",
     organization := "org.flywaydb",

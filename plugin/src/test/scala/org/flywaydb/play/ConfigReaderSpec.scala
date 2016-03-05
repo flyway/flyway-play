@@ -43,6 +43,21 @@ class ConfigReaderSpec extends FunSpec with ShouldMatchers {
     "db.third.pass" -> "secret3"
   )
 
+  val not_a_DB = Map(
+    // Not a group
+    "db.fake" → "This isn't a database",
+    // Not a database entry (no url, no driver)
+    "db.boneCP.autoCommit" → "true"
+  )
+
+  val fourthDB = Map(
+    "db.fourth.driver" -> "org.h2.Driver",
+    "db.fourth.url" -> "jdbc:h2:mem:example4;DB_CLOSE_DELAY=-1",
+    "db.fourth.user" -> "sa",
+    "db.fourth.pass" -> "secret4",
+    "db.fourth.flywayIgnore" -> "true"
+  )
+
   def withDefaultDB[A](additionalConfiguration: Map[String, Object])(assertion: FlywayConfiguration => A): A = {
     val configuration = Configuration((defaultDB ++ additionalConfiguration).toSeq: _*)
     val environment = Environment.simple()
@@ -54,7 +69,7 @@ class ConfigReaderSpec extends FunSpec with ShouldMatchers {
   describe("ConfigReader") {
 
     it("should get database configurations") {
-      val configuration = Configuration((defaultDB ++ secondaryDB ++ thirdDB).toSeq: _*)
+      val configuration = Configuration((defaultDB ++ secondaryDB ++ thirdDB ++ not_a_DB).toSeq: _*)
       val environment = Environment.simple()
       val reader = new ConfigReader(configuration, environment)
       val configMap = reader.getFlywayConfigurations
@@ -211,6 +226,17 @@ class ConfigReaderSpec extends FunSpec with ShouldMatchers {
           config.sqlMigrationPrefix should be(None)
         }
       }
+    }
+
+    it("should skip sections marked ignore") {
+      val configuration = Configuration((defaultDB ++ secondaryDB ++ thirdDB ++ fourthDB ++ not_a_DB).toSeq: _*)
+      val environment = Environment.simple()
+      val reader = new ConfigReader(configuration, environment)
+      val configMap = reader.getFlywayConfigurations
+      configMap.get("default").get.database should be(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:example;DB_CLOSE_DELAY=-1", "sa", null))
+      configMap.get("secondary").get.database should be(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:example2;DB_CLOSE_DELAY=-1", "sa", "secret2"))
+      configMap.get("third").get.database should be(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:example3;DB_CLOSE_DELAY=-1", "sa", "secret3"))
+      configMap.contains("fourth") should be(false)
     }
 
   }

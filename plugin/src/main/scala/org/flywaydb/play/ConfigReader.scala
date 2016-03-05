@@ -17,10 +17,13 @@ package org.flywaydb.play
 
 import play.api._
 import scala.collection.JavaConverters._
+import scala.util.control.Exception.catching
 
 class ConfigReader(configuration: Configuration, environment: Environment) {
 
   val urlParser = new UrlParser(environment: Environment)
+
+  lazy val logger = Logger(classOf[ConfigReader])
 
   private def getAllDatabaseNames: Seq[String] = (for {
     config <- configuration.getConfig("db").toList
@@ -32,49 +35,65 @@ class ConfigReader(configuration: Configuration, environment: Environment) {
   def getFlywayConfigurations: Map[String, FlywayConfiguration] = {
     (for {
       dbName <- getAllDatabaseNames
+      // Will only iterate if this is a configuration group, instead of a single value, allowing easy skipping of irrelevant entries
+      subConfig <- catching(classOf[PlayException]).opt(configuration.getConfig("db." + dbName)).flatten
+
+      // Skip silently if we've been told to
+      if !subConfig.getBoolean("flywayIgnore").getOrElse(false)
+
+      urlOption = subConfig.getString("url")
+      driverOption = subConfig.getString("driver")
+
+      // Issue appropriate warnings if we're provided only half the required information
+      _ = if (urlOption.isDefined != driverOption.isDefined) {
+        if (urlOption.isEmpty)
+          logger.warn(s"Skipping db.$dbName, Found Driver, but No URL Specified; to inhibit this message, set db.$dbName.migration.flywayIgnore to true in your configuration.")
+        else
+          logger.warn(s"Skipping db.$dbName, Found URL, but No Driver Specified; to inhibit this message, set db.$dbName.migration.flywayIgnore to true in your configuration.")
+      }
+
+      // Skip if there's no URL or driver...
+      fullUrl <- urlOption
+      driver <- driverOption
     } yield {
-      val (url, parsedUser, parsedPass) = configuration.getString(s"db.${dbName}.url").map(urlParser.parseUrl(_)).getOrElse(
-        throw new MigrationConfigurationException(s"db.${dbName}.url is not set.")
-      )
-      val driver = configuration.getString(s"db.${dbName}.driver").getOrElse(
-        throw new MigrationConfigurationException(s"db.${dbName}.driver is not set.")
-      )
+      val (url, parsedUser, parsedPass) = urlParser.parseUrl(fullUrl)
+
       val user = parsedUser
-        .orElse(configuration.getString(s"db.${dbName}.username"))
-        .orElse(configuration.getString(s"db.${dbName}.user"))
+        .orElse(subConfig.getString("username"))
+        .orElse(subConfig.getString("user"))
         .orNull
       val password = parsedPass
-        .orElse(configuration.getString(s"db.${dbName}.password"))
-        .orElse(configuration.getString(s"db.${dbName}.pass"))
+        .orElse(subConfig.getString("password"))
+        .orElse(subConfig.getString("pass"))
         .orNull
       val initOnMigrate =
-        configuration.getBoolean(s"db.${dbName}.migration.initOnMigrate").getOrElse(false)
+        subConfig.getBoolean("migration.initOnMigrate").getOrElse(false)
       val validateOnMigrate =
-        configuration.getBoolean(s"db.${dbName}.migration.validateOnMigrate").getOrElse(true)
+        subConfig.getBoolean("migration.validateOnMigrate").getOrElse(true)
       val encoding =
-        configuration.getString(s"db.${dbName}.migration.encoding").getOrElse("UTF-8")
+        subConfig.getString("migration.encoding").getOrElse("UTF-8")
       val placeholderPrefix =
-        configuration.getString(s"db.${dbName}.migration.placeholderPrefix")
+        subConfig.getString("migration.placeholderPrefix")
       val placeholderSuffix =
-        configuration.getString(s"db.${dbName}.migration.placeholderSuffix")
+        subConfig.getString("migration.placeholderSuffix")
 
       val placeholders = {
-        configuration.getConfig(s"db.${dbName}.migration.placeholders").map { config =>
+        subConfig.getConfig("migration.placeholders").map { config =>
           config.subKeys.map { key => (key -> config.getString(key).getOrElse("")) }.toMap
         }.getOrElse(Map.empty)
       }
 
       val outOfOrder =
-        configuration.getBoolean(s"db.${dbName}.migration.outOfOrder").getOrElse(false)
+        subConfig.getBoolean("migration.outOfOrder").getOrElse(false)
       val auto =
-        configuration.getBoolean(s"db.${dbName}.migration.auto").getOrElse(false)
+        subConfig.getBoolean("migration.auto").getOrElse(false)
       val schemas =
-        configuration.getStringList(s"db.${dbName}.migration.schemas").getOrElse(java.util.Collections.emptyList[String]).asScala.toList
+        subConfig.getStringList("migration.schemas").getOrElse(java.util.Collections.emptyList[String]).asScala.toList
       val locations =
-        configuration.getStringList(s"db.${dbName}.migration.locations").getOrElse(java.util.Collections.emptyList[String]).asScala.toList
+        subConfig.getStringList("migration.locations").getOrElse(java.util.Collections.emptyList[String]).asScala.toList
 
       val sqlMigrationPrefix =
-        configuration.getString(s"db.${dbName}.migration.sqlMigrationPrefix")
+        subConfig.getString("migration.sqlMigrationPrefix")
 
       val database = DatabaseConfiguration(
         driver,

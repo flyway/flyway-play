@@ -18,7 +18,7 @@ build.sbt
 
 ```scala
 libraryDependencies ++= Seq(
-  "org.flywaydb" %% "flyway-play" % "2.3.0"
+  "org.flywaydb" %% "flyway-play" % "3.0.0-SNAPSHOT"
 )
 ```
 
@@ -204,6 +204,16 @@ $ play -Ddb.default.migration.auto=true start
 [seratch/devteam-app](https://github.com/seratch/devteam-app "seratch/devteam-app") is using play-flyway. Maybe this is a good example.
 
 ## <a class="anchor" name="changelog"></a>Change Log
+
+### 3.0.0
+
+ - Support Play 2.5
+ - Refactored view code with twirl
+ - Ignore non-flyway db.* entry in application.conf
+
+### 2.3.0
+
+ - Flyway 4.0
 
 ### 2.2.1
 

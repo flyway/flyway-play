@@ -19,17 +19,15 @@ import org.scalatest.{ ShouldMatchers, FunSpec }
 
 class WebCommandPathSpec extends FunSpec with ShouldMatchers {
 
-  val config = new WebCommandPath {}
-
   describe("PluginConfiguration") {
 
     describe("migratePath") {
       it("construct path to apply migration") {
-        config.migratePath("foo") should be("/@flyway/foo/migrate")
+        WebCommandPath.migratePath("foo") should be("/@flyway/foo/migrate")
       }
       it("extract db to migrate migration") {
         val dbName = "/@flyway/foo/migrate" match {
-          case config.migratePath(db) => Some(db)
+          case WebCommandPath.migratePath(db) => Some(db)
           case _ => None
         }
         dbName should be(Some("foo"))

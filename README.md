@@ -203,6 +203,16 @@ $ play -Ddb.default.migration.auto=true start
 
 [seratch/devteam-app](https://github.com/seratch/devteam-app "seratch/devteam-app") is using play-flyway. Maybe this is a good example.
 
+## compile-time DI support
+
+
+```scala
+class MyComponents(context: Context) extends BuiltInComponents(context) with FlywayPlayComponents {
+  flywayPlayInitializer
+  ...
+}
+```
+
 ## <a class="anchor" name="changelog"></a>Change Log
 
 ### 3.0.0

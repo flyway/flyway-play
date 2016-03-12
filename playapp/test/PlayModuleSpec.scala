@@ -15,15 +15,13 @@
  */
 package com.github.tototoshi.play2.flyway
 
-import org.scalatest.FunSpec
-import org.scalatest.matchers._
+import org.scalatest.{ FunSpec, ShouldMatchers }
 import play.api.test._
 import play.api.test.Helpers._
 import scalikejdbc._
 import scalikejdbc.SQLInterpolation._
 
-class PlayModuleSpec extends FunSpec
-    with ShouldMatchers {
+class PlayModuleSpec extends FunSpec with ShouldMatchers {
 
   def fixture = new {
 

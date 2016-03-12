@@ -18,8 +18,7 @@ package org.flywaydb.play
 import play.api.{ Environment, Configuration }
 import play.api.test._
 import play.api.test.Helpers._
-import org.scalatest.FunSpec
-import org.scalatest.matchers._
+import org.scalatest.{ FunSpec, ShouldMatchers }
 
 class ConfigReaderSpec extends FunSpec with ShouldMatchers {
 

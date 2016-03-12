@@ -208,6 +208,7 @@ $ play -Ddb.default.migration.auto=true start
 ### 3.0.0
 
  - Support Play 2.5
+ - Support compile-time DI
  - Refactored view code with twirl
  - Ignore non-flyway db.* entry in application.conf
 

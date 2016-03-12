@@ -39,16 +39,11 @@ class ConfigReader(configuration: Configuration, environment: Environment) {
       jdbc <- getJdbcConfig(configuration, dbName)
       subConfig = configuration.getConfig(s"db.$dbName.migration").getOrElse(Configuration.empty)
     } yield {
-      val initOnMigrate =
-        subConfig.getBoolean("initOnMigrate").getOrElse(false)
-      val validateOnMigrate =
-        subConfig.getBoolean("validateOnMigrate").getOrElse(true)
-      val encoding =
-        subConfig.getString("encoding").getOrElse("UTF-8")
-      val placeholderPrefix =
-        subConfig.getString("placeholderPrefix")
-      val placeholderSuffix =
-        subConfig.getString("placeholderSuffix")
+      val initOnMigrate = subConfig.getBoolean("initOnMigrate").getOrElse(false)
+      val validateOnMigrate = subConfig.getBoolean("validateOnMigrate").getOrElse(true)
+      val encoding = subConfig.getString("encoding").getOrElse("UTF-8")
+      val placeholderPrefix = subConfig.getString("placeholderPrefix")
+      val placeholderSuffix = subConfig.getString("placeholderSuffix")
 
       val placeholders = {
         subConfig.getConfig("placeholders").map { config =>
@@ -56,17 +51,11 @@ class ConfigReader(configuration: Configuration, environment: Environment) {
         }.getOrElse(Map.empty)
       }
 
-      val outOfOrder =
-        subConfig.getBoolean("outOfOrder").getOrElse(false)
-      val auto =
-        subConfig.getBoolean("auto").getOrElse(false)
-      val schemas =
-        subConfig.getStringList("schemas").getOrElse(java.util.Collections.emptyList[String]).asScala.toList
-      val locations =
-        subConfig.getStringList("locations").getOrElse(java.util.Collections.emptyList[String]).asScala.toList
-
-      val sqlMigrationPrefix =
-        subConfig.getString("sqlMigrationPrefix")
+      val outOfOrder = subConfig.getBoolean("outOfOrder").getOrElse(false)
+      val auto = subConfig.getBoolean("auto").getOrElse(false)
+      val schemas = subConfig.getStringList("schemas").getOrElse(java.util.Collections.emptyList[String]).asScala.toList
+      val locations = subConfig.getStringList("locations").getOrElse(java.util.Collections.emptyList[String]).asScala.toList
+      val sqlMigrationPrefix = subConfig.getString("sqlMigrationPrefix")
 
       val database = DatabaseConfiguration(
         jdbc.driver,
@@ -89,7 +78,6 @@ class ConfigReader(configuration: Configuration, environment: Environment) {
         sqlMigrationPrefix
       )
     }).toMap
-
   }
 
   private def getJdbcConfig(configuration: Configuration, dbName: String): Option[JdbcConfig] = {

@@ -20,7 +20,11 @@ import scala.collection.JavaConverters._
 
 class ConfigReader(configuration: Configuration, environment: Environment) {
 
+  case class JdbcConfig(driver: String, url: String, username: String, password: String)
+
   val urlParser = new UrlParser(environment: Environment)
+
+  val logger = Logger(classOf[ConfigReader])
 
   private def getAllDatabaseNames: Seq[String] = (for {
     config <- configuration.getConfig("db").toList
@@ -32,21 +36,8 @@ class ConfigReader(configuration: Configuration, environment: Environment) {
   def getFlywayConfigurations: Map[String, FlywayConfiguration] = {
     (for {
       dbName <- getAllDatabaseNames
+      jdbc <- getJdbcConfig(configuration, dbName)
     } yield {
-      val (url, parsedUser, parsedPass) = configuration.getString(s"db.${dbName}.url").map(urlParser.parseUrl(_)).getOrElse(
-        throw new MigrationConfigurationException(s"db.${dbName}.url is not set.")
-      )
-      val driver = configuration.getString(s"db.${dbName}.driver").getOrElse(
-        throw new MigrationConfigurationException(s"db.${dbName}.driver is not set.")
-      )
-      val user = parsedUser
-        .orElse(configuration.getString(s"db.${dbName}.username"))
-        .orElse(configuration.getString(s"db.${dbName}.user"))
-        .orNull
-      val password = parsedPass
-        .orElse(configuration.getString(s"db.${dbName}.password"))
-        .orElse(configuration.getString(s"db.${dbName}.pass"))
-        .orNull
       val initOnMigrate =
         configuration.getBoolean(s"db.${dbName}.migration.initOnMigrate").getOrElse(false)
       val validateOnMigrate =
@@ -77,10 +68,10 @@ class ConfigReader(configuration: Configuration, environment: Environment) {
         configuration.getString(s"db.${dbName}.migration.sqlMigrationPrefix")
 
       val database = DatabaseConfiguration(
-        driver,
-        url,
-        user,
-        password)
+        jdbc.driver,
+        jdbc.url,
+        jdbc.username,
+        jdbc.password)
 
       dbName -> FlywayConfiguration(
         database,
@@ -98,6 +89,32 @@ class ConfigReader(configuration: Configuration, environment: Environment) {
       )
     }).toMap
 
+  }
+
+  private def getJdbcConfig(configuration: Configuration, dbName: String): Option[JdbcConfig] = {
+    val jdbcConfigOrError = for {
+      jdbcUrl <- configuration.getString(s"db.${dbName}.url").toRight(s"db.$dbName.url is not set").right
+      driver <- configuration.getString(s"db.${dbName}.driver").toRight(s"db.$dbName.driver is not set").right
+    } yield {
+      val (parsedUrl, parsedUser, parsedPass) = urlParser.parseUrl(jdbcUrl)
+      val username = parsedUser
+        .orElse(configuration.getString(s"db.${dbName}.username"))
+        .orElse(configuration.getString(s"db.${dbName}.user"))
+        .orNull
+      val password = parsedPass
+        .orElse(configuration.getString(s"db.${dbName}.password"))
+        .orElse(configuration.getString(s"db.${dbName}.pass"))
+        .orNull
+      JdbcConfig(driver, parsedUrl, username, password)
+    }
+
+    jdbcConfigOrError match {
+      case Left(message) =>
+        logger.warn(message)
+        None
+      case Right(jdbcConfig) =>
+        Some(jdbcConfig)
+    }
   }
 
 }

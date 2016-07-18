@@ -18,7 +18,7 @@ build.sbt
 
 ```scala
 libraryDependencies ++= Seq(
-  "org.flywaydb" %% "flyway-play" % "3.0.0"
+  "org.flywaydb" %% "flyway-play" % "3.0.1"
 )
 ```
 
@@ -214,6 +214,10 @@ class MyComponents(context: Context) extends BuiltInComponents(context) with Fly
 ```
 
 ## <a class="anchor" name="changelog"></a>Change Log
+
+### 3.0.1
+
+ - Fix problem with locating scripts when using locations
 
 ### 3.0.0
 

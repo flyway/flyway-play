@@ -8,7 +8,7 @@ This module is successor of [tototoshi/play-flyway](https://github.com/tototoshi
 
 ## <a class="anchor" name="features"></a>Features
 
- - Based on [Flyway](http://flywaydb.org/)
+ - Based on [Flyway](https://flywaydb.org/)
  - No 'Downs' part.
  - Independent of DBPlugin(play.api.db).
 
@@ -120,7 +120,7 @@ playapp
 
 Please see flyway's documents about the naming convention for migration scripts.
 
-http://flywaydb.org/documentation/migration/sql.html
+https://flywaydb.org/documentation/migration/sql.html
 
 ### Placeholders
 
@@ -201,7 +201,7 @@ $ play -Ddb.default.migration.auto=true start
 
 ## <a class="anchor" name="example"></a>Example application
 
-[seratch/devteam-app](https://github.com/seratch/devteam-app "seratch/devteam-app") is using play-flyway. Maybe this is a good example.
+[seratch/devteam-app](https://github.com/scalikejdbc/devteam-app "seratch/devteam-app") is using play-flyway. Maybe this is a good example.
 
 ## compile-time DI support
 

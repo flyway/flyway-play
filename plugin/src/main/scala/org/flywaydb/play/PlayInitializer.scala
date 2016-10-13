@@ -63,29 +63,29 @@ class PlayInitializer @Inject() (
       val flyway = new Flyway
       val database = configuration.database
       flyway.setDataSource(new DriverDataSource(getClass.getClassLoader, database.driver, database.url, database.user, database.password))
-      if (!configuration.locations.isEmpty) {
+      if (configuration.locations.nonEmpty) {
         val locations = configuration.locations.map(location => s"${migrationFilesLocation}/${location}")
         flyway.setLocations(locations: _*)
       } else {
         flyway.setLocations(migrationFilesLocation)
       }
-      flyway.setValidateOnMigrate(configuration.validateOnMigrate)
-      flyway.setEncoding(configuration.encoding)
-      flyway.setOutOfOrder(configuration.outOfOrder)
-      if (configuration.initOnMigrate) {
-        flyway.setBaselineOnMigrate(true)
-      }
-      for (prefix <- configuration.placeholderPrefix) {
-        flyway.setPlaceholderPrefix(prefix)
-      }
-      for (suffix <- configuration.placeholderSuffix) {
-        flyway.setPlaceholderSuffix(suffix)
-      }
+      configuration.encoding foreach flyway.setEncoding
       flyway.setSchemas(configuration.schemas: _*)
+      configuration.table foreach flyway.setTable
+      configuration.placeholderReplacement foreach flyway.setPlaceholderReplacement
       flyway.setPlaceholders(configuration.placeholders.asJava)
-      configuration.sqlMigrationPrefix.foreach { sqlMigrationPrefix =>
-        flyway.setSqlMigrationPrefix(sqlMigrationPrefix)
-      }
+      configuration.placeholderPrefix foreach flyway.setPlaceholderPrefix
+      configuration.placeholderSuffix foreach flyway.setPlaceholderSuffix
+      configuration.sqlMigrationPrefix foreach flyway.setSqlMigrationPrefix
+      configuration.repeatableSqlMigrationPrefix foreach flyway.setRepeatableSqlMigrationPrefix
+      configuration.sqlMigrationSeparator foreach flyway.setSqlMigrationSeparator
+      configuration.sqlMigrationSuffix foreach flyway.setSqlMigrationSuffix
+      configuration.ignoreFutureMigrations foreach flyway.setIgnoreFutureMigrations
+      configuration.validateOnMigrate foreach flyway.setValidateOnMigrate
+      configuration.cleanOnValidationError foreach flyway.setCleanOnValidationError
+      configuration.cleanDisabled foreach flyway.setCleanDisabled
+      configuration.initOnMigrate foreach flyway.setBaselineOnMigrate
+      configuration.outOfOrder foreach flyway.setOutOfOrder
 
       dbName -> flyway
     }

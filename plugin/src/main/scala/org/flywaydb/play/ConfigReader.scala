@@ -36,51 +36,41 @@ class ConfigReader(configuration: Configuration, environment: Environment) {
   def getFlywayConfigurations: Map[String, FlywayConfiguration] = {
     (for {
       dbName <- getAllDatabaseNames
-      jdbc <- getJdbcConfig(configuration, dbName)
+      database <- getDatabaseConfiguration(configuration, dbName)
       subConfig = configuration.getConfig(s"db.$dbName.migration").getOrElse(Configuration.empty)
     } yield {
-      val initOnMigrate = subConfig.getBoolean("initOnMigrate").getOrElse(false)
-      val validateOnMigrate = subConfig.getBoolean("validateOnMigrate").getOrElse(true)
-      val encoding = subConfig.getString("encoding").getOrElse("UTF-8")
-      val placeholderPrefix = subConfig.getString("placeholderPrefix")
-      val placeholderSuffix = subConfig.getString("placeholderSuffix")
-
       val placeholders = {
         subConfig.getConfig("placeholders").map { config =>
           config.subKeys.map { key => (key -> config.getString(key).getOrElse("")) }.toMap
         }.getOrElse(Map.empty)
       }
 
-      val outOfOrder = subConfig.getBoolean("outOfOrder").getOrElse(false)
-      val auto = subConfig.getBoolean("auto").getOrElse(false)
-      val schemas = subConfig.getStringList("schemas").getOrElse(java.util.Collections.emptyList[String]).asScala.toList
-      val locations = subConfig.getStringList("locations").getOrElse(java.util.Collections.emptyList[String]).asScala.toList
-      val sqlMigrationPrefix = subConfig.getString("sqlMigrationPrefix")
-
-      val database = DatabaseConfiguration(
-        jdbc.driver,
-        jdbc.url,
-        jdbc.username,
-        jdbc.password)
-
       dbName -> FlywayConfiguration(
         database,
-        auto,
-        initOnMigrate,
-        validateOnMigrate,
-        encoding,
-        placeholderPrefix,
-        placeholderSuffix,
+        subConfig.getBoolean("auto").getOrElse(false),
+        subConfig.getStringList("locations").getOrElse(java.util.Collections.emptyList[String]).asScala.toList,
+        subConfig.getString("encoding"),
+        subConfig.getStringList("schemas").getOrElse(java.util.Collections.emptyList[String]).asScala.toList,
+        subConfig.getString("table"),
+        subConfig.getBoolean("placeholderReplacement"),
         placeholders,
-        outOfOrder,
-        schemas,
-        locations,
-        sqlMigrationPrefix
+        subConfig.getString("placeholderPrefix"),
+        subConfig.getString("placeholderSuffix"),
+        subConfig.getString("sqlMigrationPrefix"),
+        subConfig.getString("repeatableSqlMigrationPrefix"),
+        subConfig.getString("sqlMigrationSeparator"),
+        subConfig.getString("sqlMigrationSuffix"),
+        subConfig.getBoolean("ignoreFutureMigrations"),
+        subConfig.getBoolean("validateOnMigrate"),
+        subConfig.getBoolean("cleanOnValidationError"),
+        subConfig.getBoolean("cleanDisabled"),
+        subConfig.getBoolean("initOnMigrate"),
+        subConfig.getBoolean("outOfOrder")
       )
     }).toMap
   }
 
-  private def getJdbcConfig(configuration: Configuration, dbName: String): Option[JdbcConfig] = {
+  private def getDatabaseConfiguration(configuration: Configuration, dbName: String): Option[DatabaseConfiguration] = {
     val jdbcConfigOrError = for {
       jdbcUrl <- configuration.getString(s"db.${dbName}.url").toRight(s"db.$dbName.url is not set").right
       driver <- configuration.getString(s"db.${dbName}.driver").toRight(s"db.$dbName.driver is not set").right
@@ -101,8 +91,12 @@ class ConfigReader(configuration: Configuration, environment: Environment) {
       case Left(message) =>
         logger.warn(message)
         None
-      case Right(jdbcConfig) =>
-        Some(jdbcConfig)
+      case Right(jdbc) =>
+        Some(DatabaseConfiguration(
+          jdbc.driver,
+          jdbc.url,
+          jdbc.username,
+          jdbc.password))
     }
   }
 

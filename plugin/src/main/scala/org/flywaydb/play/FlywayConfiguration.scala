@@ -18,16 +18,24 @@ package org.flywaydb.play
 case class FlywayConfiguration(
   database: DatabaseConfiguration,
   auto: Boolean,
-  initOnMigrate: Boolean,
-  validateOnMigrate: Boolean,
-  encoding: String,
+  locations: List[String],
+  encoding: Option[String],
+  schemas: List[String],
+  table: Option[String],
+  placeholderReplacement: Option[Boolean],
+  placeholders: Map[String, String],
   placeholderPrefix: Option[String],
   placeholderSuffix: Option[String],
-  placeholders: Map[String, String],
-  outOfOrder: Boolean,
-  schemas: List[String],
-  locations: List[String],
-  sqlMigrationPrefix: Option[String])
+  sqlMigrationPrefix: Option[String],
+  repeatableSqlMigrationPrefix: Option[String],
+  sqlMigrationSeparator: Option[String],
+  sqlMigrationSuffix: Option[String],
+  ignoreFutureMigrations: Option[Boolean],
+  validateOnMigrate: Option[Boolean],
+  cleanOnValidationError: Option[Boolean],
+  cleanDisabled: Option[Boolean],
+  initOnMigrate: Option[Boolean],
+  outOfOrder: Option[Boolean])
 
 case class DatabaseConfiguration(
   driver: String,

@@ -108,8 +108,8 @@ playapp
 │   │       │   │   └── V2__Add_people.sql
 │   │       │   ├── h2
 │   │       │   │   └── V1__Create_person_table.sql
-│   │       │   ├── mysql
-│   │       │   │   └── V1__Create_person_table.sql
+│   │       │   └── mysql
+│   │       │       └── V1__Create_person_table.sql
 │   │       └── secondary
 │   │           ├── V1__create_job_table.sql
 │   │           └── V2__Add_job.sql

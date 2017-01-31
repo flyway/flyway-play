@@ -17,6 +17,7 @@ package org.flywaydb.play
 
 case class FlywayConfiguration(
   database: DatabaseConfiguration,
+  validateOnStart: Boolean,
   auto: Boolean,
   initOnMigrate: Boolean,
   validateOnMigrate: Boolean,

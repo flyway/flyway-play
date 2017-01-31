@@ -44,6 +44,7 @@ class ConfigReader(configuration: Configuration, environment: Environment) {
       val encoding = subConfig.getString("encoding").getOrElse("UTF-8")
       val placeholderPrefix = subConfig.getString("placeholderPrefix")
       val placeholderSuffix = subConfig.getString("placeholderSuffix")
+      val validateOnStart = subConfig.getBoolean("validateOnStart").getOrElse(false)
 
       val placeholders = {
         subConfig.getConfig("placeholders").map { config =>
@@ -65,6 +66,7 @@ class ConfigReader(configuration: Configuration, environment: Environment) {
 
       dbName -> FlywayConfiguration(
         database,
+        validateOnStart,
         auto,
         initOnMigrate,
         validateOnMigrate,

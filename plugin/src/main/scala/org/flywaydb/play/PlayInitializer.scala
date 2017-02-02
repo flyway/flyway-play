@@ -121,6 +121,10 @@ class PlayInitializer @Inject() (
           dbName,
           pendingMigrations.map(migration => migrationDescriptionToShow(dbName, migration)).mkString("\n"))
       }
+
+      if (flywayConfigurations(dbName).validateOnStart) {
+        flyway.validate()
+      }
     }
   }
 

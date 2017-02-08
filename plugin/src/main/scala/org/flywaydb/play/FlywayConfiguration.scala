@@ -19,15 +19,15 @@ case class FlywayConfiguration(
   database: DatabaseConfiguration,
   validateOnStart: Boolean,
   auto: Boolean,
-  initOnMigrate: Boolean,
-  validateOnMigrate: Boolean,
-  encoding: String,
+  initOnMigrate: Option[Boolean],
+  validateOnMigrate: Option[Boolean],
+  encoding: Option[String],
   placeholderPrefix: Option[String],
   placeholderSuffix: Option[String],
   placeholders: Map[String, String],
-  outOfOrder: Boolean,
-  schemas: List[String],
-  locations: List[String],
+  outOfOrder: Option[Boolean],
+  schemas: Seq[String],
+  locations: Seq[String],
   sqlMigrationPrefix: Option[String])
 
 case class DatabaseConfiguration(

@@ -63,29 +63,21 @@ class PlayInitializer @Inject() (
       val flyway = new Flyway
       val database = configuration.database
       flyway.setDataSource(new DriverDataSource(getClass.getClassLoader, database.driver, database.url, database.user, database.password))
-      if (!configuration.locations.isEmpty) {
+      if (configuration.locations.nonEmpty) {
         val locations = configuration.locations.map(location => s"${migrationFilesLocation}/${location}")
         flyway.setLocations(locations: _*)
       } else {
         flyway.setLocations(migrationFilesLocation)
       }
-      flyway.setValidateOnMigrate(configuration.validateOnMigrate)
-      flyway.setEncoding(configuration.encoding)
-      flyway.setOutOfOrder(configuration.outOfOrder)
-      if (configuration.initOnMigrate) {
-        flyway.setBaselineOnMigrate(true)
-      }
-      for (prefix <- configuration.placeholderPrefix) {
-        flyway.setPlaceholderPrefix(prefix)
-      }
-      for (suffix <- configuration.placeholderSuffix) {
-        flyway.setPlaceholderSuffix(suffix)
-      }
+      configuration.validateOnMigrate.foreach(flyway.setValidateOnMigrate)
+      configuration.encoding.foreach(flyway.setEncoding)
+      configuration.outOfOrder.foreach(flyway.setOutOfOrder)
+      configuration.initOnMigrate.foreach(flyway.setBaselineOnMigrate)
+      configuration.placeholderPrefix.foreach(flyway.setPlaceholderPrefix)
+      configuration.placeholderSuffix.foreach(flyway.setPlaceholderSuffix)
       flyway.setSchemas(configuration.schemas: _*)
       flyway.setPlaceholders(configuration.placeholders.asJava)
-      configuration.sqlMigrationPrefix.foreach { sqlMigrationPrefix =>
-        flyway.setSqlMigrationPrefix(sqlMigrationPrefix)
-      }
+      configuration.sqlMigrationPrefix.foreach(flyway.setSqlMigrationPrefix)
 
       dbName -> flyway
     }
@@ -116,7 +108,7 @@ class PlayInitializer @Inject() (
   private def checkState(dbName: String): Unit = {
     flyways.get(dbName).foreach { flyway =>
       val pendingMigrations = flyway.info().pending
-      if (!pendingMigrations.isEmpty) {
+      if (pendingMigrations.nonEmpty) {
         throw InvalidDatabaseRevision(
           dbName,
           pendingMigrations.map(migration => migrationDescriptionToShow(dbName, migration)).mkString("\n"))

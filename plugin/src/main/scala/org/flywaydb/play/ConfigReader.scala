@@ -49,16 +49,24 @@ class ConfigReader(configuration: Configuration, environment: Environment) {
         database,
         subConfig.getBoolean("validateOnStart").getOrElse(false),
         subConfig.getBoolean("auto").getOrElse(false),
-        subConfig.getBoolean("initOnMigrate"),
-        subConfig.getBoolean("validateOnMigrate"),
+        subConfig.getStringList("locations").getOrElse(java.util.Collections.emptyList[String]).asScala.toList,
         subConfig.getString("encoding"),
+        subConfig.getStringList("schemas").getOrElse(java.util.Collections.emptyList[String]).asScala.toList,
+        subConfig.getString("table"),
+        subConfig.getBoolean("placeholderReplacement"),
+        placeholders,
         subConfig.getString("placeholderPrefix"),
         subConfig.getString("placeholderSuffix"),
-        placeholders,
-        subConfig.getBoolean("outOfOrder"),
-        subConfig.getStringSeq("schemas").getOrElse(List.empty[String]),
-        subConfig.getStringSeq("locations").getOrElse(List.empty[String]),
-        subConfig.getString("sqlMigrationPrefix")
+        subConfig.getString("sqlMigrationPrefix"),
+        subConfig.getString("repeatableSqlMigrationPrefix"),
+        subConfig.getString("sqlMigrationSeparator"),
+        subConfig.getString("sqlMigrationSuffix"),
+        subConfig.getBoolean("ignoreFutureMigrations"),
+        subConfig.getBoolean("validateOnMigrate"),
+        subConfig.getBoolean("cleanOnValidationError"),
+        subConfig.getBoolean("cleanDisabled"),
+        subConfig.getBoolean("initOnMigrate"),
+        subConfig.getBoolean("outOfOrder")
       )
     }).toMap
   }

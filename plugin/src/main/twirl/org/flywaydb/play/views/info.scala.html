@@ -42,10 +42,12 @@
         </button>
         <ul class="dropdown-menu" role="menu">
           @allMigrationInfo.map { info =>
-            @defining(info.getVersion.getVersion) { version =>
-            <li>
-              <a href="@withRedirectParam(WebCommandPath.versionedInitPath(dbName, version))">version: @version</a>
-            </li>
+            @if(info.getVersion != null) {
+              @defining(info.getVersion.getVersion) { version =>
+              <li>
+                <a href="@withRedirectParam(WebCommandPath.versionedInitPath(dbName, version))">version: @version</a>
+              </li>
+              }
             }
           }
         </ul>

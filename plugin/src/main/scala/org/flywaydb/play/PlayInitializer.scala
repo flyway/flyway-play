@@ -69,15 +69,23 @@ class PlayInitializer @Inject() (
       } else {
         flyway.setLocations(migrationFilesLocation)
       }
-      configuration.validateOnMigrate.foreach(flyway.setValidateOnMigrate)
       configuration.encoding.foreach(flyway.setEncoding)
-      configuration.outOfOrder.foreach(flyway.setOutOfOrder)
-      configuration.initOnMigrate.foreach(flyway.setBaselineOnMigrate)
+      flyway.setSchemas(configuration.schemas: _*)
+      configuration.table.foreach(flyway.setTable)
+      configuration.placeholderReplacement.foreach(flyway.setPlaceholderReplacement)
+      flyway.setPlaceholders(configuration.placeholders.asJava)
       configuration.placeholderPrefix.foreach(flyway.setPlaceholderPrefix)
       configuration.placeholderSuffix.foreach(flyway.setPlaceholderSuffix)
-      flyway.setSchemas(configuration.schemas: _*)
-      flyway.setPlaceholders(configuration.placeholders.asJava)
       configuration.sqlMigrationPrefix.foreach(flyway.setSqlMigrationPrefix)
+      configuration.repeatableSqlMigrationPrefix.foreach(flyway.setRepeatableSqlMigrationPrefix)
+      configuration.sqlMigrationSeparator.foreach(flyway.setSqlMigrationSeparator)
+      configuration.sqlMigrationSuffix.foreach(flyway.setSqlMigrationSuffix)
+      configuration.ignoreFutureMigrations.foreach(flyway.setIgnoreFutureMigrations)
+      configuration.validateOnMigrate.foreach(flyway.setValidateOnMigrate)
+      configuration.cleanOnValidationError.foreach(flyway.setCleanOnValidationError)
+      configuration.cleanDisabled.foreach(flyway.setCleanDisabled)
+      configuration.initOnMigrate.foreach(flyway.setBaselineOnMigrate)
+      configuration.outOfOrder.foreach(flyway.setOutOfOrder)
 
       dbName -> flyway
     }

@@ -212,5 +212,109 @@ class ConfigReaderSpec extends FunSpec with ShouldMatchers {
       }
     }
 
+    describe("table") {
+      it("should be parsed") {
+        withDefaultDB(Map("db.default.migration.table" -> "schema_revisions")) { config =>
+          config.table should be(Some("schema_revisions"))
+        }
+      }
+      it("should be None by default") {
+        withDefaultDB(Map.empty) { config =>
+          config.table should be(None)
+        }
+      }
+    }
+
+    describe("placeholderReplacement") {
+      it("should be parsed") {
+        withDefaultDB(Map("db.default.migration.placeholderReplacement" -> "false")) { config =>
+          config.placeholderReplacement should be(Some(false))
+        }
+      }
+      it("should be None by default") {
+        withDefaultDB(Map.empty) { config =>
+          config.placeholderReplacement should be(None)
+        }
+      }
+    }
+
+    describe("repeatableSqlMigrationPrefix") {
+      it("should be parsed") {
+        withDefaultDB(Map("db.default.migration.repeatableSqlMigrationPrefix" -> "REP")) { config =>
+          config.repeatableSqlMigrationPrefix should be(Some("REP"))
+        }
+      }
+      it("should be None by default") {
+        withDefaultDB(Map.empty) { config =>
+          config.repeatableSqlMigrationPrefix should be(None)
+        }
+      }
+    }
+
+    describe("sqlMigrationSeparator") {
+      it("should be parsed") {
+        withDefaultDB(Map("db.default.migration.sqlMigrationSeparator" -> "$")) { config =>
+          config.sqlMigrationSeparator should be(Some("$"))
+        }
+      }
+      it("should be None by default") {
+        withDefaultDB(Map.empty) { config =>
+          config.sqlMigrationSeparator should be(None)
+        }
+      }
+    }
+
+    describe("sqlMigrationSuffix") {
+      it("should be parsed") {
+        withDefaultDB(Map("db.default.migration.sqlMigrationSuffix" -> ".psql")) { config =>
+          config.sqlMigrationSuffix should be(Some(".psql"))
+        }
+      }
+      it("should be None by default") {
+        withDefaultDB(Map.empty) { config =>
+          config.sqlMigrationSuffix should be(None)
+        }
+      }
+    }
+
+    describe("ignoreFutureMigrations") {
+      it("should be parsed") {
+        withDefaultDB(Map("db.default.migration.ignoreFutureMigrations" -> "false")) { config =>
+          config.ignoreFutureMigrations should be(Some(false))
+        }
+      }
+      it("should be None by default") {
+        withDefaultDB(Map.empty) { config =>
+          config.ignoreFutureMigrations should be(None)
+        }
+      }
+    }
+
+    describe("cleanOnValidationError") {
+      it("should be parsed") {
+        withDefaultDB(Map("db.default.migration.cleanOnValidationError" -> "true")) { config =>
+          config.cleanOnValidationError should be(Some(true))
+        }
+      }
+      it("should be None by default") {
+        withDefaultDB(Map.empty) { config =>
+          config.cleanOnValidationError should be(None)
+        }
+      }
+    }
+
+    describe("cleanDisabled") {
+      it("should be parsed") {
+        withDefaultDB(Map("db.default.migration.cleanDisabled" -> "true")) { config =>
+          config.cleanDisabled should be(Some(true))
+        }
+      }
+      it("should be None by default") {
+        withDefaultDB(Map.empty) { config =>
+          config.cleanDisabled should be(None)
+        }
+      }
+    }
+
   }
 }

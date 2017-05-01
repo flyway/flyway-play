@@ -18,7 +18,7 @@ lazy val plugin = Project (
       "com.typesafe.play" %% "play" % play.core.PlayVersion.current % "provided",
       "com.typesafe.play" %% "play-test" % play.core.PlayVersion.current % "test"
         excludeAll(ExclusionRule(organization = "org.specs2")),
-      "org.flywaydb" % "flyway-core" % "4.0",
+      "org.flywaydb" % "flyway-core" % "4.1.2",
       scalatest
     ),
     scalacOptions ++= Seq("-language:_", "-deprecation")
@@ -56,7 +56,7 @@ val publishingSettings = Seq(
     val nexus = "https://oss.sonatype.org/"
     if (version.value.trim.endsWith("SNAPSHOT"))
       Some("snapshots" at nexus + "content/repositories/snapshots")
-    else 
+    else
       Some("releases" at nexus + "service/local/staging/deploy/maven2")
   },
   publishArtifact in Test := false,

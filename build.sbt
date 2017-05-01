@@ -52,16 +52,16 @@ lazy val playapp = Project(
 
 val publishingSettings = Seq(
   publishMavenStyle := true,
-  publishTo <<= version { (v: String) => _publishTo(v) },
+  publishTo := {
+    val nexus = "https://oss.sonatype.org/"
+    if (version.value.trim.endsWith("SNAPSHOT"))
+      Some("snapshots" at nexus + "content/repositories/snapshots")
+    else 
+      Some("releases" at nexus + "service/local/staging/deploy/maven2")
+  },
   publishArtifact in Test := false,
   pomExtra := _pomExtra
 )
-
-def _publishTo(v: String) = {
-  val nexus = "https://oss.sonatype.org/"
-  if (v.trim.endsWith("SNAPSHOT")) Some("snapshots" at nexus + "content/repositories/snapshots")
-  else Some("releases" at nexus + "service/local/staging/deploy/maven2")
-}
 
 val _pomExtra =
   <url>https://github.com/flyway/flyway-play</url>

@@ -18,7 +18,7 @@ build.sbt
 
 ```scala
 libraryDependencies ++= Seq(
-  "org.flywaydb" %% "flyway-play" % "3.0.1"
+  "org.flywaydb" %% "flyway-play" % "3.0.2"
 )
 ```
 
@@ -214,6 +214,11 @@ class MyComponents(context: Context) extends BuiltInComponents(context) with Fly
 ```
 
 ## <a class="anchor" name="changelog"></a>Change Log
+
+### 3.0.2
+
+ - Support more flyway configuration options
+ - Some bug fixes
 
 ### 3.0.1
 

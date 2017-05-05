@@ -1,6 +1,6 @@
 scalariformSettings
 
-val flywayPlayVersion = "3.1.0-SNAPSHOT"
+val flywayPlayVersion = "3.1.0"
 
 val scalatest = "org.scalatest" %% "scalatest" % "2.1.5" % "test"
 

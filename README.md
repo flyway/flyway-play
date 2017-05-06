@@ -28,6 +28,12 @@ conf/application.conf
 play.modules.enabled += "org.flywaydb.play.PlayModule"
 ```
 
+project/plugins.sbt
+
+```
+addSbtPlugin("org.flywaydb" % "flyway-sbt" % "4.1.2")
+resolvers += "Flyway" at "https://flywaydb.org/repo"
+```
 
 ## <a class="anchor" name="getting-started"></a>Getting Started
 

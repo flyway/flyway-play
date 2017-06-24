@@ -10,9 +10,11 @@ class MyApplicationLoader extends ApplicationLoader {
   }
 }
 
-class MyComponents(context: Context) extends BuiltInComponentsFromContext(context) with FlywayPlayComponents {
+class MyComponents(context: Context) extends BuiltInComponentsFromContext(context)
+    with FlywayPlayComponents
+    with NoHttpFiltersComponents
+    with _root_.controllers.AssetsComponents {
   flywayPlayInitializer
-  lazy val applicationController = new controllers.Application()
-  lazy val assets = new controllers.Assets(httpErrorHandler)
+  lazy val applicationController = new _root_.controllers.Application()
   lazy val router = new _root_.router.Routes(httpErrorHandler, applicationController, assets)
 }

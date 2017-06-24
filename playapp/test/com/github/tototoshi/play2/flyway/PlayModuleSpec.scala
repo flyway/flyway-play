@@ -16,6 +16,7 @@
 package com.github.tototoshi.play2.flyway
 
 import org.scalatest._
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
 import play.api.test._
 import scalikejdbc._
@@ -112,10 +113,12 @@ class PlayModuleSpec extends FunSpec with ShouldMatchers {
     }
   }
 
+  private val application = GuiceApplicationBuilder().build()
+
   describe("PlayModule") {
 
     it("should migrate automatically when testing") {
-      running(FakeApplication()) {
+      running(application) {
         withScalikejdbcPool {
           test()
         }

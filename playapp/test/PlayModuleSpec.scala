@@ -15,17 +15,13 @@
  */
 package com.github.tototoshi.play2.flyway
 
-import org.scalatest.{ FunSpec, ShouldMatchers }
+import org.scalatest._
 import play.api.test._
 import play.api.test.Helpers._
 import scalikejdbc._
-import scalikejdbc.SQLInterpolation._
+import scalikejdbc.config.DBs
 
 class PlayModuleSpec extends FunSpec with ShouldMatchers {
-
-  def fixture = new {
-
-  }
 
   def test() = {
     DB autoCommit { implicit session =>
@@ -107,22 +103,22 @@ class PlayModuleSpec extends FunSpec with ShouldMatchers {
 
   }
 
+  def withScalikejdbcPool[A](test: => A): A = {
+    DBs.setupAll()
+    try {
+      test
+    } finally {
+      DBs.closeAll()
+    }
+  }
+
   describe("PlayModule") {
 
     it("should migrate automatically when testing") {
       running(FakeApplication()) {
-        test()
-      }
-    }
-
-    it("should work fine with in-memory databases.") {
-
-      running(FakeApplication(
-        additionalConfiguration =
-          inMemoryDatabase(name = "default", Map("DB_CLOSE_DELAY" -> "-1")) ++
-            inMemoryDatabase(name = "secondary", Map("DB_CLOSE_DELAY" -> "-1"))
-      )) {
-        test()
+        withScalikejdbcPool {
+          test()
+        }
       }
     }
 

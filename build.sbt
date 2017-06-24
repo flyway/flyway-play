@@ -30,7 +30,8 @@ val appDependencies = Seq(
   "postgresql" % "postgresql" % "9.1-901.jdbc4",
   "com.typesafe.play" %% "play-test" % play.core.PlayVersion.current % "test"
     excludeAll(ExclusionRule(organization = "org.specs2")),
-  "org.scalikejdbc" %% "scalikejdbc-play-initializer" % "2.4.0-M2-20141215",
+  "org.scalikejdbc" %% "scalikejdbc" % "3.0.1" % "test",
+  "org.scalikejdbc" %% "scalikejdbc-config" % "3.0.1" % "test",
   scalatest
 )
 

@@ -1,6 +1,6 @@
 scalariformSettings
 
-val flywayPlayVersion = "3.1.0"
+val flywayPlayVersion = "3.2.0"
 
 val scalatest = "org.scalatest" %% "scalatest" % "2.1.5" % "test"
 
@@ -18,7 +18,7 @@ lazy val plugin = Project (
       "com.typesafe.play" %% "play" % play.core.PlayVersion.current % "provided",
       "com.typesafe.play" %% "play-test" % play.core.PlayVersion.current % "test"
         excludeAll(ExclusionRule(organization = "org.specs2")),
-      "org.flywaydb" % "flyway-core" % "4.1.2",
+      "org.flywaydb" % "flyway-core" % "4.2.0",
       scalatest
     ),
     scalacOptions ++= Seq("-language:_", "-deprecation")

@@ -26,6 +26,7 @@ lazy val plugin = Project (
 )
 
 val appDependencies = Seq(
+  guice,
   "com.h2database" % "h2" % "[1.3,)",
   "postgresql" % "postgresql" % "9.1-901.jdbc4",
   "com.typesafe.play" %% "play-test" % play.core.PlayVersion.current % "test"

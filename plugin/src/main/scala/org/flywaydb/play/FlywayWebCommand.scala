@@ -74,7 +74,7 @@ class FlywayWebCommand(
               } yield FileUtils.readFileToString(script)
             }.getOrElse("")
           }
-          val showManualInsertQuery = configuration.getBoolean(s"db.${dbName}.migration.showInsertQuery").getOrElse(false)
+          val showManualInsertQuery = configuration.getOptional[Boolean](s"db.${dbName}.migration.showInsertQuery").getOrElse(false)
           val schemaTable = flyway.getTable
           Ok(views.html.info(request, dbName, allMigrationInfo, scripts, showManualInsertQuery, schemaTable)).as("text/html")
         }

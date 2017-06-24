@@ -156,7 +156,7 @@ class PlayInitializer @Inject() (
   }
 
   val enabled: Boolean =
-    !configuration.getString("flywayplugin").exists(_ == "disabled")
+    !configuration.getOptional[String]("flywayplugin").exists(_ == "disabled")
 
   if (enabled) {
     onStart()

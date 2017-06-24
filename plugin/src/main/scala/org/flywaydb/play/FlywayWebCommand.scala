@@ -31,39 +31,54 @@ class FlywayWebCommand(
 
   def handleWebCommand(request: RequestHeader, sbtLink: BuildLink, path: java.io.File): Option[Result] = {
 
+    def withDatabase(dbName: String)(f: Flyway => Result): Result = {
+      flyways.get(dbName).map(f).getOrElse(NotFound(s"database $dbName not found"))
+    }
+
     request.path match {
       case WebCommandPath.migratePath(dbName) =>
-        for {
-          flyway <- flyways.get(dbName)
-        } yield {
+        val result = withDatabase(dbName) { flyway =>
           flyway.migrate()
           sbtLink.forceReload()
           Redirect(getRedirectUrlFromRequest(request))
         }
+        Some(result)
       case WebCommandPath.cleanPath(dbName) =>
-        flyways.get(dbName).foreach(_.clean())
-        Some(Redirect(getRedirectUrlFromRequest(request)))
-      case WebCommandPath.repairPath(dbName) =>
-        flyways.get(dbName).foreach(_.repair())
-        Some(Redirect(getRedirectUrlFromRequest(request)))
-      case WebCommandPath.versionedInitPath(dbName, version) =>
-        flyways.get(dbName).foreach(_.setBaselineVersionAsString(version))
-        flyways.get(dbName).foreach(_.baseline())
-        Some(Redirect(getRedirectUrlFromRequest(request)))
-      case WebCommandPath.showInfoPath(dbName) =>
-        val allMigrationInfo: Seq[MigrationInfo] = flyways.get(dbName).toSeq.flatMap(_.info().all())
-        val scripts: Seq[String] = allMigrationInfo.map { info =>
-          environment.resourceAsStream(s"${flywayPrefixToMigrationScript}/${dbName}/${info.getScript}").map { in =>
-            FileUtils.readInputStreamToString(in)
-          }.orElse {
-            for {
-              script <- FileUtils.findJdbcMigrationFile(environment.rootPath, info.getScript)
-            } yield FileUtils.readFileToString(script)
-          }.getOrElse("")
+        val result = withDatabase(dbName) { flyway =>
+          flyway.clean()
+          Redirect(getRedirectUrlFromRequest(request))
         }
-        val showManualInsertQuery = configuration.getBoolean(s"db.${dbName}.migration.showInsertQuery").getOrElse(false)
-        val schemaTable = flyways.get(dbName).map(_.getTable).getOrElse(sys.error("table not found"))
-        Some(Ok(views.html.info(request, dbName, allMigrationInfo, scripts, showManualInsertQuery, schemaTable)).as("text/html"))
+        Some(result)
+      case WebCommandPath.repairPath(dbName) =>
+        val result = withDatabase(dbName) { flyway =>
+          flyway.repair()
+          Redirect(getRedirectUrlFromRequest(request))
+        }
+        Some(result)
+      case WebCommandPath.versionedInitPath(dbName, version) =>
+        val result = withDatabase(dbName) { flyway =>
+          flyway.setBaselineVersionAsString(version)
+          flyway.baseline()
+          Redirect(getRedirectUrlFromRequest(request))
+        }
+        Some(result)
+      case WebCommandPath.showInfoPath(dbName) =>
+        val result = withDatabase(dbName) { flyway =>
+          val allMigrationInfo: Seq[MigrationInfo] = flyways.get(dbName).toSeq.flatMap(_.info().all())
+          val scripts: Seq[String] = allMigrationInfo.map { info =>
+            environment.resourceAsStream(s"${flywayPrefixToMigrationScript}/${dbName}/${info.getScript}").map { in =>
+              FileUtils.readInputStreamToString(in)
+            }.orElse {
+              for {
+                script <- FileUtils.findJdbcMigrationFile(environment.rootPath, info.getScript)
+              } yield FileUtils.readFileToString(script)
+            }.getOrElse("")
+          }
+          val showManualInsertQuery = configuration.getBoolean(s"db.${dbName}.migration.showInsertQuery").getOrElse(false)
+          val schemaTable = flyway.getTable
+          Ok(views.html.info(request, dbName, allMigrationInfo, scripts, showManualInsertQuery, schemaTable)).as("text/html")
+        }
+        Some(result)
       case "/@flyway" =>
         Some(Ok(views.html.index(flyways.keys.toSeq)).as("text/html"))
       case _ =>

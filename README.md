@@ -166,6 +166,15 @@ Custom sql migration prefix key-value pair can be specified in application.conf:
 db.${dbName}.migration.sqlMigrationPrefix="migration_"
 ```
 
+### Insert Query
+
+If you want to apply your migration not via the web interface, but manually on
+your production databases you also need the valid insert query for flyway.
+
+```
+db.${dbName}.migration.showInsertQuery=true
+```
+
 ### Dev
 
 ![screenshot](screenshot1.png)

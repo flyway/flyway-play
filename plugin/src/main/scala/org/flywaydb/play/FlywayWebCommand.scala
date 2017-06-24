@@ -60,6 +60,42 @@ class FlywayWebCommand(
               script <- FileUtils.findJdbcMigrationFile(environment.rootPath, info.getScript)
             } yield FileUtils.readFileToString(script)
           }.getOrElse("")
+
+          // create a insert sql script for the flyway schema table in order to apply migrations manually
+          val showInsertQuery = configuration.getBoolean(s"db.${dbName}.migration.showInsertQuery").getOrElse(false)
+          val schemaTable = flyway.getTable
+          val insertSql = s"""INSERT INTO $schemaTable(version_rank, installed_rank, version, description, type, script, checksum, installed_by, installed_on, execution_time, success)
+           |SELECT MAX(version_rank)+1, MAX(installed_rank)+1, '${info.getVersion}', '${info.getDescription}', 'SQL', '${info.getScript}', ${info.getChecksum}, 'Manually', NOW(), 0, 1 from $schemaTable;
+           |""".stripMargin
+
+          val status = {
+            if (info.getState.isApplied) {
+              <span style="color: blue;">applied</span>
+            } else if (info.getState.isFailed) {
+              <span style="color: red;">failed</span>
+            } else if (info.getState.isResolved) {
+              <span style="color: green">resolved</span>
+            }
+          }
+
+          <p>
+            <h3>
+              { info.getScript }
+              ({ status }
+              )
+            </h3>
+            <pre>{ sql }</pre>
+            {
+              if (showInsertQuery) {
+                <h4>--- Manual insert ---</h4>
+                <p class="text-muted">
+                  If you need to apply your migrations manually use this SQL to update your flyway schema table.
+                </p>
+                <pre>{ insertSql }</pre>
+              }
+            }
+          </p>
+
         }
         Some(Ok(views.html.info(request, dbName, allMigrationInfo, scripts)).as("text/html"))
       case "/@flyway" =>

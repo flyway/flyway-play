@@ -15,12 +15,10 @@
  */
 package org.flywaydb.play
 
-import play.api.{ Environment, Configuration }
-import play.api.test._
-import play.api.test.Helpers._
-import org.scalatest.{ FunSpec, ShouldMatchers }
+import org.scalatest.{ FunSpec, Matchers }
+import play.api.{ Configuration, Environment }
 
-class ConfigReaderSpec extends FunSpec with ShouldMatchers {
+class ConfigReaderSpec extends FunSpec with Matchers {
 
   val defaultDB = Map(
     "db.default.driver" -> "org.h2.Driver",

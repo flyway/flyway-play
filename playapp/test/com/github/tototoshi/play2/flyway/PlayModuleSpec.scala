@@ -18,11 +18,10 @@ package com.github.tototoshi.play2.flyway
 import org.scalatest._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
-import play.api.test._
 import scalikejdbc._
 import scalikejdbc.config.DBs
 
-class PlayModuleSpec extends FunSpec with ShouldMatchers {
+class PlayModuleSpec extends FunSpec with Matchers {
 
   def test() = {
     DB autoCommit { implicit session =>

@@ -4,8 +4,6 @@
 
 Flyway module for Play 2.4 or later. It aims to be a substitute for play-evolutions.
 
-This module is successor of [tototoshi/play-flyway](https://github.com/tototoshi/play-flyway), which is a Play Plugin supporting Play 2.1 ~ 2.3.
-
 ## <a class="anchor" name="features"></a>Features
 
  - Based on [Flyway](https://flywaydb.org/)
@@ -14,11 +12,17 @@ This module is successor of [tototoshi/play-flyway](https://github.com/tototoshi
 
 ## <a class="anchor" name="install"></a>Install
 
+|flyway-play version|play version|
+|-------------------|------------|
+|              4.0.0|       2.6.x|
+|              3.2.0|       2.5.x|
+
+
 build.sbt
 
 ```scala
 libraryDependencies ++= Seq(
-  "org.flywaydb" %% "flyway-play" % "3.2.0"
+  "org.flywaydb" %% "flyway-play" % "4.0.0"
 )
 ```
 
@@ -216,13 +220,21 @@ $ play -Ddb.default.migration.auto=true start
 
 
 ```scala
-class MyComponents(context: Context) extends BuiltInComponents(context) with FlywayPlayComponents {
+class MyComponents(context: Context) 
+    extends BuiltInComponentsFromContext(context)
+    with FlywayPlayComponents
+    ...
+    {
   flywayPlayInitializer
-  ...
+  ...  
 }
 ```
 
 ## <a class="anchor" name="changelog"></a>Change Log
+
+### 4.0.0
+
+ - Support Play 2.6.0
 
 ### 3.2.0
 

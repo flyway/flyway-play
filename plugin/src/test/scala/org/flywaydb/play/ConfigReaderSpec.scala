@@ -150,7 +150,8 @@ class ConfigReaderSpec extends FunSpec with ShouldMatchers {
             Map(
               "fleetwood" -> "mac",
               "buckingham" -> "nicks"
-            ))
+            )
+          )
         }
       }
       it("should be empty by default") {

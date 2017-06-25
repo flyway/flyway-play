@@ -30,7 +30,8 @@ import scala.collection.JavaConverters._
 class PlayInitializer @Inject() (
     configuration: Configuration,
     environment: Environment,
-    webCommands: WebCommands) {
+    webCommands: WebCommands
+) {
 
   private val flywayConfigurations = {
     val configReader = new ConfigReader(configuration, environment)
@@ -127,7 +128,8 @@ class PlayInitializer @Inject() (
       if (pendingMigrations.nonEmpty) {
         throw InvalidDatabaseRevision(
           dbName,
-          pendingMigrations.map(migration => migrationDescriptionToShow(dbName, migration)).mkString("\n"))
+          pendingMigrations.map(migration => migrationDescriptionToShow(dbName, migration)).mkString("\n")
+        )
       }
 
       if (flywayConfigurations(dbName).validateOnStart) {

@@ -96,7 +96,8 @@ class ConfigReader(configuration: Configuration, environment: Environment) {
           jdbc.driver,
           jdbc.url,
           jdbc.username,
-          jdbc.password))
+          jdbc.password
+        ))
     }
   }
 

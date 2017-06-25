@@ -19,7 +19,8 @@ import play.api._
 
 case class InvalidDatabaseRevision(db: String, script: String) extends PlayException.RichDescription(
   "Database '" + db + "' needs migration!",
-  "An SQL script need to be run on your database.") {
+  "An SQL script need to be run on your database."
+) {
 
   def subTitle = "This SQL script must be run:"
   def content = script

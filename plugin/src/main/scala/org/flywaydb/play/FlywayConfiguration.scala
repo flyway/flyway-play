@@ -36,10 +36,12 @@ case class FlywayConfiguration(
   cleanOnValidationError: Option[Boolean],
   cleanDisabled: Option[Boolean],
   initOnMigrate: Option[Boolean],
-  outOfOrder: Option[Boolean])
+  outOfOrder: Option[Boolean]
+)
 
 case class DatabaseConfiguration(
   driver: String,
   url: String,
   user: String,
-  password: String)
+  password: String
+)

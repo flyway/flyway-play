@@ -100,8 +100,7 @@ class PlayInitializer @Inject() (
 
   private def setSqlMigrationSuffixes(configuration: FlywayConfiguration, flyway: Flyway): Unit = {
     configuration.sqlMigrationSuffix.foreach(_ =>
-      Logger.warn("sqlMigrationSuffix is deprecated in Flyway 5.0, and will be removed in a future version. Use sqlMigrationSuffixes instead.")
-    )
+      Logger.warn("sqlMigrationSuffix is deprecated in Flyway 5.0, and will be removed in a future version. Use sqlMigrationSuffixes instead."))
     val suffixes: Seq[String] = configuration.sqlMigrationSuffixes ++ configuration.sqlMigrationSuffix
     if (suffixes.nonEmpty) flyway.setSqlMigrationSuffixes(suffixes: _*)
   }

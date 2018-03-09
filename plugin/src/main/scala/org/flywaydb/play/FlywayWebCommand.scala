@@ -26,9 +26,8 @@ class FlywayWebCommand(
   configuration: Configuration,
   environment: Environment,
   flywayPrefixToMigrationScript: String,
-  flyways: Map[String, Flyway]
-)
-    extends HandleWebCommandSupport {
+  flyways: Map[String, Flyway])
+  extends HandleWebCommandSupport {
 
   def handleWebCommand(request: RequestHeader, sbtLink: BuildLink, path: java.io.File): Option[Result] = {
 
@@ -67,7 +66,7 @@ class FlywayWebCommand(
         val result = withDatabase(dbName) { flyway =>
           val allMigrationInfo: Seq[MigrationInfo] = flyways.get(dbName).toSeq.flatMap(_.info().all())
           val scripts: Seq[String] = allMigrationInfo.map { info =>
-            environment.resourceAsStream(s"${flywayPrefixToMigrationScript}/${dbName}/${info.getScript}").map { in =>
+            environment.resourceAsStream(s"$flywayPrefixToMigrationScript/$dbName/${info.getScript}").map { in =>
               FileUtils.readInputStreamToString(in)
             }.orElse {
               for {
@@ -75,7 +74,7 @@ class FlywayWebCommand(
               } yield FileUtils.readFileToString(script)
             }.getOrElse("")
           }
-          val showManualInsertQuery = configuration.getOptional[Boolean](s"db.${dbName}.migration.showInsertQuery").getOrElse(false)
+          val showManualInsertQuery = configuration.getOptional[Boolean](s"db.$dbName.migration.showInsertQuery").getOrElse(false)
           val schemaTable = flyway.getTable
           Ok(views.html.info(request, dbName, allMigrationInfo, scripts, showManualInsertQuery, schemaTable)).as("text/html")
         }

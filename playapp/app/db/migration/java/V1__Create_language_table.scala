@@ -11,7 +11,6 @@ class V1__Create_language_table extends JdbcMigration {
       """create table language (
         |    id integer primary key,
         |    name varchar(100) not null
-        |);""".stripMargin
-    )
+        |);""".stripMargin)
   }
 }

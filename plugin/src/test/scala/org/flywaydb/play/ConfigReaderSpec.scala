@@ -23,29 +23,26 @@ class ConfigReaderSpec extends FunSpec with Matchers {
   val defaultDB = Map(
     "db.default.driver" -> "org.h2.Driver",
     "db.default.url" -> "jdbc:h2:mem:example;DB_CLOSE_DELAY=-1",
-    "db.default.username" -> "sa"
-  )
+    "db.default.username" -> "sa")
 
   val secondaryDB = Map(
     "db.secondary.driver" -> "org.h2.Driver",
     "db.secondary.url" -> "jdbc:h2:mem:example2;DB_CLOSE_DELAY=-1",
     "db.secondary.username" -> "sa",
-    "db.secondary.password" -> "secret2"
-  )
+    "db.secondary.password" -> "secret2")
 
   val thirdDB = Map(
     "db.third.driver" -> "org.h2.Driver",
     "db.third.url" -> "jdbc:h2:mem:example3;DB_CLOSE_DELAY=-1",
     "db.third.user" -> "sa",
-    "db.third.pass" -> "secret3"
-  )
+    "db.third.pass" -> "secret3")
 
   def withDefaultDB[A](additionalConfiguration: Map[String, Object])(assertion: FlywayConfiguration => A): A = {
     val configuration = Configuration((defaultDB ++ additionalConfiguration).toSeq: _*)
     val environment = Environment.simple()
     val reader = new ConfigReader(configuration, environment)
     val configMap = reader.getFlywayConfigurations
-    assertion(configMap.get("default").get)
+    assertion(configMap("default"))
   }
 
   describe("ConfigReader") {
@@ -55,9 +52,9 @@ class ConfigReaderSpec extends FunSpec with Matchers {
       val environment = Environment.simple()
       val reader = new ConfigReader(configuration, environment)
       val configMap = reader.getFlywayConfigurations
-      configMap.get("default").get.database should be(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:example;DB_CLOSE_DELAY=-1", "sa", null))
-      configMap.get("secondary").get.database should be(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:example2;DB_CLOSE_DELAY=-1", "sa", "secret2"))
-      configMap.get("third").get.database should be(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:example3;DB_CLOSE_DELAY=-1", "sa", "secret3"))
+      configMap("default").database should be(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:example;DB_CLOSE_DELAY=-1", "sa", null))
+      configMap("secondary").database should be(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:example2;DB_CLOSE_DELAY=-1", "sa", "secret2"))
+      configMap("third").database should be(DatabaseConfiguration("org.h2.Driver", "jdbc:h2:mem:example3;DB_CLOSE_DELAY=-1", "sa", "secret3"))
     }
 
     describe("auto") {
@@ -142,14 +139,11 @@ class ConfigReaderSpec extends FunSpec with Matchers {
       it("should be parsed") {
         withDefaultDB(Map(
           "db.default.migration.placeholders.fleetwood" -> "mac",
-          "db.default.migration.placeholders.buckingham" -> "nicks"
-        )) { config =>
+          "db.default.migration.placeholders.buckingham" -> "nicks")) { config =>
           config.placeholders should be(
             Map(
               "fleetwood" -> "mac",
-              "buckingham" -> "nicks"
-            )
-          )
+              "buckingham" -> "nicks"))
         }
       }
       it("should be empty by default") {
@@ -272,6 +266,19 @@ class ConfigReaderSpec extends FunSpec with Matchers {
       it("should be None by default") {
         withDefaultDB(Map.empty) { config =>
           config.sqlMigrationSuffix should be(None)
+        }
+      }
+    }
+
+    describe("sqlMigrationSuffixes") {
+      it("should be parsed") {
+        withDefaultDB(Map("db.default.migration.sqlMigrationSuffixes" -> List(".psql", ".sql"))) { config =>
+          config.sqlMigrationSuffixes should be(List(".psql", ".sql"))
+        }
+      }
+      it("should be Empty by default") {
+        withDefaultDB(Map.empty) { config =>
+          config.sqlMigrationSuffixes should be(List())
         }
       }
     }

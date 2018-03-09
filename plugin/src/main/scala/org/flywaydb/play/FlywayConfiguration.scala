@@ -31,17 +31,16 @@ case class FlywayConfiguration(
   repeatableSqlMigrationPrefix: Option[String],
   sqlMigrationSeparator: Option[String],
   sqlMigrationSuffix: Option[String],
+  sqlMigrationSuffixes: Seq[String],
   ignoreFutureMigrations: Option[Boolean],
   validateOnMigrate: Option[Boolean],
   cleanOnValidationError: Option[Boolean],
   cleanDisabled: Option[Boolean],
   initOnMigrate: Option[Boolean],
-  outOfOrder: Option[Boolean]
-)
+  outOfOrder: Option[Boolean])
 
 case class DatabaseConfiguration(
   driver: String,
   url: String,
   user: String,
-  password: String
-)
+  password: String)

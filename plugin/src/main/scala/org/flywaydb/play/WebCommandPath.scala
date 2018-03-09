@@ -26,7 +26,7 @@ object WebCommandPath {
   object migratePath {
 
     def apply(dbName: String): String = {
-      s"/@flyway/${dbName}/migrate"
+      s"/@flyway/$dbName/migrate"
     }
 
     def unapply(path: String): Option[String] = {
@@ -46,7 +46,7 @@ object WebCommandPath {
   object cleanPath {
 
     def apply(dbName: String): String = {
-      s"/@flyway/${dbName}/clean"
+      s"/@flyway/$dbName/clean"
     }
 
     def unapply(path: String): Option[String] = {
@@ -58,7 +58,7 @@ object WebCommandPath {
   object repairPath {
 
     def apply(dbName: String): String = {
-      s"/@flyway/${dbName}/repair"
+      s"/@flyway/$dbName/repair"
     }
 
     def unapply(path: String): Option[String] = {
@@ -69,7 +69,7 @@ object WebCommandPath {
 
   object versionedInitPath {
     def apply(dbName: String, version: String): String = {
-      s"/@flyway/${dbName}/init/${version}"
+      s"/@flyway/$dbName/init/$version"
     }
 
     def unapply(path: String): Option[(String, String)] = {
@@ -83,7 +83,7 @@ object WebCommandPath {
   object initPath {
 
     def apply(dbName: String): String = {
-      s"/@flyway/${dbName}/init"
+      s"/@flyway/$dbName/init"
     }
 
     def unapply(path: String): Option[String] = {

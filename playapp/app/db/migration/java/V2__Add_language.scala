@@ -10,7 +10,6 @@ class V2__Add_language extends JdbcMigration {
     conn.createStatement().executeUpdate(
       """insert into language(id, name) values(1, 'SQL');
         |insert into language(id, name) values(2, 'Java');
-       """.stripMargin
-    )
+       """.stripMargin)
   }
 }

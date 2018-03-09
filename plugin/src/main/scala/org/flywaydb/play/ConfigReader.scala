@@ -60,29 +60,29 @@ class ConfigReader(configuration: Configuration, environment: Environment) {
         subConfig.getOptional[String]("repeatableSqlMigrationPrefix"),
         subConfig.getOptional[String]("sqlMigrationSeparator"),
         subConfig.getOptional[String]("sqlMigrationSuffix"),
+        subConfig.getOptional[Seq[String]]("sqlMigrationSuffixes").getOrElse(Seq.empty[String]),
         subConfig.getOptional[Boolean]("ignoreFutureMigrations"),
         subConfig.getOptional[Boolean]("validateOnMigrate"),
         subConfig.getOptional[Boolean]("cleanOnValidationError"),
         subConfig.getOptional[Boolean]("cleanDisabled"),
         subConfig.getOptional[Boolean]("initOnMigrate"),
-        subConfig.getOptional[Boolean]("outOfOrder")
-      )
+        subConfig.getOptional[Boolean]("outOfOrder"))
     }).toMap
   }
 
   private def getDatabaseConfiguration(configuration: Configuration, dbName: String): Option[DatabaseConfiguration] = {
     val jdbcConfigOrError = for {
-      jdbcUrl <- configuration.getOptional[String](s"db.${dbName}.url").toRight(s"db.$dbName.url is not set").right
-      driver <- configuration.getOptional[String](s"db.${dbName}.driver").toRight(s"db.$dbName.driver is not set").right
+      jdbcUrl <- configuration.getOptional[String](s"db.$dbName.url").toRight(s"db.$dbName.url is not set").right
+      driver <- configuration.getOptional[String](s"db.$dbName.driver").toRight(s"db.$dbName.driver is not set").right
     } yield {
       val (parsedUrl, parsedUser, parsedPass) = urlParser.parseUrl(jdbcUrl)
       val username = parsedUser
-        .orElse(configuration.getOptional[String](s"db.${dbName}.username"))
-        .orElse(configuration.getOptional[String](s"db.${dbName}.user"))
+        .orElse(configuration.getOptional[String](s"db.$dbName.username"))
+        .orElse(configuration.getOptional[String](s"db.$dbName.user"))
         .orNull
       val password = parsedPass
-        .orElse(configuration.getOptional[String](s"db.${dbName}.password"))
-        .orElse(configuration.getOptional[String](s"db.${dbName}.pass"))
+        .orElse(configuration.getOptional[String](s"db.$dbName.password"))
+        .orElse(configuration.getOptional[String](s"db.$dbName.pass"))
         .orNull
       JdbcConfig(driver, parsedUrl, username, password)
     }
@@ -96,8 +96,7 @@ class ConfigReader(configuration: Configuration, environment: Environment) {
           jdbc.driver,
           jdbc.url,
           jdbc.username,
-          jdbc.password
-        ))
+          jdbc.password))
     }
   }
 

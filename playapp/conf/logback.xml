@@ -1,0 +1,27 @@
+<configuration>
+    <conversionRule conversionWord="coloredLevel" converterClass="play.api.libs.logback.ColoredLevel" />
+    <!--Appenders-->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d - %coloredLevel - [%thread] - %logger - %message%n%xException</pattern>
+        </encoder>
+    </appender>
+    <appender name="ASYNCSTDOUT" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>100000</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <appender-ref ref="STDOUT" />
+    </appender>
+    <!--
+      The logger name is typically the Java/Scala package name.
+      This configures the log level to log at for a package and its children packages.
+    -->
+    <!--Loggers-->
+    <logger name="play" level="INFO" />
+    <logger name="application" level="INFO" />
+    <logger name="controllers" level="INFO" />
+    <logger name="org.flywaydb" level="INFO" />
+    <!--Root logger-->
+    <root level="ERROR">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>

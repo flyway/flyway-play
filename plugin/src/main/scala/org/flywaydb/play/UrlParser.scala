@@ -17,16 +17,18 @@ package org.flywaydb.play
 
 import play.api.{ Environment, Mode }
 
+import scala.util.matching.Regex
+
 /**
  * Most of the code is taken from package play.api.db.DB.
  */
 class UrlParser(environment: Environment) {
-  val PostgresFullUrl = "^postgres://([a-zA-Z0-9_]+):([^@]+)@([^/]+)/([^\\s]+)$".r
-  val MysqlFullUrl = "^mysql://([a-zA-Z0-9_]+):([^@]+)@([^/]+)/([^\\s]+)$".r
-  val MysqlCustomProperties = ".*\\?(.*)".r
-  val H2DefaultUrl = "^jdbc:h2:mem:.+".r
+  val PostgresFullUrl: Regex = "^postgres://([a-zA-Z0-9_]+):([^@]+)@([^/]+)/([^\\s]+)$".r
+  val MysqlFullUrl: Regex = "^mysql://([a-zA-Z0-9_]+):([^@]+)@([^/]+)/([^\\s]+)$".r
+  val MysqlCustomProperties: Regex = ".*\\?(.*)".r
+  val H2DefaultUrl: Regex = "^jdbc:h2:mem:.+".r
 
-  def parseUrl(url: String): Tuple3[String, Option[String], Option[String]] = {
+  def parseUrl(url: String): (String, Option[String], Option[String]) = {
 
     url match {
       case PostgresFullUrl(username, password, host, dbname) =>

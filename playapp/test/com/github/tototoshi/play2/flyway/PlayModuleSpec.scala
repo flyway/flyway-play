@@ -23,7 +23,7 @@ import scalikejdbc.config.DBs
 
 class PlayModuleSpec extends FunSpec with Matchers {
 
-  def test() = {
+  def test(): Boolean = {
     DB autoCommit { implicit session =>
 
       val people =

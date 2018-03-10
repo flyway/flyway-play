@@ -1,11 +1,9 @@
-scalariformSettings
-
 val scalaVersion_2_11 = "2.11.11"
-val scalaVersion_2_12 = "2.12.2"
+val scalaVersion_2_12 = "2.12.4"
 
 val flywayPlayVersion = "4.0.0"
 
-val scalatest = "org.scalatest" %% "scalatest" % "3.0.1" % "test"
+val scalatest = "org.scalatest" %% "scalatest" % "3.0.5" % "test"
 
 lazy val `flyway-play` = project.in(file("."))
   .settings(
@@ -26,22 +24,22 @@ lazy val plugin = project.in(file("plugin"))
     libraryDependencies ++= Seq(
       "com.typesafe.play" %% "play" % play.core.PlayVersion.current % "provided",
       "com.typesafe.play" %% "play-test" % play.core.PlayVersion.current % "test"
-        excludeAll(ExclusionRule(organization = "org.specs2")),
-      "org.flywaydb" % "flyway-core" % "4.2.0",
+        excludeAll ExclusionRule(organization = "org.specs2"),
+      "org.flywaydb" % "flyway-core" % "5.0.7",
       scalatest
     ),
     scalacOptions ++= Seq("-language:_", "-deprecation")
-  ) ++ scalariformSettings ++ publishingSettings :_*
+  ) ++ publishingSettings :_*
 )
 
 val appDependencies = Seq(
   guice,
-  "com.h2database" % "h2" % "[1.3,)",
+  "com.h2database" % "h2" % "[1.4,)",
   "postgresql" % "postgresql" % "9.1-901.jdbc4",
   "com.typesafe.play" %% "play-test" % play.core.PlayVersion.current % "test"
-    excludeAll(ExclusionRule(organization = "org.specs2")),
-  "org.scalikejdbc" %% "scalikejdbc" % "3.0.1" % "test",
-  "org.scalikejdbc" %% "scalikejdbc-config" % "3.0.1" % "test",
+    excludeAll ExclusionRule(organization = "org.specs2"),
+  "org.scalikejdbc" %% "scalikejdbc" % "3.2.1" % "test",
+  "org.scalikejdbc" %% "scalikejdbc-config" % "3.2.1" % "test",
   scalatest
 )
 
@@ -49,7 +47,7 @@ val playAppName = "playapp"
 val playAppVersion = "1.0-SNAPSHOT"
 
 lazy val playapp = project.in(file("playapp"))
-.enablePlugins(PlayScala).settings(scalariformSettings:_*)
+.enablePlugins(PlayScala)
 .settings(
   resourceDirectories in Test += baseDirectory.value / "conf",
   scalaVersion := scalaVersion_2_11,

@@ -44,7 +44,7 @@ class FileUtilsSpec extends FunSpec with Matchers {
     }
 
     it("should find files recursively") {
-      val temp = File.createTempFile("flyway-play-", "-test");
+      val temp = File.createTempFile("flyway-play-", "-test")
       temp.delete()
       temp.mkdir()
       val sub1 = new File(temp, "sub1")
@@ -56,9 +56,7 @@ class FileUtilsSpec extends FunSpec with Matchers {
       val testfile2 = new File(sub2, "BBB.scala")
       testfile2.createNewFile()
 
-      FileUtils.recursiveListFiles(temp) should contain theSameElementsAs (
-        Seq(sub1, sub2, testfile1, testfile2)
-      )
+      FileUtils.recursiveListFiles(temp) should contain theSameElementsAs Seq(sub1, sub2, testfile1, testfile2)
 
       testfile1.delete()
       testfile2.delete()
@@ -68,7 +66,7 @@ class FileUtilsSpec extends FunSpec with Matchers {
     }
 
     it("should find a file in file tree") {
-      val temp = File.createTempFile("flyway-play-", "-test");
+      val temp = File.createTempFile("flyway-play-", "-test")
       temp.delete()
       temp.mkdir()
       val sub1 = new File(temp, "sub1")
@@ -90,7 +88,7 @@ class FileUtilsSpec extends FunSpec with Matchers {
     }
 
     it("should find a java/scala file in file tree") {
-      val temp = File.createTempFile("flyway-play-", "-test");
+      val temp = File.createTempFile("flyway-play-", "-test")
       temp.delete()
       temp.mkdir()
       val sub1 = new File(temp, "sub1")

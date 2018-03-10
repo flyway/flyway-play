@@ -28,10 +28,9 @@ import scala.collection.JavaConverters._
 
 @Singleton
 class PlayInitializer @Inject() (
-    configuration: Configuration,
-    environment: Environment,
-    webCommands: WebCommands
-) {
+  configuration: Configuration,
+  environment: Environment,
+  webCommands: WebCommands) {
 
   private val flywayConfigurations = {
     val configReader = new ConfigReader(configuration, environment)
@@ -44,21 +43,21 @@ class PlayInitializer @Inject() (
 
   private def migrationFileDirectoryExists(path: String): Boolean = {
     environment.resource(path) match {
-      case Some(r) => {
-        Logger.debug(s"Directory for migration files found. ${path}")
+      case Some(_) =>
+        Logger.debug(s"Directory for migration files found. $path")
         true
-      }
-      case None => {
-        Logger.warn(s"Directory for migration files not found. ${path}")
+
+      case None =>
+        Logger.warn(s"Directory for migration files not found. $path")
         false
-      }
+
     }
   }
 
   private lazy val flyways: Map[String, Flyway] = {
     for {
       (dbName, configuration) <- flywayConfigurations
-      migrationFilesLocation = s"${flywayPrefixToMigrationScript}/${dbName}"
+      migrationFilesLocation = s"$flywayPrefixToMigrationScript/$dbName"
       if migrationFileDirectoryExists(migrationFilesLocation)
     } yield {
       val flyway = new Flyway
@@ -69,11 +68,10 @@ class PlayInitializer @Inject() (
         database.url,
         database.user,
         database.password,
-        null
-      )
+        null)
       flyway.setDataSource(dataSource)
       if (configuration.locations.nonEmpty) {
-        val locations = configuration.locations.map(location => s"${migrationFilesLocation}/${location}")
+        val locations = configuration.locations.map(location => s"$migrationFilesLocation/$location")
         flyway.setLocations(locations: _*)
       } else {
         flyway.setLocations(migrationFilesLocation)
@@ -88,7 +86,7 @@ class PlayInitializer @Inject() (
       configuration.sqlMigrationPrefix.foreach(flyway.setSqlMigrationPrefix)
       configuration.repeatableSqlMigrationPrefix.foreach(flyway.setRepeatableSqlMigrationPrefix)
       configuration.sqlMigrationSeparator.foreach(flyway.setSqlMigrationSeparator)
-      configuration.sqlMigrationSuffix.foreach(flyway.setSqlMigrationSuffix)
+      setSqlMigrationSuffixes(configuration, flyway)
       configuration.ignoreFutureMigrations.foreach(flyway.setIgnoreFutureMigrations)
       configuration.validateOnMigrate.foreach(flyway.setValidateOnMigrate)
       configuration.cleanOnValidationError.foreach(flyway.setCleanOnValidationError)
@@ -100,13 +98,19 @@ class PlayInitializer @Inject() (
     }
   }
 
+  private def setSqlMigrationSuffixes(configuration: FlywayConfiguration, flyway: Flyway): Unit = {
+    configuration.sqlMigrationSuffix.foreach(_ =>
+      Logger.warn("sqlMigrationSuffix is deprecated in Flyway 5.0, and will be removed in a future version. Use sqlMigrationSuffixes instead."))
+    val suffixes: Seq[String] = configuration.sqlMigrationSuffixes ++ configuration.sqlMigrationSuffix
+    if (suffixes.nonEmpty) flyway.setSqlMigrationSuffixes(suffixes: _*)
+  }
+
   private def migrationDescriptionToShow(dbName: String, migration: MigrationInfo): String = {
     val locations = flywayConfigurations(dbName).locations
-    (if (locations.nonEmpty) {
-      locations.map(location => environment.resourceAsStream(s"${flywayPrefixToMigrationScript}/${dbName}/${location}/${migration.getScript}"))
-        .find(resource => resource.nonEmpty).getOrElse(None)
-    } else {
-      environment.resourceAsStream(s"${flywayPrefixToMigrationScript}/${dbName}/${migration.getScript}")
+    (if (locations.nonEmpty) locations.map(location => environment.resourceAsStream(s"$flywayPrefixToMigrationScript/$dbName/$location/${migration.getScript}"))
+      .find(resource => resource.nonEmpty).flatten
+    else {
+      environment.resourceAsStream(s"$flywayPrefixToMigrationScript/$dbName/${migration.getScript}")
     }).map { in =>
       s"""|--- ${migration.getScript} ---
           |${FileUtils.readInputStreamToString(in)}""".stripMargin
@@ -115,7 +119,7 @@ class PlayInitializer @Inject() (
       val code = for {
         script <- FileUtils.findJdbcMigrationFile(environment.rootPath, migration.getScript)
       } yield FileUtils.readFileToString(script)
-      allCatch opt { environment.classLoader.loadClass(migration.getScript) } map { cls =>
+      allCatch opt { environment.classLoader.loadClass(migration.getScript) } map { _ =>
         s"""|--- ${migration.getScript} ---
             |$code""".stripMargin
       }
@@ -128,8 +132,7 @@ class PlayInitializer @Inject() (
       if (pendingMigrations.nonEmpty) {
         throw InvalidDatabaseRevision(
           dbName,
-          pendingMigrations.map(migration => migrationDescriptionToShow(dbName, migration)).mkString("\n")
-        )
+          pendingMigrations.map(migration => migrationDescriptionToShow(dbName, migration)).mkString("\n"))
       }
 
       if (flywayConfigurations(dbName).validateOnStart) {
@@ -158,7 +161,7 @@ class PlayInitializer @Inject() (
   }
 
   val enabled: Boolean =
-    !configuration.getOptional[String]("flywayplugin").exists(_ == "disabled")
+    !configuration.getOptional[String]("flywayplugin").contains("disabled")
 
   if (enabled) {
     onStart()

@@ -43,7 +43,7 @@ object FileUtils {
       throw new IllegalArgumentException(s"root is not a directory")
     }
     val these = root.listFiles.toSeq
-    these ++ these.filter(_.isDirectory).flatMap(recursiveListFiles).toSeq
+    these ++ these.filter(_.isDirectory).flatMap(recursiveListFiles)
   }
 
   def findFile(root: File, filename: String): Option[File] = {

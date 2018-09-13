@@ -37,7 +37,8 @@ case class FlywayConfiguration(
   cleanOnValidationError: Option[Boolean],
   cleanDisabled: Option[Boolean],
   initOnMigrate: Option[Boolean],
-  outOfOrder: Option[Boolean])
+  outOfOrder: Option[Boolean],
+  dbFolder: Option[String])
 
 case class DatabaseConfiguration(
   driver: String,

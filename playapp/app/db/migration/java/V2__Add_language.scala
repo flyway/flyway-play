@@ -1,15 +1,15 @@
 package db.migration.java
 
-import java.sql.Connection
+import org.flywaydb.core.api.migration.{ BaseJavaMigration, Context }
 
-import org.flywaydb.core.api.migration.jdbc.JdbcMigration
+class V2__Add_language extends BaseJavaMigration {
 
-class V2__Add_language extends JdbcMigration {
-  override def migrate(conn: Connection): Unit = {
-
+  override def migrate(context: Context): Unit = {
+    val conn = context.getConnection
     conn.createStatement().executeUpdate(
       """insert into language(id, name) values(1, 'SQL');
         |insert into language(id, name) values(2, 'Java');
-       """.stripMargin)
+      """.stripMargin)
   }
+
 }

@@ -14,6 +14,7 @@ Flyway module for Play 2.4 or later. It aims to be a substitute for play-evoluti
 
 |flyway-play version|play version|flyway version|
 |-------------------|------------|--------------|
+|              5.1.0|       2.6.x|         5.1.4|
 |              5.0.0|       2.6.x|         5.0.7|
 |              4.0.0|       2.6.x|         4.2.0|
 |              3.2.0|       2.5.x|         4.2.0|
@@ -232,6 +233,10 @@ class MyComponents(context: Context)
 ```
 
 ## <a class="anchor" name="changelog"></a>Change Log
+
+### 5.1.0
+
+ - Support Flyway 5.1.4
 
 ### 5.0.0
 

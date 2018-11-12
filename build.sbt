@@ -80,6 +80,10 @@ val _pomExtra =
       <distribution>repo</distribution>
     </license>
   </licenses>
+  <scm>
+    <url>git@github.com:flyway/flyway-play.git</url>
+    <connection>scm:git:git@github.com:flyway/flyway-play.git</connection>
+  </scm>
   <developers>
     <developer>
       <id>tototoshi</id>

@@ -16,11 +16,11 @@
 package org.flywaydb.play
 
 import java.io.FileNotFoundException
-import javax.inject._
 
+import javax.inject._
 import org.flywaydb.core.Flyway
 import org.flywaydb.core.api.MigrationInfo
-import org.flywaydb.core.internal.util.jdbc.DriverDataSource
+import org.flywaydb.core.internal.jdbc.DriverDataSource
 import play.api._
 import play.core._
 

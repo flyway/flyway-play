@@ -25,7 +25,7 @@ lazy val plugin = project.in(file("plugin"))
       "com.typesafe.play" %% "play" % play.core.PlayVersion.current % "provided",
       "com.typesafe.play" %% "play-test" % play.core.PlayVersion.current % "test"
         excludeAll ExclusionRule(organization = "org.specs2"),
-      "org.flywaydb" % "flyway-core" % "5.1.1",
+      "org.flywaydb" % "flyway-core" % "5.1.4",
       scalatest
     ),
     scalacOptions ++= Seq("-language:_", "-deprecation")

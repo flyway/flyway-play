@@ -26,6 +26,12 @@ build.sbt
 libraryDependencies ++= Seq(
   "org.flywaydb" %% "flyway-play" % "5.1.0"
 )
+
+// or snapshot version
+//
+// libraryDependencies ++= Seq(
+//   "org.flywaydb" %% "flyway-play" % "5.2.0-SNAPSHOT"
+// )
 ```
 
 conf/application.conf
@@ -222,13 +228,13 @@ $ play -Ddb.default.migration.auto=true start
 
 
 ```scala
-class MyComponents(context: Context) 
+class MyComponents(context: Context)
     extends BuiltInComponentsFromContext(context)
     with FlywayPlayComponents
     ...
     {
   flywayPlayInitializer
-  ...  
+  ...
 }
 ```
 

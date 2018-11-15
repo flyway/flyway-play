@@ -54,7 +54,7 @@ db.default.username="sa"
 db.default.password="secret"
 
 # optional
-db.default.schemas=["public", "other"]
+db.default.migration.schemas=["public", "other"]
 ```
 
 ### Place migration scripts

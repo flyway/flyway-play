@@ -62,7 +62,7 @@ CREATE TABLE FOO (.............
 
 By default place your migration scripts in `conf/db/migration/${dbName}` .
 
-If dbFolder parameter is set, it will look for migrations scripts in `conf/db/migration/${dbFolder}` .
+If scriptsDirectory parameter is set, it will look for migrations scripts in `conf/db/migration/${scriptsDirectory}` .
 
 ```
 playapp

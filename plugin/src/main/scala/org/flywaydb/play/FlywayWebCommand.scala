@@ -65,9 +65,9 @@ class FlywayWebCommand(
       case WebCommandPath.showInfoPath(dbName) =>
         val result = withDatabase(dbName) { flyway =>
           val allMigrationInfo: Seq[MigrationInfo] = flyways.get(dbName).toSeq.flatMap(_.info().all())
-          val dbFolder = configuration.getOptional[String](s"db.$dbName.migration.dbFolder").getOrElse(dbName)
+          val scriptsDirectory = configuration.getOptional[String](s"db.$dbName.migration.scriptsDirectory").getOrElse(dbName)
           val scripts: Seq[String] = allMigrationInfo.map { info =>
-            environment.resourceAsStream(s"$flywayPrefixToMigrationScript/$dbFolder/${info.getScript}").map { in =>
+            environment.resourceAsStream(s"$flywayPrefixToMigrationScript/$scriptsDirectory/${info.getScript}").map { in =>
               FileUtils.readInputStreamToString(in)
             }.orElse {
               for {

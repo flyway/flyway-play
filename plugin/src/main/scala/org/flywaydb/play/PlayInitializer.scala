@@ -57,7 +57,7 @@ class PlayInitializer @Inject() (
   private lazy val flyways: Map[String, Flyway] = {
     for {
       (dbName, configuration) <- flywayConfigurations
-      migrationFilesLocation = s"$flywayPrefixToMigrationScript/$dbName"
+      migrationFilesLocation = s"$flywayPrefixToMigrationScript/${configuration.scriptsDirectory.getOrElse(dbName)}"
       if migrationFileDirectoryExists(migrationFilesLocation)
     } yield {
       val flyway = new Flyway
@@ -107,10 +107,10 @@ class PlayInitializer @Inject() (
 
   private def migrationDescriptionToShow(dbName: String, migration: MigrationInfo): String = {
     val locations = flywayConfigurations(dbName).locations
-    (if (locations.nonEmpty) locations.map(location => environment.resourceAsStream(s"$flywayPrefixToMigrationScript/$dbName/$location/${migration.getScript}"))
+    (if (locations.nonEmpty) locations.map(location => environment.resourceAsStream(s"$flywayPrefixToMigrationScript/${flywayConfigurations(dbName).scriptsDirectory.getOrElse(dbName)}/$location/${migration.getScript}"))
       .find(resource => resource.nonEmpty).flatten
     else {
-      environment.resourceAsStream(s"$flywayPrefixToMigrationScript/$dbName/${migration.getScript}")
+      environment.resourceAsStream(s"$flywayPrefixToMigrationScript/${flywayConfigurations(dbName).scriptsDirectory.getOrElse(dbName)}/${migration.getScript}")
     }).map { in =>
       s"""|--- ${migration.getScript} ---
           |${FileUtils.readInputStreamToString(in)}""".stripMargin

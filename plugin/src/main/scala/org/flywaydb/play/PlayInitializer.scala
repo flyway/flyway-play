@@ -20,6 +20,7 @@ import java.io.FileNotFoundException
 import javax.inject._
 import org.flywaydb.core.Flyway
 import org.flywaydb.core.api.MigrationInfo
+import org.flywaydb.core.api.configuration.FluentConfiguration
 import org.flywaydb.core.internal.jdbc.DriverDataSource
 import play.api._
 import play.core._
@@ -60,7 +61,7 @@ class PlayInitializer @Inject() (
       migrationFilesLocation = s"$flywayPrefixToMigrationScript/${configuration.scriptsDirectory.getOrElse(dbName)}"
       if migrationFileDirectoryExists(migrationFilesLocation)
     } yield {
-      val flyway = new Flyway
+      val flyway = Flyway.configure(environment.classLoader)
       val database = configuration.database
       val dataSource = new DriverDataSource(
         getClass.getClassLoader,
@@ -69,40 +70,40 @@ class PlayInitializer @Inject() (
         database.user,
         database.password,
         null)
-      flyway.setDataSource(dataSource)
+      flyway.dataSource(dataSource)
       if (configuration.locations.nonEmpty) {
         val locations = configuration.locations.map(location => s"$migrationFilesLocation/$location")
-        flyway.setLocations(locations: _*)
+        flyway.locations(locations: _*)
       } else {
-        flyway.setLocations(migrationFilesLocation)
+        flyway.locations(migrationFilesLocation)
       }
-      configuration.encoding.foreach(flyway.setEncoding)
-      flyway.setSchemas(configuration.schemas: _*)
-      configuration.table.foreach(flyway.setTable)
-      configuration.placeholderReplacement.foreach(flyway.setPlaceholderReplacement)
-      flyway.setPlaceholders(configuration.placeholders.asJava)
-      configuration.placeholderPrefix.foreach(flyway.setPlaceholderPrefix)
-      configuration.placeholderSuffix.foreach(flyway.setPlaceholderSuffix)
-      configuration.sqlMigrationPrefix.foreach(flyway.setSqlMigrationPrefix)
-      configuration.repeatableSqlMigrationPrefix.foreach(flyway.setRepeatableSqlMigrationPrefix)
-      configuration.sqlMigrationSeparator.foreach(flyway.setSqlMigrationSeparator)
+      configuration.encoding.foreach(flyway.encoding)
+      flyway.schemas(configuration.schemas: _*)
+      configuration.table.foreach(flyway.table)
+      configuration.placeholderReplacement.foreach(flyway.placeholderReplacement)
+      flyway.placeholders(configuration.placeholders.asJava)
+      configuration.placeholderPrefix.foreach(flyway.placeholderPrefix)
+      configuration.placeholderSuffix.foreach(flyway.placeholderSuffix)
+      configuration.sqlMigrationPrefix.foreach(flyway.sqlMigrationPrefix)
+      configuration.repeatableSqlMigrationPrefix.foreach(flyway.repeatableSqlMigrationPrefix)
+      configuration.sqlMigrationSeparator.foreach(flyway.sqlMigrationSeparator)
       setSqlMigrationSuffixes(configuration, flyway)
-      configuration.ignoreFutureMigrations.foreach(flyway.setIgnoreFutureMigrations)
-      configuration.validateOnMigrate.foreach(flyway.setValidateOnMigrate)
-      configuration.cleanOnValidationError.foreach(flyway.setCleanOnValidationError)
-      configuration.cleanDisabled.foreach(flyway.setCleanDisabled)
-      configuration.initOnMigrate.foreach(flyway.setBaselineOnMigrate)
-      configuration.outOfOrder.foreach(flyway.setOutOfOrder)
+      configuration.ignoreFutureMigrations.foreach(flyway.ignoreFutureMigrations)
+      configuration.validateOnMigrate.foreach(flyway.validateOnMigrate)
+      configuration.cleanOnValidationError.foreach(flyway.cleanOnValidationError)
+      configuration.cleanDisabled.foreach(flyway.cleanDisabled)
+      configuration.initOnMigrate.foreach(flyway.baselineOnMigrate)
+      configuration.outOfOrder.foreach(flyway.outOfOrder)
 
-      dbName -> flyway
+      dbName -> flyway.load()
     }
   }
 
-  private def setSqlMigrationSuffixes(configuration: FlywayConfiguration, flyway: Flyway): Unit = {
+  private def setSqlMigrationSuffixes(configuration: FlywayConfiguration, flyway: FluentConfiguration): Unit = {
     configuration.sqlMigrationSuffix.foreach(_ =>
       Logger.warn("sqlMigrationSuffix is deprecated in Flyway 5.0, and will be removed in a future version. Use sqlMigrationSuffixes instead."))
     val suffixes: Seq[String] = configuration.sqlMigrationSuffixes ++ configuration.sqlMigrationSuffix
-    if (suffixes.nonEmpty) flyway.setSqlMigrationSuffixes(suffixes: _*)
+    if (suffixes.nonEmpty) flyway.sqlMigrationSuffixes(suffixes: _*)
   }
 
   private def migrationDescriptionToShow(dbName: String, migration: MigrationInfo): String = {

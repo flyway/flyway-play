@@ -57,8 +57,11 @@ class FlywayWebCommand(
         Some(result)
       case WebCommandPath.versionedInitPath(dbName, version) =>
         val result = withDatabase(dbName) { flyway =>
-          flyway.setBaselineVersionAsString(version)
-          flyway.baseline()
+          Flyway.configure()
+            .configuration(flyway.getConfiguration)
+            .baselineVersion(version)
+            .load()
+            .baseline()
           Redirect(getRedirectUrlFromRequest(request))
         }
         Some(result)
@@ -76,7 +79,7 @@ class FlywayWebCommand(
             }.getOrElse("")
           }
           val showManualInsertQuery = configuration.getOptional[Boolean](s"db.$dbName.migration.showInsertQuery").getOrElse(false)
-          val schemaTable = flyway.getTable
+          val schemaTable = flyway.getConfiguration.getTable
           Ok(views.html.info(request, dbName, allMigrationInfo, scripts, showManualInsertQuery, schemaTable)).as("text/html")
         }
         Some(result)

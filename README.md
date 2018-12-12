@@ -14,6 +14,7 @@ Flyway module for Play 2.4 or later. It aims to be a substitute for play-evoluti
 
 |flyway-play version|play version|flyway version|
 |-------------------|------------|--------------|
+|              5.2.0|       2.6.x|         5.2.4|
 |              5.1.0|       2.6.x|         5.1.4|
 |              5.0.0|       2.6.x|         5.0.7|
 |              4.0.0|       2.6.x|         4.2.0|
@@ -24,14 +25,8 @@ build.sbt
 
 ```scala
 libraryDependencies ++= Seq(
-  "org.flywaydb" %% "flyway-play" % "5.1.0"
+  "org.flywaydb" %% "flyway-play" % "5.2.0"
 )
-
-// or snapshot version
-//
-// libraryDependencies ++= Seq(
-//   "org.flywaydb" %% "flyway-play" % "5.2.0-SNAPSHOT"
-// )
 ```
 
 conf/application.conf
@@ -241,6 +236,11 @@ class MyComponents(context: Context)
 ```
 
 ## <a class="anchor" name="changelog"></a>Change Log
+
+### 5.2.0
+
+ - Supported new configuration key, `db.default.migration.scriptDirectory`.
+ - Support Flyway 5.2.4
 
 ### 5.1.0
 

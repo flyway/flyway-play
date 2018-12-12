@@ -1,6 +1,7 @@
 val scalaVersion_2_11 = "2.11.12"
 val scalaVersion_2_12 = "2.12.6"
 
+val flywayVersion = "5.2.4"
 val flywayPlayVersion = "5.2.0-SNAPSHOT"
 
 val scalatest = "org.scalatest" %% "scalatest" % "3.0.5" % "test"
@@ -25,7 +26,7 @@ lazy val plugin = project.in(file("plugin"))
       "com.typesafe.play" %% "play" % play.core.PlayVersion.current % "provided",
       "com.typesafe.play" %% "play-test" % play.core.PlayVersion.current % "test"
         excludeAll ExclusionRule(organization = "org.specs2"),
-      "org.flywaydb" % "flyway-core" % "5.2.1",
+      "org.flywaydb" % "flyway-core" % flywayVersion,
       scalatest
     ),
     scalacOptions ++= Seq("-language:_", "-deprecation")

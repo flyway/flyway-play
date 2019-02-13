@@ -33,6 +33,7 @@ case class FlywayConfiguration(
   sqlMigrationSuffix: Option[String],
   sqlMigrationSuffixes: Seq[String],
   ignoreFutureMigrations: Option[Boolean],
+  ignoreMissingMigrations: Option[Boolean],
   validateOnMigrate: Option[Boolean],
   cleanOnValidationError: Option[Boolean],
   cleanDisabled: Option[Boolean],

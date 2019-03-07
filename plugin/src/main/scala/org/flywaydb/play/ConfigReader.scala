@@ -62,6 +62,7 @@ class ConfigReader(configuration: Configuration, environment: Environment) {
         subConfig.getOptional[String]("sqlMigrationSuffix"),
         subConfig.getOptional[Seq[String]]("sqlMigrationSuffixes").getOrElse(Seq.empty[String]),
         subConfig.getOptional[Boolean]("ignoreFutureMigrations"),
+        subConfig.getOptional[Boolean]("ignoreMissingMigrations"),
         subConfig.getOptional[Boolean]("validateOnMigrate"),
         subConfig.getOptional[Boolean]("cleanOnValidationError"),
         subConfig.getOptional[Boolean]("cleanDisabled"),

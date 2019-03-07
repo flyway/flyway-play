@@ -296,6 +296,19 @@ class ConfigReaderSpec extends FunSpec with Matchers {
       }
     }
 
+    describe("ignoreMissingMigrations") {
+      it("should be parsed") {
+        withDefaultDB(Map("db.default.migration.ignoreMissingMigrations" -> "false")) { config =>
+          config.ignoreMissingMigrations should be(Some(false))
+        }
+      }
+      it("should be None by default") {
+        withDefaultDB(Map.empty) { config =>
+          config.ignoreMissingMigrations should be(None)
+        }
+      }
+    }
+
     describe("cleanOnValidationError") {
       it("should be parsed") {
         withDefaultDB(Map("db.default.migration.cleanOnValidationError" -> "true")) { config =>

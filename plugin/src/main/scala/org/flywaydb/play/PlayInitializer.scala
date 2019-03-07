@@ -89,6 +89,7 @@ class PlayInitializer @Inject() (
       configuration.sqlMigrationSeparator.foreach(flyway.sqlMigrationSeparator)
       setSqlMigrationSuffixes(configuration, flyway)
       configuration.ignoreFutureMigrations.foreach(flyway.ignoreFutureMigrations)
+      configuration.ignoreMissingMigrations.foreach(flyway.ignoreMissingMigrations)
       configuration.validateOnMigrate.foreach(flyway.validateOnMigrate)
       configuration.cleanOnValidationError.foreach(flyway.cleanOnValidationError)
       configuration.cleanDisabled.foreach(flyway.cleanDisabled)

@@ -1,10 +1,10 @@
 val scalaVersion_2_11 = "2.11.12"
-val scalaVersion_2_12 = "2.12.6"
+val scalaVersion_2_12 = "2.12.8"
 
 val flywayVersion = "5.2.4"
 val flywayPlayVersion = "5.3.0-SNAPSHOT"
 
-val scalatest = "org.scalatest" %% "scalatest" % "3.0.5" % "test"
+val scalatest = "org.scalatest" %% "scalatest" % "3.0.7" % "test"
 
 lazy val `flyway-play` = project.in(file("."))
   .settings(

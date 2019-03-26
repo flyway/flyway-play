@@ -23,5 +23,5 @@ trait FlywayPlayComponents {
   def environment: Environment
   def webCommands: WebCommands
 
-  lazy val flywayPlayInitializer = new PlayInitializer(configuration, environment, webCommands)
+  lazy val flywayPlayInitializer = new PlayInitializer(configuration, webCommands, new FlywayWebCommand(configuration, environment))
 }

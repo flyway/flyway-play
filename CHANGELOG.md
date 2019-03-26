@@ -1,5 +1,9 @@
 # Change Log
 
+## 5.3.0
+
+ - Support Play 2.7.0
+
 ## 5.2.0
 
  - Supported new configuration key, `db.default.migration.scriptDirectory`.

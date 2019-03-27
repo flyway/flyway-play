@@ -218,6 +218,7 @@ class FlywayWebCommand @Inject() (
               checkState(dbName)
             }
           }
+          checkedAlready = true
         }
         None
     }

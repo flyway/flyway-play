@@ -29,6 +29,12 @@ class PlayInitializer @Inject() (
   def onStart(): Unit = {
     val webCommand = new FlywayWebCommand(configuration, environment, flyways)
     webCommands.addHandler(webCommand)
+
+    if (environment.mode == Mode.Test) {
+      flyways.allDatabaseNames.foreach {
+        dbName => flyways.migrate(dbName)
+      }
+    }
   }
 
   val enabled: Boolean =

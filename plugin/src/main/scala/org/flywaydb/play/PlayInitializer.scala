@@ -22,10 +22,14 @@ import play.core._
 @Singleton
 class PlayInitializer @Inject() (
   configuration: Configuration,
-  webCommands: WebCommands,
-  flywayWebCommand: FlywayWebCommand) {
+  environment: Environment,
+  flyways: Flyways,
+  webCommands: WebCommands) {
 
-  def onStart(): Unit = webCommands.addHandler(flywayWebCommand)
+  def onStart(): Unit = {
+    val webCommand = new FlywayWebCommand(configuration, environment, flyways)
+    webCommands.addHandler(webCommand)
+  }
 
   val enabled: Boolean =
     !configuration.getOptional[String]("flywayplugin").contains("disabled")

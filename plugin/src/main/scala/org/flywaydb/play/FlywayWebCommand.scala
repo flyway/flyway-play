@@ -64,15 +64,17 @@ class FlywayWebCommand(
       case "/@flyway" =>
         Some(Ok(views.html.index(flyways.allDatabaseNames)).as("text/html"))
       case _ =>
-        if (!checkedAlready) {
-          for (dbName <- flyways.allDatabaseNames) {
-            if (environment.mode == Mode.Test || flyways.config(dbName).auto) {
-              flyways.migrate(dbName)
-            } else {
-              flyways.checkState(dbName)
+        synchronized {
+          if (!checkedAlready) {
+            for (dbName <- flyways.allDatabaseNames) {
+              if (environment.mode == Mode.Test || flyways.config(dbName).auto) {
+                flyways.migrate(dbName)
+              } else {
+                flyways.checkState(dbName)
+              }
             }
+            checkedAlready = true
           }
-          checkedAlready = true
         }
         None
     }

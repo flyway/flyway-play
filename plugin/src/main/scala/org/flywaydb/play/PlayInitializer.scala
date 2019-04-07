@@ -30,9 +30,9 @@ class PlayInitializer @Inject() (
     val webCommand = new FlywayWebCommand(configuration, environment, flyways)
     webCommands.addHandler(webCommand)
 
-    if (environment.mode == Mode.Test) {
-      flyways.allDatabaseNames.foreach {
-        dbName => flyways.migrate(dbName)
+    flyways.allDatabaseNames.foreach { dbName =>
+      if (environment.mode == Mode.Test || flyways.config(dbName).auto) {
+        flyways.migrate(dbName)
       }
     }
   }

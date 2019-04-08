@@ -16,6 +16,7 @@
 package com.github.tototoshi.play2.flyway
 
 import org.scalatest._
+import play.api.{ Configuration, Environment, Mode }
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
 import scalikejdbc._
@@ -112,11 +113,10 @@ class PlayModuleSpec extends FunSpec with Matchers {
     }
   }
 
-  private val application = GuiceApplicationBuilder().build()
-
   describe("PlayModule") {
 
     it("should migrate automatically when testing") {
+      val application = GuiceApplicationBuilder().build()
       running(application) {
         withScalikejdbcPool {
           test()
@@ -124,5 +124,17 @@ class PlayModuleSpec extends FunSpec with Matchers {
       }
     }
 
+    it("should migrate automatically when enabled in production mode") {
+      val settings = Seq("default", "migration_prefix", "java", "placeholders", "secondary")
+        .map(dbName => s"db.$dbName.migration.auto" -> true)
+      val application = GuiceApplicationBuilder(
+        environment = Environment.simple(mode = Mode.Prod),
+        configuration = Configuration(settings: _*)).build()
+      running(application) {
+        withScalikejdbcPool {
+          test()
+        }
+      }
+    }
   }
 }

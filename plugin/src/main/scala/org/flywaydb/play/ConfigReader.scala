@@ -69,7 +69,7 @@ class ConfigReader(configuration: Configuration, environment: Environment) {
         subConfig.getOptional[Boolean]("initOnMigrate"),
         subConfig.getOptional[Boolean]("outOfOrder"),
         subConfig.getOptional[String]("scriptsDirectory"),
-        subConfig.getOptional[String]("mixed"))
+        subConfig.getOptional[Boolean]("mixed"))
     }).toMap
   }
 

@@ -335,5 +335,18 @@ class ConfigReaderSpec extends FunSpec with Matchers {
       }
     }
 
+    describe("mixed") {
+      it("should be parsed") {
+        withDefaultDB(Map("db.default.migration.mixed" -> "true")) { config =>
+          config.mixed should be(Some(true))
+        }
+      }
+      it("should be None by default") {
+        withDefaultDB(Map.empty) { config =>
+          config.mixed should be(None)
+        }
+      }
+    }
+
   }
 }

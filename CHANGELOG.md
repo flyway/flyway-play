@@ -1,5 +1,14 @@
 # Change Log
 
+## 5.3.1
+
+ - Added 'mixed' configuration parameter
+ - Fixed auto migration setting on production env
+
+## 5.3.1
+
+ - Some bug fixes
+
 ## 5.3.0
 
  - Support Play 2.7.0

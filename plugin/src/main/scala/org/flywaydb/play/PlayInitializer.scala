@@ -31,8 +31,16 @@ class PlayInitializer @Inject() (
     webCommands.addHandler(webCommand)
 
     flyways.allDatabaseNames.foreach { dbName =>
-      if (environment.mode == Mode.Test || flyways.config(dbName).auto) {
-        flyways.migrate(dbName)
+      environment.mode match {
+        case Mode.Test =>
+          flyways.migrate(dbName)
+        case Mode.Prod if flyways.config(dbName).auto =>
+          flyways.migrate(dbName)
+        case Mode.Prod =>
+          flyways.checkState(dbName)
+        case Mode.Dev =>
+        // Do nothing here.
+        // In dev mode, FlywayWebCommand handles migration.
       }
     }
   }

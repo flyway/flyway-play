@@ -1,15 +1,17 @@
 val scalaVersion_2_11 = "2.11.12"
 val scalaVersion_2_12 = "2.12.8"
+val scalaVersion_2_13 = "2.13.0"
 
 val flywayVersion = "5.2.4"
 val flywayPlayVersion = "5.3.2"
+val scalikejdbcVersion = "3.3.5"
 
-val scalatest = "org.scalatest" %% "scalatest" % "3.0.7" % "test"
+val scalatest = "org.scalatest" %% "scalatest" % "3.0.8" % "test"
 
 lazy val commonSettings = Seq(
   organization := "org.flywaydb",
   scalaVersion := scalaVersion_2_11,
-  crossScalaVersions := Seq(scalaVersion_2_11, scalaVersion_2_12),
+  crossScalaVersions := Seq(scalaVersion_2_11, scalaVersion_2_12, scalaVersion_2_13),
   publishTo := {
     val nexus = "https://oss.sonatype.org/"
     if (version.value.trim.endsWith("SNAPSHOT"))
@@ -60,8 +62,8 @@ lazy val playapp = project.in(file("playapp"))
       "postgresql" % "postgresql" % "9.1-901.jdbc4",
       "com.typesafe.play" %% "play-test" % play.core.PlayVersion.current % "test"
         excludeAll ExclusionRule(organization = "org.specs2"),
-      "org.scalikejdbc" %% "scalikejdbc" % "3.2.1" % "test",
-      "org.scalikejdbc" %% "scalikejdbc-config" % "3.2.1" % "test",
+      "org.scalikejdbc" %% "scalikejdbc" % scalikejdbcVersion % "test",
+      "org.scalikejdbc" %% "scalikejdbc-config" % scalikejdbcVersion % "test",
       scalatest
     )
   )

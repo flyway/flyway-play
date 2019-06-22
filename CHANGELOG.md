@@ -1,6 +1,10 @@
 # Change Log
 
-## 5.3.1
+## 5.3.3
+
+ - Support Scala 2.13.0
+
+## 5.3.2
 
  - Added 'mixed' configuration parameter
  - Fixed auto migration setting on production env

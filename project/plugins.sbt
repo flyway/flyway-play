@@ -6,7 +6,7 @@ addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.7.3")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-twirl" % "1.4.2")
 
-addSbtPlugin("org.scalariform" % "sbt-scalariform" % "1.8.2")
+addSbtPlugin("org.scalariform" % "sbt-scalariform" % "1.8.3")
 
 scalacOptions ++= Seq("-deprecation", "-unchecked", "-language:_")
 

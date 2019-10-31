@@ -1,5 +1,9 @@
 # Change Log
 
+## 5.4.0
+
+ - Support Flyway 6.0.1
+
 ## 5.3.3
 
  - Support Scala 2.13.0

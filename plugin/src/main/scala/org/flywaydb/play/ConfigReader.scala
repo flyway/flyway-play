@@ -25,8 +25,11 @@ class ConfigReader(configuration: Configuration, environment: Environment) {
 
   val logger = Logger(classOf[ConfigReader])
 
+  private def dbConfigPrefix: String =
+    configuration.getOptional[String]("flyway-config").getOrElse("db")
+
   private def getAllDatabaseNames: Seq[String] = (for {
-    config <- configuration.getOptional[Configuration]("db").toList
+    config <- configuration.getOptional[Configuration](dbConfigPrefix).toList
     dbName <- config.subKeys
   } yield {
     dbName
@@ -36,7 +39,7 @@ class ConfigReader(configuration: Configuration, environment: Environment) {
     (for {
       dbName <- getAllDatabaseNames
       database <- getDatabaseConfiguration(configuration, dbName)
-      subConfig = configuration.getOptional[Configuration](s"db.$dbName.migration").getOrElse(Configuration.empty)
+      subConfig = configuration.getOptional[Configuration](s"$dbConfigPrefix.$dbName.migration").getOrElse(Configuration.empty)
     } yield {
       val placeholders = {
         subConfig.getOptional[Configuration]("placeholders").map { config =>
@@ -75,17 +78,17 @@ class ConfigReader(configuration: Configuration, environment: Environment) {
 
   private def getDatabaseConfiguration(configuration: Configuration, dbName: String): Option[DatabaseConfiguration] = {
     val jdbcConfigOrError = for {
-      jdbcUrl <- configuration.getOptional[String](s"db.$dbName.url").toRight(s"db.$dbName.url is not set").right
-      driver <- configuration.getOptional[String](s"db.$dbName.driver").toRight(s"db.$dbName.driver is not set").right
+      jdbcUrl <- configuration.getOptional[String](s"$dbConfigPrefix.$dbName.url").toRight(s"$dbConfigPrefix.$dbName.url is not set").right
+      driver <- configuration.getOptional[String](s"$dbConfigPrefix.$dbName.driver").toRight(s"$dbConfigPrefix.$dbName.driver is not set").right
     } yield {
       val (parsedUrl, parsedUser, parsedPass) = urlParser.parseUrl(jdbcUrl)
       val username = parsedUser
-        .orElse(configuration.getOptional[String](s"db.$dbName.username"))
-        .orElse(configuration.getOptional[String](s"db.$dbName.user"))
+        .orElse(configuration.getOptional[String](s"$dbConfigPrefix.$dbName.username"))
+        .orElse(configuration.getOptional[String](s"$dbConfigPrefix.$dbName.user"))
         .orNull
       val password = parsedPass
-        .orElse(configuration.getOptional[String](s"db.$dbName.password"))
-        .orElse(configuration.getOptional[String](s"db.$dbName.pass"))
+        .orElse(configuration.getOptional[String](s"$dbConfigPrefix.$dbName.password"))
+        .orElse(configuration.getOptional[String](s"$dbConfigPrefix.$dbName.pass"))
         .orNull
       JdbcConfig(driver, parsedUrl, username, password)
     }

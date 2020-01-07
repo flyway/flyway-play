@@ -81,6 +81,7 @@ class Flyways @Inject() (
       configuration.initOnMigrate.foreach(flyway.baselineOnMigrate)
       configuration.outOfOrder.foreach(flyway.outOfOrder)
       configuration.mixed.foreach(flyway.mixed)
+      configuration.group.foreach(flyway.group)
 
       dbName -> flyway.load()
     }

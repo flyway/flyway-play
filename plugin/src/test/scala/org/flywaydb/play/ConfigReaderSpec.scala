@@ -348,5 +348,17 @@ class ConfigReaderSpec extends FunSpec with Matchers {
       }
     }
 
+    describe("group") {
+      it("should be parsed") {
+        withDefaultDB(Map("db.default.migration.group" -> "true")) { config =>
+          config.group should be(Some(true))
+        }
+      }
+      it("should be None by default") {
+        withDefaultDB(Map.empty) { config =>
+          config.group should be(None)
+        }
+      }
+    }
   }
 }

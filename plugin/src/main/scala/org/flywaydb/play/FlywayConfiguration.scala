@@ -40,7 +40,8 @@ case class FlywayConfiguration(
   initOnMigrate: Option[Boolean],
   outOfOrder: Option[Boolean],
   scriptsDirectory: Option[String],
-  mixed: Option[Boolean])
+  mixed: Option[Boolean],
+  group: Option[Boolean])
 
 case class DatabaseConfiguration(
   driver: String,

@@ -1,17 +1,16 @@
-val scalaVersion_2_11 = "2.11.12"
-val scalaVersion_2_12 = "2.12.8"
-val scalaVersion_2_13 = "2.13.0"
+val scalaVersion_2_12 = "2.12.10"
+val scalaVersion_2_13 = "2.13.1"
 
 val flywayVersion = "6.1.0"
-val flywayPlayVersion = "5.4.0"
+val flywayPlayVersion = "6.0.0"
 val scalikejdbcVersion = "3.3.5"
 
 val scalatest = "org.scalatest" %% "scalatest" % "3.0.8" % "test"
 
 lazy val commonSettings = Seq(
   organization := "org.flywaydb",
-  scalaVersion := scalaVersion_2_11,
-  crossScalaVersions := Seq(scalaVersion_2_11, scalaVersion_2_12, scalaVersion_2_13),
+  scalaVersion := scalaVersion_2_12,
+  crossScalaVersions := Seq(scalaVersion_2_12, scalaVersion_2_13),
   publishTo := {
     val nexus = "https://oss.sonatype.org/"
     if (version.value.trim.endsWith("SNAPSHOT"))
@@ -34,7 +33,7 @@ lazy val plugin = project.in(file("plugin"))
     Seq(
       name := "flyway-play",
       version := flywayPlayVersion,
-      resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
+      resolvers += "Typesafe repository" at "https://repo.typesafe.com/typesafe/releases/",
       libraryDependencies ++= Seq(
         "com.typesafe.play" %% "play" % play.core.PlayVersion.current % "provided",
         "com.typesafe.play" %% "play-test" % play.core.PlayVersion.current % "test"

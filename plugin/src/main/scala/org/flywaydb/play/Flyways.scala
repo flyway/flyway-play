@@ -124,11 +124,11 @@ class Flyways @Inject() (
   private def migrationFileDirectoryExists(path: String): Boolean = {
     environment.resource(path) match {
       case Some(_) =>
-        Logger.debug(s"Directory for migration files found. $path")
+        Logger("flyway").debug(s"Directory for migration files found. $path")
         true
 
       case None =>
-        Logger.warn(s"Directory for migration files not found. $path")
+        Logger("flyway").warn(s"Directory for migration files not found. $path")
         false
 
     }
@@ -136,7 +136,7 @@ class Flyways @Inject() (
 
   private def setSqlMigrationSuffixes(configuration: FlywayConfiguration, flyway: FluentConfiguration): Unit = {
     configuration.sqlMigrationSuffix.foreach(_ =>
-      Logger.warn("sqlMigrationSuffix is deprecated in Flyway 5.0, and will be removed in a future version. Use sqlMigrationSuffixes instead."))
+      Logger("flyway").warn("sqlMigrationSuffix is deprecated in Flyway 5.0, and will be removed in a future version. Use sqlMigrationSuffixes instead."))
     val suffixes: Seq[String] = configuration.sqlMigrationSuffixes ++ configuration.sqlMigrationSuffix
     if (suffixes.nonEmpty) flyway.sqlMigrationSuffixes(suffixes: _*)
   }

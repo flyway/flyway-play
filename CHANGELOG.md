@@ -1,5 +1,10 @@
 # Change Log
 
+## 6.0.0
+
+ - Support Play 2.8.0
+ - Drop Scala 2.11 support
+
 ## 5.4.0
 
  - Support Flyway 6.0.1

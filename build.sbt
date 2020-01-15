@@ -33,7 +33,7 @@ lazy val plugin = project.in(file("plugin"))
     Seq(
       name := "flyway-play",
       version := flywayPlayVersion,
-      resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
+      resolvers += "Typesafe repository" at "https://repo.typesafe.com/typesafe/releases/",
       libraryDependencies ++= Seq(
         "com.typesafe.play" %% "play" % play.core.PlayVersion.current % "provided",
         "com.typesafe.play" %% "play-test" % play.core.PlayVersion.current % "test"

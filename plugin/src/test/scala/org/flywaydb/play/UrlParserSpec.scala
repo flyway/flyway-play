@@ -14,10 +14,11 @@
 
 package org.flywaydb.play
 
-import org.scalatest.{ FunSpec, Matchers }
 import play.api.Environment
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class UrlParserSpec extends FunSpec with Matchers {
+class UrlParserSpec extends AnyFunSpec with Matchers {
 
   val urlParser = new UrlParser(Environment.simple())
 

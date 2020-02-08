@@ -15,9 +15,10 @@
  */
 package org.flywaydb.play
 
-import org.scalatest.{ FunSpec, Matchers }
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class WebCommandPathSpec extends FunSpec with Matchers {
+class WebCommandPathSpec extends AnyFunSpec with Matchers {
 
   describe("PluginConfiguration") {
 

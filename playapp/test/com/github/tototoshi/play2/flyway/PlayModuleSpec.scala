@@ -21,8 +21,10 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
 import scalikejdbc._
 import scalikejdbc.config.DBs
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class PlayModuleSpec extends FunSpec with Matchers {
+class PlayModuleSpec extends AnyFunSpec with Matchers {
 
   def test(): Boolean = {
     DB autoCommit { implicit session =>

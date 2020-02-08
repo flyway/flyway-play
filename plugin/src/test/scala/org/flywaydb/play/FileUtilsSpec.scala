@@ -17,9 +17,10 @@ package org.flywaydb.play
 
 import java.io.{ File, FileInputStream }
 
-import org.scalatest.{ FunSpec, Matchers }
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class FileUtilsSpec extends FunSpec with Matchers {
+class FileUtilsSpec extends AnyFunSpec with Matchers {
 
   describe("FileUtils") {
 

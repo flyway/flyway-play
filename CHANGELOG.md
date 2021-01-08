@@ -2,6 +2,10 @@
 
 ## 6.0.0
 
+ - Support Flyway 6.5.7.
+
+## 6.0.0
+
  - Support Flyway 6.2.4
  - Update dependencies
 

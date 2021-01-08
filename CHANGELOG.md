@@ -2,6 +2,11 @@
 
 ## 6.0.0
 
+ - Support Flyway 6.2.4
+ - Update dependencies
+
+## 6.0.0
+
  - Support Play 2.8.0
  - Drop Scala 2.11 support
 

@@ -40,6 +40,14 @@ conf/application.conf
 play.modules.enabled += "org.flywaydb.play.PlayModule"
 ```
 
+## Maintenance
+This repository is a community project and not officially maintained by the Flyway Team at Redgate.
+This project is looked after only by the open source community. Community Maintainers are people who have agreed to be contacted with queries for support and maintenance.
+Community Maintainers: 
+- [@tototoshi](https://github.com/tototoshi)
+
+If you would like to be named as an Community Maintainer, let us know via Twitter: https://twitter.com/flywaydb.
+
 
 ## <a class="anchor" name="getting-started"></a>Getting Started
 

@@ -53,8 +53,7 @@ class Flyways @Inject() (
         database.driver,
         database.url,
         database.user,
-        database.password,
-        null)
+        database.password)
       flyway.dataSource(dataSource)
       if (configuration.locations.nonEmpty) {
         val locations = configuration.locations.map(location => s"$migrationFilesLocation/$location")

@@ -1,10 +1,14 @@
 # Change Log
 
-## 6.0.0
+## 7.2.0
 
- - Support Flyway 6.5.7.
+ - Support Flyway 7.2.1
 
-## 6.0.0
+## 6.5.0
+
+ - Support Flyway 6.5.7
+
+## 6.2.0
 
  - Support Flyway 6.2.4
  - Update dependencies

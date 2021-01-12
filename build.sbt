@@ -2,7 +2,7 @@ val scalaVersion_2_12 = "2.12.10"
 val scalaVersion_2_13 = "2.13.1"
 
 val flywayVersion = "7.2.1"
-val flywayPlayVersion = "7.2.0-SNAPSHOT"
+val flywayPlayVersion = "7.2.0"
 val scalikejdbcVersion = "3.4.0"
 
 val scalatest = "org.scalatest" %% "scalatest" % "3.1.0" % "test"

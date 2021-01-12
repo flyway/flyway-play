@@ -14,6 +14,7 @@ Flyway module for Play 2.4 or later. It aims to be a substitute for play-evoluti
 
 |flyway-play version|play version|flyway version|
 |-------------------|------------|--------------|
+|              7.2.0|       2.8.x|         7.2.1|
 |              6.5.0|       2.8.x|         6.5.7|
 |              6.2.0|       2.8.x|         6.2.4|
 |              6.0.0|       2.8.x|         6.1.0|
@@ -30,7 +31,7 @@ build.sbt
 
 ```scala
 libraryDependencies ++= Seq(
-  "org.flywaydb" %% "flyway-play" % "6.5.0"
+  "org.flywaydb" %% "flyway-play" % "7.2.0"
 )
 ```
 
@@ -43,7 +44,7 @@ play.modules.enabled += "org.flywaydb.play.PlayModule"
 ## Maintenance
 This repository is a community project and not officially maintained by the Flyway Team at Redgate.
 This project is looked after only by the open source community. Community Maintainers are people who have agreed to be contacted with queries for support and maintenance.
-Community Maintainers: 
+Community Maintainers:
 - [@tototoshi](https://github.com/tototoshi)
 
 If you would like to be named as an Community Maintainer, let us know via Twitter: https://twitter.com/flywaydb.

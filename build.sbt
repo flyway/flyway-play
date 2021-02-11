@@ -57,7 +57,7 @@ lazy val playapp = project.in(file("playapp"))
     version := playAppVersion,
     libraryDependencies ++= Seq(
       guice,
-      "com.h2database" % "h2" % "[1.4,)",
+      "com.h2database" % "h2" % "1.4.200",
       "postgresql" % "postgresql" % "9.1-901.jdbc4",
       "com.typesafe.play" %% "play-test" % play.core.PlayVersion.current % "test"
         excludeAll ExclusionRule(organization = "org.specs2"),

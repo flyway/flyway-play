@@ -54,7 +54,7 @@ lazy val playapp = project.in(file("playapp"))
   .settings(commonSettings)
   .settings(nonPublishingSettings)
   .settings(
-    resourceDirectories in Test += baseDirectory.value / "conf",
+    Test / resourceDirectories += baseDirectory.value / "conf",
     version := playAppVersion,
     libraryDependencies ++= Seq(
       guice,
@@ -72,7 +72,7 @@ lazy val playapp = project.in(file("playapp"))
 
 val publishingSettings = Seq(
   publishMavenStyle := true,
-  publishArtifact in Test := false,
+  Test / publishArtifact := false,
   pomExtra :=
     <url>https://github.com/flyway/flyway-play</url>
       <licenses>
@@ -99,5 +99,5 @@ val nonPublishingSettings = Seq(
   publishArtifact := false,
   publish := {},
   publishLocal := {},
-  parallelExecution in Test := false
+  Test / parallelExecution := false
 )

@@ -51,14 +51,14 @@ This project is looked after only by the open source community. Community Mainta
 Community Maintainers:
 - [@tototoshi](https://github.com/tototoshi)
 
-If you would like to be named as an Community Maintainer, let us know via Twitter: https://twitter.com/flywaydb.
+If you would like to be named as a Community Maintainer, let us know via Twitter: https://twitter.com/flywaydb.
 
 
 ## <a class="anchor" name="getting-started"></a>Getting Started
 
 ### Basic configuration
 
-Database settings can be set in manner of Play2.
+Database settings can be set in the manner of Play2.
 
 ```
 db.default.driver=org.h2.Driver
@@ -155,7 +155,7 @@ Flyway can replace placeholders in Sql migrations.
 The default pattern is ${placeholder}.
 This can be configured using the placeholderPrefix and placeholderSuffix properties.
 
-The placeholder prefix, suffix and key-value pairs can be specificed in application.conf, e.g.
+The placeholder prefix, suffix, and key-value pairs can be specified in application.conf, e.g.
 
 ```
 db.default.migration.placeholderPrefix="$flyway{{{"
@@ -229,7 +229,7 @@ In Test mode, migration is done automatically.
 ### Prod
 
 In production mode, migration is done automatically if `db.${dbName}.migration.auto` is set to be true in application.conf.
-Otherwise it failed to start when migration is needed.
+Otherwise, it failed to start when migration is needed.
 
 ```
 $ play -Ddb.default.migration.auto=true start

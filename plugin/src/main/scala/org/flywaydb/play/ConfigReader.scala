@@ -76,8 +76,8 @@ class ConfigReader(configuration: Configuration, environment: Environment) {
 
   private def getDatabaseConfiguration(configuration: Configuration, dbName: String): Option[DatabaseConfiguration] = {
     val jdbcConfigOrError = for {
-      jdbcUrl <- configuration.getOptional[String](s"db.$dbName.url").toRight(s"db.$dbName.url is not set").right
-      driver <- configuration.getOptional[String](s"db.$dbName.driver").toRight(s"db.$dbName.driver is not set").right
+      jdbcUrl <- configuration.getOptional[String](s"db.$dbName.url").toRight(s"db.$dbName.url is not set")
+      driver <- configuration.getOptional[String](s"db.$dbName.driver").toRight(s"db.$dbName.driver is not set")
     } yield {
       val (parsedUrl, parsedUser, parsedPass) = urlParser.parseUrl(jdbcUrl)
       val username = parsedUser

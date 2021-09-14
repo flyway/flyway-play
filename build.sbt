@@ -1,6 +1,6 @@
 val flywayPlayVersion = "7.14.1-SNAPSHOT"
 
-val scalaVersion_2_12 = "2.12.14"
+val scalaVersion_2_12 = "2.12.15"
 val scalaVersion_2_13 = "2.13.6"
 
 val flywayVersion = "7.15.0"

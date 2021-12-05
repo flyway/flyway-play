@@ -1,5 +1,9 @@
 # Change Log
 
+## 7.17.0
+
+ - Support Flyway 8.2.0
+
 ## 7.16.0
 
  - Support Flyway 8.1.0

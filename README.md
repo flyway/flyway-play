@@ -14,6 +14,7 @@ Flyway module for Play 2.4 or later. It aims to be a substitute for play-evoluti
 
 |flyway-play version|play version|flyway version|
 |-------------------|------------|--------------|
+|             7.18.0|       2.8.x|         8.3.0|
 |             7.17.0|       2.8.x|         8.2.0|
 |             7.16.0|       2.8.x|         8.1.0|
 |             7.15.0|       2.8.x|         8.0.0|

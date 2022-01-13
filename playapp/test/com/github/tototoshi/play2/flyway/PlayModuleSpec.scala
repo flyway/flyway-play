@@ -43,7 +43,7 @@ class PlayModuleSpec extends AnyFunSpec with Matchers {
       sql"""DROP TABLE "schema_version"""".execute.apply()
     }
 
-    NamedDB('secondary) autoCommit { implicit session =>
+    NamedDB("secondary") autoCommit { implicit session =>
       val person =
         sql"SELECT * FROM job"
           .map(rs => rs.int("id") -> rs.string("name"))
@@ -58,7 +58,7 @@ class PlayModuleSpec extends AnyFunSpec with Matchers {
       sql"""DROP TABLE "schema_version"""".execute.apply()
     }
 
-    NamedDB('placeholders) autoCommit { implicit session =>
+    NamedDB("placeholders") autoCommit { implicit session =>
       val wows =
         sql"SELECT * FROM wow" // This table name is substituted for a placeholder during migration
           .map(rs => rs.int("id") -> rs.string("name"))
@@ -74,7 +74,7 @@ class PlayModuleSpec extends AnyFunSpec with Matchers {
       sql"""DROP TABLE "schema_version"""".execute.apply()
     }
 
-    NamedDB('java) autoCommit { implicit session =>
+    NamedDB("java") autoCommit { implicit session =>
       val languages =
         sql"SELECT * FROM language"
           .map(rs => rs.int("id") -> rs.string("name"))
@@ -89,7 +89,7 @@ class PlayModuleSpec extends AnyFunSpec with Matchers {
       sql"""DROP TABLE "schema_version"""".execute.apply()
     }
 
-    NamedDB('migration_prefix) autoCommit { implicit session =>
+    NamedDB("migration_prefix") autoCommit { implicit session =>
       val projects =
         sql"SELECT * FROM project"
           .map(rs => rs.int("id") -> rs.string("name"))

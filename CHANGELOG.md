@@ -1,5 +1,9 @@
 # Change Log
 
+## 7.21.0
+
+ - Add ignoreMigrationPatterns setting
+
 ## 7.20.0
 
  - Support Flyway 8.5.0

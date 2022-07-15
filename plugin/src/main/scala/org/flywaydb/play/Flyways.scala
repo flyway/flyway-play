@@ -17,19 +17,17 @@ package org.flywaydb.play
 
 import java.io.FileNotFoundException
 
-import javax.inject.{ Inject, Singleton }
+import javax.inject.{Inject, Singleton}
 import org.flywaydb.core.Flyway
 import org.flywaydb.core.api.MigrationInfo
 import org.flywaydb.core.api.configuration.FluentConfiguration
 import org.flywaydb.core.internal.jdbc.DriverDataSource
-import play.api.{ Configuration, Environment, Logger }
+import play.api.{Configuration, Environment, Logger}
 
 import scala.collection.JavaConverters._
 
 @Singleton
-class Flyways @Inject() (
-  configuration: Configuration,
-  environment: Environment) {
+class Flyways @Inject() (configuration: Configuration, environment: Environment) {
 
   val flywayPrefixToMigrationScript: String = "db/migration"
 
@@ -48,12 +46,8 @@ class Flyways @Inject() (
     } yield {
       val flyway = Flyway.configure(environment.classLoader)
       val database = configuration.database
-      val dataSource = new DriverDataSource(
-        getClass.getClassLoader,
-        database.driver,
-        database.url,
-        database.user,
-        database.password)
+      val dataSource =
+        new DriverDataSource(getClass.getClassLoader, database.driver, database.url, database.user, database.password)
       flyway.dataSource(dataSource)
       if (configuration.locations.nonEmpty) {
         val locations = configuration.locations.map(location => s"$migrationFilesLocation/$location")
@@ -110,13 +104,13 @@ class Flyways @Inject() (
   }
 
   def baseline(dbName: String, version: String): Unit = {
-    flyways.get(dbName).foreach {
-      flyway =>
-        Flyway.configure()
-          .configuration(flyway.getConfiguration)
-          .baselineVersion(version)
-          .load()
-          .baseline()
+    flyways.get(dbName).foreach { flyway =>
+      Flyway
+        .configure()
+        .configuration(flyway.getConfiguration)
+        .baselineVersion(version)
+        .load()
+        .baseline()
 
     }
   }
@@ -136,32 +130,46 @@ class Flyways @Inject() (
 
   private def setSqlMigrationSuffixes(configuration: FlywayConfiguration, flyway: FluentConfiguration): Unit = {
     configuration.sqlMigrationSuffix.foreach(_ =>
-      Logger("flyway").warn("sqlMigrationSuffix is deprecated in Flyway 5.0, and will be removed in a future version. Use sqlMigrationSuffixes instead."))
+      Logger("flyway").warn(
+        "sqlMigrationSuffix is deprecated in Flyway 5.0, and will be removed in a future version. Use sqlMigrationSuffixes instead."
+      )
+    )
     val suffixes: Seq[String] = configuration.sqlMigrationSuffixes ++ configuration.sqlMigrationSuffix
     if (suffixes.nonEmpty) flyway.sqlMigrationSuffixes(suffixes: _*)
   }
 
   private def migrationDescriptionToShow(dbName: String, migration: MigrationInfo): String = {
     val locations = flywayConfigurations(dbName).locations
-    (if (locations.nonEmpty) locations.map(location => environment.resourceAsStream(s"$flywayPrefixToMigrationScript/${flywayConfigurations(dbName).scriptsDirectory.getOrElse(dbName)}/$location/${migration.getScript}"))
-      .find(resource => resource.nonEmpty).flatten
-    else {
-      environment.resourceAsStream(s"$flywayPrefixToMigrationScript/${flywayConfigurations(dbName).scriptsDirectory.getOrElse(dbName)}/${migration.getScript}")
-    }).map { in =>
-      s"""|--- ${migration.getScript} ---
-          |${FileUtils.readInputStreamToString(in)}""".stripMargin
-    }.orElse {
-      import scala.util.control.Exception._
-      val code = for {
-        script <- FileUtils.findJdbcMigrationFile(environment.rootPath, migration.getScript)
-      } yield FileUtils.readFileToString(script)
-      allCatch opt {
-        environment.classLoader.loadClass(migration.getScript)
-      } map { _ =>
+    (if (locations.nonEmpty)
+       locations
+         .map(location =>
+           environment.resourceAsStream(s"$flywayPrefixToMigrationScript/${flywayConfigurations(dbName).scriptsDirectory
+               .getOrElse(dbName)}/$location/${migration.getScript}")
+         )
+         .find(resource => resource.nonEmpty)
+         .flatten
+     else {
+       environment.resourceAsStream(
+         s"$flywayPrefixToMigrationScript/${flywayConfigurations(dbName).scriptsDirectory.getOrElse(dbName)}/${migration.getScript}"
+       )
+     })
+      .map { in =>
         s"""|--- ${migration.getScript} ---
-            |$code""".stripMargin
+          |${FileUtils.readInputStreamToString(in)}""".stripMargin
       }
-    }.getOrElse(throw new FileNotFoundException(s"Migration file not found. ${migration.getScript}"))
+      .orElse {
+        import scala.util.control.Exception._
+        val code = for {
+          script <- FileUtils.findJdbcMigrationFile(environment.rootPath, migration.getScript)
+        } yield FileUtils.readFileToString(script)
+        allCatch opt {
+          environment.classLoader.loadClass(migration.getScript)
+        } map { _ =>
+          s"""|--- ${migration.getScript} ---
+            |$code""".stripMargin
+        }
+      }
+      .getOrElse(throw new FileNotFoundException(s"Migration file not found. ${migration.getScript}"))
   }
 
   def checkState(dbName: String): Unit = {
@@ -170,7 +178,8 @@ class Flyways @Inject() (
       if (pendingMigrations.nonEmpty) {
         throw InvalidDatabaseRevision(
           dbName,
-          pendingMigrations.map(migration => migrationDescriptionToShow(dbName, migration)).mkString("\n"))
+          pendingMigrations.map(migration => migrationDescriptionToShow(dbName, migration)).mkString("\n")
+        )
       }
 
       if (flywayConfigurations(dbName).validateOnStart) {

@@ -21,10 +21,11 @@ import play.core._
 
 @Singleton
 class PlayInitializer @Inject() (
-  configuration: Configuration,
-  environment: Environment,
-  flyways: Flyways,
-  webCommands: WebCommands) {
+    configuration: Configuration,
+    environment: Environment,
+    flyways: Flyways,
+    webCommands: WebCommands
+) {
 
   def onStart(): Unit = {
     val webCommand = new FlywayWebCommand(configuration, environment, flyways)

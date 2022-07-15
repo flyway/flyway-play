@@ -15,7 +15,7 @@
  */
 package org.flywaydb.play
 
-import play.api.{ Environment, Mode }
+import play.api.{Environment, Mode}
 
 import scala.util.matching.Regex
 
@@ -35,7 +35,8 @@ class UrlParser(environment: Environment) {
         ("jdbc:postgresql://%s/%s".format(host, dbname), Some(username), Some(password))
       case url @ MysqlFullUrl(username, password, host, dbname) =>
         val defaultProperties = """?useUnicode=yes&characterEncoding=UTF-8&connectionCollation=utf8_general_ci"""
-        val addDefaultPropertiesIfNeeded = MysqlCustomProperties.findFirstMatchIn(url).map(_ => "").getOrElse(defaultProperties)
+        val addDefaultPropertiesIfNeeded =
+          MysqlCustomProperties.findFirstMatchIn(url).map(_ => "").getOrElse(defaultProperties)
         ("jdbc:mysql://%s/%s".format(host, dbname + addDefaultPropertiesIfNeeded), Some(username), Some(password))
       case url @ H2DefaultUrl() if !url.contains("DB_CLOSE_DELAY") =>
         val jdbcUrl = if (environment.mode == Mode.Dev) {

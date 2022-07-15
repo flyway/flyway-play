@@ -15,18 +15,15 @@
  */
 package org.flywaydb.play
 
-import javax.inject.{ Inject, Singleton }
+import javax.inject.{Inject, Singleton}
 import org.flywaydb.core.api.MigrationInfo
 import play.api._
 import play.api.mvc.Results._
 import play.api.mvc._
 import play.core._
 
-class FlywayWebCommand(
-  configuration: Configuration,
-  environment: Environment,
-  flyways: Flyways)
-  extends HandleWebCommandSupport {
+class FlywayWebCommand(configuration: Configuration, environment: Environment, flyways: Flyways)
+    extends HandleWebCommandSupport {
 
   private var checkedAlready = false
 
@@ -48,19 +45,28 @@ class FlywayWebCommand(
         Some(Redirect(getRedirectUrlFromRequest(request)))
       case WebCommandPath.showInfoPath(dbName) =>
         val allMigrationInfo: Seq[MigrationInfo] = flyways.allMigrationInfo(dbName)
-        val scriptsDirectory = configuration.getOptional[String](s"db.$dbName.migration.scriptsDirectory").getOrElse(dbName)
+        val scriptsDirectory =
+          configuration.getOptional[String](s"db.$dbName.migration.scriptsDirectory").getOrElse(dbName)
         val scripts: Seq[String] = allMigrationInfo.map { info =>
-          environment.resourceAsStream(s"${flyways.flywayPrefixToMigrationScript}/$scriptsDirectory/${info.getScript}").map { in =>
-            FileUtils.readInputStreamToString(in)
-          }.orElse {
-            for {
-              script <- FileUtils.findJdbcMigrationFile(environment.rootPath, info.getScript)
-            } yield FileUtils.readFileToString(script)
-          }.getOrElse("")
+          environment
+            .resourceAsStream(s"${flyways.flywayPrefixToMigrationScript}/$scriptsDirectory/${info.getScript}")
+            .map { in =>
+              FileUtils.readInputStreamToString(in)
+            }
+            .orElse {
+              for {
+                script <- FileUtils.findJdbcMigrationFile(environment.rootPath, info.getScript)
+              } yield FileUtils.readFileToString(script)
+            }
+            .getOrElse("")
         }
-        val showManualInsertQuery = configuration.getOptional[Boolean](s"db.$dbName.migration.showInsertQuery").getOrElse(false)
+        val showManualInsertQuery =
+          configuration.getOptional[Boolean](s"db.$dbName.migration.showInsertQuery").getOrElse(false)
         val schemaTable = flyways.schemaTable(dbName)
-        Some(Ok(views.html.info(request, dbName, allMigrationInfo, scripts, showManualInsertQuery, schemaTable)).as("text/html"))
+        Some(
+          Ok(views.html.info(request, dbName, allMigrationInfo, scripts, showManualInsertQuery, schemaTable))
+            .as("text/html")
+        )
       case "/@flyway" =>
         Some(Ok(views.html.index(flyways.allDatabaseNames)).as("text/html"))
       case _ =>

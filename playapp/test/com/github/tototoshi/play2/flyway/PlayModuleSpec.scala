@@ -16,7 +16,7 @@
 package com.github.tototoshi.play2.flyway
 
 import org.scalatest._
-import play.api.{ Configuration, Environment, Mode }
+import play.api.{Configuration, Environment, Mode}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
 import scalikejdbc._
@@ -28,7 +28,6 @@ class PlayModuleSpec extends AnyFunSpec with Matchers {
 
   def test(): Boolean = {
     DB autoCommit { implicit session =>
-
       val people =
         sql"SELECT * FROM person"
           .map(rs => rs.int("id") -> rs.string("name"))
@@ -131,7 +130,8 @@ class PlayModuleSpec extends AnyFunSpec with Matchers {
         .map(dbName => s"db.$dbName.migration.auto" -> true)
       val application = GuiceApplicationBuilder(
         environment = Environment.simple(mode = Mode.Prod),
-        configuration = Configuration(settings: _*)).build()
+        configuration = Configuration(settings: _*)
+      ).build()
       running(application) {
         withScalikejdbcPool {
           test()

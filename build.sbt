@@ -21,12 +21,14 @@ lazy val commonSettings = Seq(
   }
 )
 
-lazy val `flyway-play` = project.in(file("."))
+lazy val `flyway-play` = project
+  .in(file("."))
   .settings(commonSettings)
   .settings(nonPublishingSettings)
   .aggregate(plugin, playapp)
 
-lazy val plugin = project.in(file("plugin"))
+lazy val plugin = project
+  .in(file("plugin"))
   .enablePlugins(SbtTwirl)
   .settings(commonSettings)
   .settings(publishingSettings)
@@ -49,7 +51,8 @@ lazy val plugin = project.in(file("plugin"))
 val playAppName = "playapp"
 val playAppVersion = "1.0-SNAPSHOT"
 
-lazy val playapp = project.in(file("playapp"))
+lazy val playapp = project
+  .in(file("playapp"))
   .enablePlugins(PlayScala)
   .settings(commonSettings)
   .settings(nonPublishingSettings)

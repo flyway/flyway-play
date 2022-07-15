@@ -39,9 +39,12 @@ class ConfigReader(configuration: Configuration, environment: Environment) {
       subConfig = configuration.getOptional[Configuration](s"db.$dbName.migration").getOrElse(Configuration.empty)
     } yield {
       val placeholders = {
-        subConfig.getOptional[Configuration]("placeholders").map { config =>
-          config.subKeys.map { key => key -> config.getOptional[String](key).getOrElse("") }.toMap
-        }.getOrElse(Map.empty)
+        subConfig
+          .getOptional[Configuration]("placeholders")
+          .map { config =>
+            config.subKeys.map { key => key -> config.getOptional[String](key).getOrElse("") }.toMap
+          }
+          .getOrElse(Map.empty)
       }
 
       dbName -> FlywayConfiguration(
@@ -70,7 +73,8 @@ class ConfigReader(configuration: Configuration, environment: Environment) {
         subConfig.getOptional[Boolean]("outOfOrder"),
         subConfig.getOptional[String]("scriptsDirectory"),
         subConfig.getOptional[Boolean]("mixed"),
-        subConfig.getOptional[Boolean]("group"))
+        subConfig.getOptional[Boolean]("group")
+      )
     }).toMap
   }
 
@@ -96,11 +100,7 @@ class ConfigReader(configuration: Configuration, environment: Environment) {
         logger.warn(message)
         None
       case Right(jdbc) =>
-        Some(DatabaseConfiguration(
-          jdbc.driver,
-          jdbc.url,
-          jdbc.username,
-          jdbc.password))
+        Some(DatabaseConfiguration(jdbc.driver, jdbc.url, jdbc.username, jdbc.password))
     }
   }
 

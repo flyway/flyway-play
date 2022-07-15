@@ -20,7 +20,6 @@ import play.api.inject._
 
 class PlayModule extends Module {
   def bindings(environment: Environment, configuration: Configuration): Seq[Binding[PlayInitializer]] = {
-    Seq(
-      bind[PlayInitializer].toSelf.eagerly)
+    Seq(bind[PlayInitializer].toSelf.eagerly)
   }
 }

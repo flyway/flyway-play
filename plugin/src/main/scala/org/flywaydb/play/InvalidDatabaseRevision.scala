@@ -17,9 +17,11 @@ package org.flywaydb.play
 
 import play.api._
 
-case class InvalidDatabaseRevision(db: String, script: String) extends PlayException.RichDescription(
-  "Database '" + db + "' needs migration!",
-  "An SQL script need to be run on your database.") {
+case class InvalidDatabaseRevision(db: String, script: String)
+    extends PlayException.RichDescription(
+      "Database '" + db + "' needs migration!",
+      "An SQL script need to be run on your database."
+    ) {
 
   def subTitle = "This SQL script must be run:"
   def content: String = script
@@ -34,7 +36,7 @@ case class InvalidDatabaseRevision(db: String, script: String) extends PlayExcep
 
   def htmlDescription: String = {
     <span>An SQL script will be run on your database -</span>
-    <input name="evolution-button" type="button" value="Apply this script now!" onclick={ redirectToApply }/>
-    <input name="evolution-button" type="button" value="Other operations" onclick={ redirectToAdmin }/>
+    <input name="evolution-button" type="button" value="Apply this script now!" onclick={redirectToApply}/>
+    <input name="evolution-button" type="button" value="Other operations" onclick={redirectToAdmin}/>
   }.mkString
 }

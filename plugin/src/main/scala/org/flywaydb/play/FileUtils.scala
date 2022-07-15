@@ -15,7 +15,7 @@
  */
 package org.flywaydb.play
 
-import java.io.{ File, InputStream }
+import java.io.{File, InputStream}
 
 object FileUtils {
 

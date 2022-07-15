@@ -1,5 +1,11 @@
 # Change Log
 
+## 7.22.0
+
+ - Support Flyway 9.0.0
+ - Remove ignoreFutureMigrations setting
+ - Remove ignoreMissingMigrations setting
+
 ## 7.21.0
 
  - Add ignoreMigrationPatterns setting

@@ -319,6 +319,19 @@ class ConfigReaderSpec extends AnyFunSpec with Matchers {
       }
     }
 
+    describe("ignoreMigrationPatterns") {
+      it("should be parsed") {
+        withDefaultDB(Map("db.default.migration.ignoreMigrationPatterns" -> Seq("repeatable:missing"))) { config =>
+          config.ignoreMigrationPatterns should be(Seq("repeatable:missing"))
+        }
+      }
+      it("should be empty by default") {
+        withDefaultDB(Map.empty) { config =>
+          config.ignoreMigrationPatterns should be(Seq.empty)
+        }
+      }
+    }
+
     describe("cleanOnValidationError") {
       it("should be parsed") {
         withDefaultDB(Map("db.default.migration.cleanOnValidationError" -> "true")) { config =>

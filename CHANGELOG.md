@@ -1,5 +1,9 @@
 # Change Log
 
+## 7.24.0
+
+- Support Flyway 9.2.0
+
 ## 7.23.0
 
 - Support Flyway 9.1.6

@@ -6,6 +6,6 @@ addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.4.6")
 
 scalacOptions ++= Seq("-deprecation", "-unchecked", "-language:_")
 
-addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.9.13")
+addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.9.15")
 
 addSbtPlugin("com.github.sbt" % "sbt-pgp" % "2.1.2")

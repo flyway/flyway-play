@@ -6,7 +6,7 @@ val scalaVersion_2_13 = "2.13.10"
 val flywayVersion = "9.3.1"
 val scalikejdbcVersion = "4.0.0"
 
-val scalatest = "org.scalatest" %% "scalatest" % "3.2.14" % "test"
+val scalatest = "org.scalatest" %% "scalatest" % "3.2.15" % "test"
 
 lazy val commonSettings = Seq(
   organization := "org.flywaydb",

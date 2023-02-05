@@ -3,7 +3,7 @@ val flywayPlayVersion = "7.28.1-SNAPSHOT"
 val scalaVersion_2_12 = "2.12.17"
 val scalaVersion_2_13 = "2.13.10"
 
-val flywayVersion = "9.6.0"
+val flywayVersion = "9.7.0"
 val scalikejdbcVersion = "4.0.0"
 
 val scalatest = "org.scalatest" %% "scalatest" % "3.2.15" % "test"
@@ -63,6 +63,7 @@ lazy val playapp = project
       guice,
       "com.h2database" % "h2" % "2.1.214",
       "postgresql" % "postgresql" % "9.1-901-1.jdbc4",
+      "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.14.2",
       "com.typesafe.play" %% "play-test" % play.core.PlayVersion.current % "test"
         excludeAll ExclusionRule(organization = "org.specs2"),
       "org.scalikejdbc" %% "scalikejdbc" % scalikejdbcVersion % "test",

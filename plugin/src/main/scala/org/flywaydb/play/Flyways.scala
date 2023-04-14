@@ -24,7 +24,7 @@ import org.flywaydb.core.api.configuration.FluentConfiguration
 import org.flywaydb.core.internal.jdbc.DriverDataSource
 import play.api.{Configuration, Environment, Logger}
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 @Singleton
 class Flyways @Inject() (configuration: Configuration, environment: Environment) {

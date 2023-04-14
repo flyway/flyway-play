@@ -158,7 +158,7 @@ class ConfigReaderSpec extends AnyFunSpec with Matchers {
       }
       it("should be empty by default") {
         withDefaultDB(Map.empty) { config =>
-          config.placeholders should be('empty)
+          config.placeholders should be(Symbol("empty"))
         }
       }
     }

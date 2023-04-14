@@ -2,6 +2,7 @@ val flywayPlayVersion = "8.0.0-SNAPSHOT"
 
 val scalaVersion_2_12 = "2.12.17"
 val scalaVersion_2_13 = "2.13.10"
+val scalaVersion_3 = "3.2.2"
 
 val flywayVersion = "9.16.3"
 val scalikejdbcVersion = "4.0.0"
@@ -11,7 +12,7 @@ val scalatest = "org.scalatest" %% "scalatest" % "3.2.15" % "test"
 lazy val commonSettings = Seq(
   organization := "org.flywaydb",
   scalaVersion := scalaVersion_2_12,
-  crossScalaVersions := Seq(scalaVersion_2_12, scalaVersion_2_13),
+  crossScalaVersions := Seq(scalaVersion_2_12, scalaVersion_2_13, scalaVersion_3),
   publishTo := {
     val nexus = "https://oss.sonatype.org/"
     if (version.value.trim.endsWith("SNAPSHOT"))
@@ -19,6 +20,25 @@ lazy val commonSettings = Seq(
     else
       Some("releases" at nexus + "service/local/staging/deploy/maven2")
   }
+)
+
+lazy val scala3workaround = Def.settings(
+  conflictWarning := {
+    if (scalaBinaryVersion.value == "3") {
+      ConflictWarning("warn", Level.Warn, false)
+    } else {
+      conflictWarning.value
+    }
+  },
+  libraryDependencies ~= {
+    _.map { x =>
+      if (x.organization == "com.typesafe.play" && x.crossVersion.isInstanceOf[CrossVersion.Binary]) {
+        x cross CrossVersion.for3Use2_13
+      } else {
+        x
+      }
+    }
+  },
 )
 
 lazy val `flyway-play` = project
@@ -33,19 +53,18 @@ lazy val plugin = project
   .settings(commonSettings)
   .settings(publishingSettings)
   .settings(
-    Seq(
-      name := "flyway-play",
-      version := flywayPlayVersion,
-      resolvers += "Typesafe repository" at "https://repo.typesafe.com/typesafe/releases/",
-      libraryDependencies ++= Seq(
-        "com.typesafe.play" %% "play" % play.core.PlayVersion.current % "provided",
-        "com.typesafe.play" %% "play-test" % play.core.PlayVersion.current % "test"
-          excludeAll ExclusionRule(organization = "org.specs2"),
-        "org.flywaydb" % "flyway-core" % flywayVersion,
-        scalatest
-      ),
-      scalacOptions ++= Seq("-language:_", "-deprecation")
-    )
+    name := "flyway-play",
+    version := flywayPlayVersion,
+    resolvers += "Typesafe repository" at "https://repo.typesafe.com/typesafe/releases/",
+    libraryDependencies ++= Seq(
+      "com.typesafe.play" %% "play" % play.core.PlayVersion.current % "provided",
+      "com.typesafe.play" %% "play-test" % play.core.PlayVersion.current % "test"
+        excludeAll ExclusionRule(organization = "org.specs2"),
+      "org.flywaydb" % "flyway-core" % flywayVersion,
+      scalatest
+    ),
+    scalacOptions ++= Seq("-language:_", "-deprecation"),
+    scala3workaround,
   )
 
 val playAppName = "playapp"
@@ -69,7 +88,8 @@ lazy val playapp = project
       "org.scalikejdbc" %% "scalikejdbc" % scalikejdbcVersion % "test",
       "org.scalikejdbc" %% "scalikejdbc-config" % scalikejdbcVersion % "test",
       scalatest
-    )
+    ),
+    scala3workaround,
   )
   .dependsOn(plugin)
   .aggregate(plugin)

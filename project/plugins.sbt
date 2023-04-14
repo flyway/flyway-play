@@ -1,4 +1,4 @@
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.8.19")
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.9.0-M3")
 
 addSbtPlugin("com.typesafe.play" % "sbt-twirl" % "1.5.2")
 

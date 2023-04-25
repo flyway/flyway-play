@@ -43,7 +43,7 @@ lazy val plugin = project
       "org.flywaydb" % "flyway-core" % flywayVersion,
       scalatest
     ),
-    scalacOptions ++= Seq("-language:_", "-deprecation"),
+    scalacOptions ++= Seq("-language:_", "-deprecation")
   )
 
 val playAppName = "playapp"
@@ -61,13 +61,13 @@ lazy val playapp = project
       guice,
       "com.h2database" % "h2" % "2.1.214",
       "postgresql" % "postgresql" % "9.1-901-1.jdbc4",
-      "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.14.2",
+      "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.15.0",
       "com.typesafe.play" %% "play-test" % play.core.PlayVersion.current % "test"
         excludeAll ExclusionRule(organization = "org.specs2"),
       "org.scalikejdbc" %% "scalikejdbc" % scalikejdbcVersion % "test",
       "org.scalikejdbc" %% "scalikejdbc-config" % scalikejdbcVersion % "test",
       scalatest
-    ),
+    )
   )
   .dependsOn(plugin)
   .aggregate(plugin)

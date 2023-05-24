@@ -6,7 +6,7 @@ val scalaVersion_3 = "3.3.0-RC3"
 val flywayVersion = "9.16.3"
 val scalikejdbcVersion = "4.0.0"
 
-val scalatest = "org.scalatest" %% "scalatest" % "3.2.15" % "test"
+val scalatest = "org.scalatest" %% "scalatest" % "3.2.16" % "test"
 
 lazy val commonSettings = Seq(
   organization := "org.flywaydb",
@@ -43,7 +43,7 @@ lazy val plugin = project
       "org.flywaydb" % "flyway-core" % flywayVersion,
       scalatest
     ),
-    scalacOptions ++= Seq("-language:_", "-deprecation"),
+    scalacOptions ++= Seq("-language:_", "-deprecation")
   )
 
 val playAppName = "playapp"
@@ -67,7 +67,7 @@ lazy val playapp = project
       "org.scalikejdbc" %% "scalikejdbc" % scalikejdbcVersion % "test",
       "org.scalikejdbc" %% "scalikejdbc-config" % scalikejdbcVersion % "test",
       scalatest
-    ),
+    )
   )
   .dependsOn(plugin)
   .aggregate(plugin)

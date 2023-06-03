@@ -43,7 +43,7 @@ lazy val plugin = project
       "org.flywaydb" % "flyway-core" % flywayVersion,
       scalatest
     ),
-    scalacOptions ++= Seq("-language:_", "-deprecation"),
+    scalacOptions ++= Seq("-language:_", "-deprecation")
   )
 
 val playAppName = "playapp"
@@ -67,7 +67,7 @@ lazy val playapp = project
       "org.scalikejdbc" %% "scalikejdbc" % scalikejdbcVersion % "test",
       "org.scalikejdbc" %% "scalikejdbc-config" % scalikejdbcVersion % "test",
       scalatest
-    ),
+    )
   )
   .dependsOn(plugin)
   .aggregate(plugin)

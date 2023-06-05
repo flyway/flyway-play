@@ -14,6 +14,7 @@ Flyway module for Play 2.4 or later. It aims to be a substitute for play-evoluti
 
 | flyway-play version | play version | flyway version |
 | ------------------- | ------------ | -------------- |
+| 7.40.0              | 2.8.x        | 9.18.0         |
 | 7.39.0              | 2.8.x        | 9.17.0         |
 | 7.38.0              | 2.8.x        | 9.16.0         |
 | 7.37.0              | 2.8.x        | 9.15.0         |
@@ -65,7 +66,7 @@ build.sbt
 
 ```scala
 libraryDependencies ++= Seq(
-  "org.flywaydb" %% "flyway-play" % "7.39.0"
+  "org.flywaydb" %% "flyway-play" % "7.40.0"
 )
 ```
 

@@ -59,7 +59,7 @@ lazy val playapp = project
     version := playAppVersion,
     libraryDependencies ++= Seq(
       guice,
-      "com.h2database" % "h2" % "2.2.220",
+      "com.h2database" % "h2" % "2.2.222",
       "postgresql" % "postgresql" % "9.1-901-1.jdbc4",
       "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.14.3",
       "com.typesafe.play" %% "play-test" % play.core.PlayVersion.current % "test"

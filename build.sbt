@@ -1,12 +1,12 @@
 val flywayPlayVersion = "8.0.0-SNAPSHOT"
 
 val scalaVersion_2_13 = "2.13.11"
-val scalaVersion_3 = "3.3.0"
+val scalaVersion_3 = "3.3.1"
 
 val flywayVersion = "9.16.3"
 val scalikejdbcVersion = "4.0.0"
 
-val scalatest = "org.scalatest" %% "scalatest" % "3.2.16" % "test"
+val scalatest = "org.scalatest" %% "scalatest" % "3.2.17" % "test"
 
 lazy val commonSettings = Seq(
   organization := "org.flywaydb",
@@ -59,7 +59,7 @@ lazy val playapp = project
     version := playAppVersion,
     libraryDependencies ++= Seq(
       guice,
-      "com.h2database" % "h2" % "2.2.220",
+      "com.h2database" % "h2" % "2.2.224",
       "postgresql" % "postgresql" % "9.1-901-1.jdbc4",
       "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.14.3",
       "com.typesafe.play" %% "play-test" % play.core.PlayVersion.current % "test"

@@ -1,5 +1,9 @@
 # Change Log
 
+## 8.0.0
+
+- Support Play 2.9
+
 ## 7.38.0
 
 - Support Flyway 9.16.0

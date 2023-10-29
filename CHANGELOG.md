@@ -1,5 +1,9 @@
 # Change Log
 
+## 9.0.0
+
+- Support Play 3.0.0
+
 ## 8.0.1
 
 - Support Play 2.9.0

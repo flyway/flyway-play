@@ -1,8 +1,12 @@
 # Change Log
 
+## 8.0.1
+
+- Support Play 2.9.0
+
 ## 8.0.0
 
-- Support Play 2.9
+- Support Play 2.9.0-M6
 
 ## 7.38.0
 

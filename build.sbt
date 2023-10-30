@@ -1,10 +1,10 @@
-val flywayPlayVersion = "8.0.0-SNAPSHOT"
+val flywayPlayVersion = "9.0.0"
 
 val scalaVersion_2_13 = "2.13.12"
 val scalaVersion_3 = "3.3.1"
 
 val flywayVersion = "9.16.3"
-val scalikejdbcVersion = "4.0.0"
+val scalikejdbcVersion = "4.1.0"
 
 val scalatest = "org.scalatest" %% "scalatest" % "3.2.17" % "test"
 
@@ -37,8 +37,8 @@ lazy val plugin = project
     version := flywayPlayVersion,
     resolvers += "Typesafe repository" at "https://repo.typesafe.com/typesafe/releases/",
     libraryDependencies ++= Seq(
-      "com.typesafe.play" %% "play" % play.core.PlayVersion.current % "provided",
-      "com.typesafe.play" %% "play-test" % play.core.PlayVersion.current % "test"
+      "org.playframework" %% "play" % play.core.PlayVersion.current % "provided",
+      "org.playframework" %% "play-test" % play.core.PlayVersion.current % "test"
         excludeAll ExclusionRule(organization = "org.specs2"),
       "org.flywaydb" % "flyway-core" % flywayVersion,
       scalatest
@@ -61,8 +61,8 @@ lazy val playapp = project
       guice,
       "com.h2database" % "h2" % "2.2.224",
       "postgresql" % "postgresql" % "9.1-901-1.jdbc4",
-      "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.14.3",
-      "com.typesafe.play" %% "play-test" % play.core.PlayVersion.current % "test"
+      "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.15.3",
+      "org.playframework" %% "play-test" % play.core.PlayVersion.current % "test"
         excludeAll ExclusionRule(organization = "org.specs2"),
       "org.scalikejdbc" %% "scalikejdbc" % scalikejdbcVersion % "test",
       "org.scalikejdbc" %% "scalikejdbc-config" % scalikejdbcVersion % "test",

@@ -1,6 +1,6 @@
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.9.0-M6")
+addSbtPlugin("org.playframework" % "sbt-plugin" % "3.0.0")
 
-addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.5.0")
+addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.5.2")
 
 scalacOptions ++= Seq("-deprecation", "-unchecked", "-language:_")
 

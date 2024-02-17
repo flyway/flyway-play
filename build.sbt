@@ -36,8 +36,8 @@ lazy val plugin = project.in(file("plugin"))
       version := flywayPlayVersion,
       resolvers += "Typesafe repository" at "https://repo.typesafe.com/typesafe/releases/",
       libraryDependencies ++= Seq(
-        "com.typesafe.play" %% "play" % play.core.PlayVersion.current % "provided",
-        "com.typesafe.play" %% "play-test" % play.core.PlayVersion.current % "test"
+        "org.playframework" %% "play" % play.core.PlayVersion.current % "provided",
+        "org.playframework" %% "play-test" % play.core.PlayVersion.current % "test"
           excludeAll ExclusionRule(organization = "org.specs2"),
         "org.flywaydb" % "flyway-core" % flywayVersion,
         scalatest
@@ -60,7 +60,7 @@ lazy val playapp = project.in(file("playapp"))
       guice,
       "com.h2database" % "h2" % "1.4.200",
       "postgresql" % "postgresql" % "9.1-901-1.jdbc4",
-      "com.typesafe.play" %% "play-test" % play.core.PlayVersion.current % "test"
+      "org.playframework" %% "play-test" % play.core.PlayVersion.current % "test"
         excludeAll ExclusionRule(organization = "org.specs2"),
       "org.scalikejdbc" %% "scalikejdbc" % scalikejdbcVersion % "test",
       "org.scalikejdbc" %% "scalikejdbc-config" % scalikejdbcVersion % "test",

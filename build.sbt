@@ -1,17 +1,17 @@
 val flywayPlayVersion = "7.14.0"
 
-val scalaVersion_2_12 = "2.12.14"
-val scalaVersion_2_13 = "2.13.6"
+val scalaVersion_3 = "3.3.1"
+val scalaVersion_2_13 = "2.13.12"
 
 val flywayVersion = "7.14.0"
-val scalikejdbcVersion = "3.5.0"
+val scalikejdbcVersion = "4.2.1"
 
 val scalatest = "org.scalatest" %% "scalatest" % "3.2.9" % "test"
 
 lazy val commonSettings = Seq(
   organization := "org.flywaydb",
-  scalaVersion := scalaVersion_2_12,
-  crossScalaVersions := Seq(scalaVersion_2_12, scalaVersion_2_13),
+  scalaVersion := scalaVersion_2_13,
+  crossScalaVersions := Seq(scalaVersion_2_13, scalaVersion_3),
   publishTo := {
     val nexus = "https://oss.sonatype.org/"
     if (version.value.trim.endsWith("SNAPSHOT"))

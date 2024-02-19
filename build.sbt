@@ -61,7 +61,7 @@ lazy val playapp = project
       guice,
       "com.h2database" % "h2" % "2.2.224",
       "postgresql" % "postgresql" % "9.1-901-1.jdbc4",
-      "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.15.3",
+      "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.15.4",
       "org.playframework" %% "play-test" % play.core.PlayVersion.current % "test"
         excludeAll ExclusionRule(organization = "org.specs2"),
       "org.scalikejdbc" %% "scalikejdbc" % scalikejdbcVersion % "test",

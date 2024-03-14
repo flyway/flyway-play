@@ -74,6 +74,7 @@ class Flyways @Inject() (configuration: Configuration, environment: Environment)
       configuration.outOfOrder.foreach(flyway.outOfOrder)
       configuration.mixed.foreach(flyway.mixed)
       configuration.group.foreach(flyway.group)
+      flyway.envVars()
 
       dbName -> flyway.load()
     }

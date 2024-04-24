@@ -35,7 +35,6 @@ lazy val plugin = project
   .settings(
     name := "flyway-play",
     version := flywayPlayVersion,
-    resolvers += "Typesafe repository" at "https://repo.typesafe.com/typesafe/releases/",
     libraryDependencies ++= Seq(
       "org.playframework" %% "play" % play.core.PlayVersion.current % "provided",
       "org.playframework" %% "play-test" % play.core.PlayVersion.current % "test"

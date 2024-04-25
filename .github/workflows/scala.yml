@@ -11,12 +11,20 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        flyway-version:
+          - "9.16.0"
+          - "9.22.0"
+        java-version:
+          - "11"
+
     steps:
     - uses: actions/checkout@v4
     - name: Set up JDK
       uses: actions/setup-java@v4
       with:
         distribution: temurin
-        java-version: 11
+        java-version: ${{ matrix.java-version }}
     - name: Run tests
-      run: sbt +test
+      run: FLYWAY_PLAY_FLYWAY_VERSION=${{ matrix.flyway-version }} sbt +test

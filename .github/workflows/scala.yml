@@ -15,7 +15,7 @@ jobs:
       matrix:
         flyway-version:
           - "9.16.0"
-          - "9.22.0"
+          - "9.22.3"
         java-version:
           - "11"
 

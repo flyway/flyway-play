@@ -1,7 +1,7 @@
 val flywayPlayVersion = "9.0.0"
 
 val scalaVersion_2_13 = "2.13.13"
-val scalaVersion_3 = "3.3.1"
+val scalaVersion_3 = "3.3.3"
 
 val flywayVersion = "9.16.3"
 val scalikejdbcVersion = "4.2.1"

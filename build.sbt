@@ -1,12 +1,12 @@
 val flywayPlayVersion = "9.0.0"
 
-val scalaVersion_2_13 = "2.13.12"
-val scalaVersion_3 = "3.3.1"
+val scalaVersion_2_13 = "2.13.13"
+val scalaVersion_3 = "3.3.3"
 
 val flywayVersion = "9.16.3"
-val scalikejdbcVersion = "4.1.0"
+val scalikejdbcVersion = "4.2.1"
 
-val scalatest = "org.scalatest" %% "scalatest" % "3.2.17" % "test"
+val scalatest = "org.scalatest" %% "scalatest" % "3.2.18" % "test"
 
 lazy val commonSettings = Seq(
   organization := "org.flywaydb",
@@ -35,7 +35,6 @@ lazy val plugin = project
   .settings(
     name := "flyway-play",
     version := flywayPlayVersion,
-    resolvers += "Typesafe repository" at "https://repo.typesafe.com/typesafe/releases/",
     libraryDependencies ++= Seq(
       "org.playframework" %% "play" % play.core.PlayVersion.current % "provided",
       "org.playframework" %% "play-test" % play.core.PlayVersion.current % "test"

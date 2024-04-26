@@ -18,6 +18,8 @@ jobs:
           - "10.11.1"
         java-version:
           - "11"
+          - "17"
+          - "21"
 
     steps:
     - uses: actions/checkout@v4

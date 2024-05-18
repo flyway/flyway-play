@@ -6,7 +6,7 @@ val scalaVersion_3 = "3.3.3"
 val defaultFlywayVersion = "9.16.0"
 val flywayVersion = sys.env.getOrElse("FLYWAY_PLAY_FLYWAY_VERSION", defaultFlywayVersion)
 
-val scalikejdbcVersion = "4.2.1"
+val scalikejdbcVersion = "4.3.0"
 
 val scalatest = "org.scalatest" %% "scalatest" % "3.2.18" % "test"
 

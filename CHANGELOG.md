@@ -1,5 +1,10 @@
 # Change Log
 
+## 9.1.0
+
+- Support Play 3.0.0
+- feat: load flyway configuration from env vars #389 by @slivkamiro
+
 ## 9.0.0
 
 - Support Play 3.0.0
